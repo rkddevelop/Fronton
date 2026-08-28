@@ -602,7 +602,7 @@
     border: 1px solid rgba(255,255,255,.12);
   }
   .stage2-cover-sm { width: 26px; height: 26px; border-radius: 6px; }
-  .stage2-cover-lg { width: 74px; height: 74px; border-radius: 14px; }
+  .stage2-cover-lg { width: 59px; height: 59px; border-radius: 16px; }
   .stage2-cover-xl { width: 84px; height: 84px; border-radius: 14px; }
 
   .stage2-track { min-width: 0; text-align: left; }
@@ -678,70 +678,97 @@
 
   /* ================= le panneau ouvert (au survol) =================
      702×265 (l'app ×1,35 — seul écart d'échelle assumé, pour la
-     lisibilité) : en-tête 44 (titre / météo), corps 166 (mini-lecteur
-     à gauche, mini-calendrier à droite), socle 39 (six modules). Le
-     contenu se matérialise APRÈS la géométrie — comme dans l'app. */
+     lisibilité). L'ACCUEIL RÉEL, transcrit de NotchView.swift
+     (splitNowPlaying) : PAS de titre — la bande du haut porte la météo
+     seule, à GAUCHE (icône + degrés, blanc 85 %) ; corps scindé :
+     lecteur complet moitié gauche (pochette 44→59 coins 12→16, titre
+     14→19 bold, artiste 11→15 à 40 %, bulle paroles BLEUE, barre
+     blanche à lueur encadrée des deux temps, 5 commandes en cinquièmes
+     — actifs BLANCS, éteints 56 %) ; moitié droite 186→251 = widget
+     Calendrier (« Août » + chips jour/numéro, AUJOURD'HUI sur fond
+     bleu, puis les événements en barrettes de couleur). */
   .stage2-panelface {
     position: absolute; top: 0; left: 50%; transform: translateX(-50%);
     width: 702px; height: 265px;
     display: flex; flex-direction: column;
-    padding: 6px 0; text-align: left;
+    padding: 5px 0 6px; text-align: left;
     opacity: 0; transition: opacity .1s ease;
     pointer-events: none;
   }
   .stage2[data-open] .stage2-panelface {
     opacity: 1; transition: opacity .28s ease .14s;
   }
+  /* la bande du haut : la météo seule, à gauche, dans le noir que
+     personne n'occupait — aucune horloge (la barre des menus la porte) */
   .stage2-phead {
-    height: 44px; flex: none; margin-bottom: 5px;
-    display: flex; align-items: center; justify-content: space-between;
-    padding: 0 28px;
+    height: 38px; flex: none; margin-bottom: 6px;
+    display: flex; align-items: center; justify-content: flex-start;
+    padding: 0 24px 0 30px;
   }
-  .stage2-phead b { font-size: 15px; font-weight: 700; letter-spacing: -.01em; }
-  .stage2-weather { font-size: 13.5px; color: var(--ink-2); }
+  .stage2-weather {
+    display: flex; align-items: center; gap: 7px;
+    font-size: 19px; font-weight: 600; color: rgba(255,255,255,.85);
+    font-variant-numeric: tabular-nums;
+  }
+  .stage2-weather svg { width: 18px; height: 18px; }
 
   .stage2-pbody {
     height: 166px; flex: none; margin-bottom: 5px;
-    display: grid; grid-template-columns: 1fr 1fr; gap: 26px;
-    align-items: center; padding: 0 28px;
+    display: flex; align-items: center; gap: 24px;
+    padding: 0 8px 0 14px;
   }
-  .stage2-player { display: flex; align-items: center; gap: 15px; min-width: 0; }
+
+  /* ---- moitié gauche : le lecteur entier, resserré ---- */
+  .stage2-player { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 10px; }
+  .stage2-prow { display: flex; align-items: center; gap: 13px; }
   .stage2-ptrack { min-width: 0; flex: 1; }
-  .stage2-ptrack b { display: block; font-size: 15.5px; letter-spacing: -.01em; white-space: nowrap; }
-  .stage2-ptrack span { display: block; font-size: 13px; color: var(--ink-3); white-space: nowrap; }
+  .stage2-ptrack b { display: block; font-size: 19px; font-weight: 700; letter-spacing: -.01em; white-space: nowrap; overflow: hidden; }
+  .stage2-ptrack span { display: block; margin-top: 1px; font-size: 15px; font-weight: 500; color: rgba(255,255,255,.4); white-space: nowrap; }
+  .stage2-plyr { flex: none; color: #3f82f6; }   /* la bulle paroles, BLEUE (actives) */
+  .stage2-plyr svg { width: 16px; height: 16px; display: block; }
+
+  .stage2-pbarrow {
+    display: flex; align-items: center; gap: 13px;
+    font-size: 15px; font-weight: 500; color: rgba(255,255,255,.56);
+    font-variant-numeric: tabular-nums;
+  }
   .stage2-pbar {
-    margin-top: 10px; height: 3.5px; border-radius: 99px;
-    background: rgba(255,255,255,.15); overflow: hidden;
+    flex: 1; height: 8px; border-radius: 99px;
+    background: rgba(255,255,255,.22); position: relative;
   }
   .stage2-pbar i {
-    display: block; height: 100%; width: 100%; border-radius: 99px;
-    background: var(--ink); transform-origin: left; transform: scaleX(.32);
+    position: absolute; inset: 0; border-radius: 99px;
+    background: #fff; transform-origin: left; transform: scaleX(.32);
+    box-shadow: 0 0 8px rgba(255,255,255,.5), 0 0 16px rgba(255,255,255,.18);
   }
   .stage2[data-open] .stage2-pbar i { animation: stage2-play 26s linear infinite; }
   @keyframes stage2-play { from { transform: scaleX(.32); } to { transform: scaleX(.94); } }
 
-  .stage2-cal { min-width: 0; }
-  .stage2-calmonth {
-    display: block; font-size: 11px; font-weight: 700;
-    letter-spacing: .13em; color: var(--ink-3);
+  .stage2-pctrl { display: flex; align-items: center; }
+  .stage2-pctrl > span { flex: 1; display: grid; place-items: center; color: rgba(255,255,255,.56); }
+  .stage2-pctrl > span.on { color: #fff; }
+  .stage2-pctrl svg { width: 22px; height: 22px; }
+  .stage2-pctrl .stage2-pplay svg { width: 30px; height: 30px; }
+
+  /* ---- moitié droite : le widget Calendrier (186→251) ---- */
+  .stage2-cal { flex: none; width: 251px; display: flex; flex-direction: column; gap: 9px; }
+  .stage2-calstrip { display: flex; align-items: center; gap: 11px; min-width: 0; }
+  .stage2-calmonth { font-size: 16px; font-weight: 600; color: #fff; flex: none; }
+  .stage2-caldays { display: flex; gap: 3px; min-width: 0; overflow: hidden; }
+  .stage2-caldays .stage2-chip {
+    flex: none; width: 36px; height: 43px; border-radius: 11px;
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
   }
-  .stage2-caldays { margin-top: 7px; display: flex; gap: 8px; }
-  .stage2-caldays span {
-    width: 27px; height: 27px; border-radius: 99px;
-    display: grid; place-items: center;
-    font-size: 13px; font-variant-numeric: tabular-nums; color: var(--dim);
-  }
-  .stage2-caldays .stage2-today {
-    background: rgba(255,255,255,.14); color: var(--ink); font-weight: 700;
-  }
-  .stage2-calev {
-    margin-top: 10px; padding: 7px 13px;
-    border-left: 2px solid var(--accent);
-    background: rgba(255,255,255,.05); border-radius: 7px;
-    max-width: 230px;
-  }
-  .stage2-calev b { display: block; font-size: 13px; }
-  .stage2-calev span { display: block; font-size: 12px; color: var(--ink-3); }
+  .stage2-chip i { font-style: normal; font-size: 11px; font-weight: 500; color: rgba(255,255,255,.45); text-transform: uppercase; letter-spacing: .02em; }
+  .stage2-chip b { font-size: 16px; font-weight: 600; color: rgba(255,255,255,.6); font-variant-numeric: tabular-nums; }
+  .stage2-chip.stage2-today { background: #2f6fed; }
+  .stage2-chip.stage2-today i, .stage2-chip.stage2-today b { color: #fff; }
+
+  .stage2-calev { display: flex; flex-direction: column; gap: 8px; }
+  .stage2-calev .stage2-ev { display: flex; align-items: center; gap: 9px; }
+  .stage2-ev u { flex: none; width: 4px; height: 35px; border-radius: 2px; text-decoration: none; }
+  .stage2-ev b { flex: 1; min-width: 0; font-size: 16px; font-weight: 600; white-space: nowrap; overflow: hidden; }
+  .stage2-ev span { flex: none; font-size: 15px; font-weight: 600; color: rgba(255,255,255,.85); font-variant-numeric: tabular-nums; }
 
   /* le socle : les six modules gravés à même le noir — l'actif est
      blanc et porte le point live (la musique joue) */
@@ -878,29 +905,55 @@
             <span class="stage2-count" data-count2>4:32</span>
           </div>
 
-          <!-- le panneau ouvert -->
+          <!-- le panneau ouvert : l'ACCUEIL réel (splitNowPlaying) -->
           <div class="stage2-panelface">
             <div class="stage2-phead">
-              <b data-en="Home" data-de="Start">Accueil</b>
-              <span class="stage2-weather">☁ 21°</span>
+              <span class="stage2-weather">
+                <svg viewBox="0 0 20 20" fill="none" stroke="rgba(255,255,255,.75)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5.4 15.2a3.6 3.6 0 0 1-.3-7.2 4.6 4.6 0 0 1 9-1.1 3.4 3.4 0 0 1-.4 6.8Z" fill="rgba(255,255,255,.14)"/></svg>
+                21°
+              </span>
             </div>
             <div class="stage2-pbody">
               <div class="stage2-player">
-                <i class="stage2-cover stage2-cover-lg"></i>
-                <div class="stage2-ptrack">
-                  <b>Fil de cuivre</b>
-                  <span>Les Lisières</span>
+                <div class="stage2-prow">
+                  <i class="stage2-cover stage2-cover-lg"></i>
+                  <div class="stage2-ptrack">
+                    <b>Fil de cuivre</b>
+                    <span>Les Lisières</span>
+                  </div>
+                  <span class="stage2-plyr" aria-hidden="true">
+                    <svg viewBox="0 0 20 20" fill="currentColor"><path d="M10 2.4c-4.4 0-7.6 2.8-7.6 6.5 0 3.7 3.2 6.5 7.6 6.5.5 0 1-.04 1.5-.11l2.9 2.1a.5.5 0 0 0 .79-.47l-.23-2.4c1.6-1.2 2.64-3 2.64-5.1 0-3.7-3.2-6.5-7.6-6.5Zm-3.4 4.8h2.1c.3 0 .5.2.5.5v.1c-.1 1.5-.7 2.6-1.9 3.2a.4.4 0 0 1-.5-.6c.5-.5.8-1 .9-1.6h-1.1a.6.6 0 0 1-.6-.6v-.4c0-.3.3-.6.6-.6Zm5 0h2.1c.3 0 .5.2.5.5v.1c-.1 1.5-.7 2.6-1.9 3.2a.4.4 0 0 1-.5-.6c.5-.5.8-1 .9-1.6h-1.1a.6.6 0 0 1-.6-.6v-.4c0-.3.3-.6.6-.6Z"/></svg>
+                  </span>
+                </div>
+                <div class="stage2-pbarrow">
+                  <span>1:24</span>
                   <div class="stage2-pbar"><i></i></div>
+                  <span>-3:08</span>
+                </div>
+                <div class="stage2-pctrl">
+                  <span class="on" aria-hidden="true"><svg viewBox="0 0 22 22" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M2.5 6.5h3.2c4.6 0 6 9 10.6 9h2.7M2.5 15.5h3.2c1.5 0 2.6-.9 3.6-2M19 4l-2.6 2.5M19 4l-2.6-2.4M19 4h-3.5c-1.9 0-3.2.9-4.2 2.1M19 18l-2.6 2.4M19 18l-2.6-2.5"/></svg></span>
+                  <span aria-hidden="true"><svg viewBox="0 0 22 22" fill="currentColor"><path d="M10.6 10.2 18 5.1a1 1 0 0 1 1.6.8v10.2a1 1 0 0 1-1.6.8l-7.4-5.1V16a1 1 0 0 1-1.6.8L1.6 11.7a1 1 0 0 1 0-1.6L9 5.1a1 1 0 0 1 1.6.8Z"/></svg></span>
+                  <span class="stage2-pplay" aria-hidden="true"><svg viewBox="0 0 22 22" fill="currentColor"><rect x="4.5" y="3.5" width="4.6" height="15" rx="1.3"/><rect x="12.9" y="3.5" width="4.6" height="15" rx="1.3"/></svg></span>
+                  <span aria-hidden="true"><svg viewBox="0 0 22 22" fill="currentColor"><path d="M11.4 10.2 4 5.1a1 1 0 0 0-1.6.8v10.2a1 1 0 0 0 1.6.8l7.4-5.1V16a1 1 0 0 0 1.6.8l6.4-4.1a1 1 0 0 0 0-1.6L13 5.1a1 1 0 0 0-1.6.8Z"/></svg></span>
+                  <span aria-hidden="true"><svg viewBox="0 0 22 22" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M4.5 8.2a4.7 4.7 0 0 1 4.4-3h8.6M15 2.6l2.6 2.6L15 7.8M17.5 13.8a4.7 4.7 0 0 1-4.4 3H4.5M7 19.4l-2.6-2.6L7 14.2"/></svg></span>
                 </div>
               </div>
               <div class="stage2-cal">
-                <span class="stage2-calmonth" data-month2 data-en="AUGUST" data-de="AUGUST">AOÛT</span>
-                <div class="stage2-caldays" data-days2>
-                  <span>19</span><span>20</span><span class="stage2-today">21</span><span>22</span><span>23</span>
+                <div class="stage2-calstrip">
+                  <span class="stage2-calmonth" data-month2 data-en="Aug" data-de="Aug.">Août</span>
+                  <div class="stage2-caldays" data-days2></div>
                 </div>
                 <div class="stage2-calev">
-                  <b data-en="Product sync" data-de="Produkt-Sync">Point produit</b>
-                  <span data-en="2:00 PM" data-de="14:00">14:00</span>
+                  <span class="stage2-ev">
+                    <u style="background:#3f82f6"></u>
+                    <b data-en="Product sync" data-de="Produkt-Sync">Point produit</b>
+                    <span data-en="2:00 PM" data-de="14:00">14:00</span>
+                  </span>
+                  <span class="stage2-ev">
+                    <u style="background:#4fae5c"></u>
+                    <b data-en="Rehearsal" data-de="Probe">Répétition</b>
+                    <span data-en="6:30 PM" data-de="18:30">18:30</span>
+                  </span>
                 </div>
               </div>
             </div>
@@ -990,24 +1043,35 @@
     }
     tick(); setInterval(tick, 30000);
 
-    // -- le mini-calendrier : le jour vrai, au centre de sa rangée --
+    // -- le widget Calendrier : le jour vrai en chips (semaine/numéro),
+    //    aujourd'hui sur fond bleu — la rangée réelle défile sur le
+    //    mois entier, la démo en fige cinq autour d'aujourd'hui --
     (function calendar() {
-      const monthsFr = ["JANVIER","FÉVRIER","MARS","AVRIL","MAI","JUIN","JUILLET",
-                        "AOÛT","SEPTEMBRE","OCTOBRE","NOVEMBRE","DÉCEMBRE"];
-      const monthsEn = ["JANUARY","FEBRUARY","MARCH","APRIL","MAY","JUNE","JULY",
-                        "AUGUST","SEPTEMBER","OCTOBER","NOVEMBER","DECEMBER"];
       const today = new Date();
+      const cap = s => s.charAt(0).toUpperCase() + s.slice(1);
+      const monthIn = l =>
+        cap(new Intl.DateTimeFormat(l, { month: "short" }).format(today));
       const mEl = $("[data-month2]");
-      mEl.textContent = monthsFr[today.getMonth()];
-      mEl.dataset.en = monthsEn[today.getMonth()];
+      mEl.textContent = monthIn("fr-FR");
+      mEl.dataset.en = monthIn("en-US");
+      mEl.dataset.de = monthIn("de-DE");
+      const wk = (l, d) =>
+        new Intl.DateTimeFormat(l, { weekday: "short" }).format(d)
+          .replace(/\.$/, "");
       const row = $("[data-days2]");
       row.innerHTML = "";
       for (let off = -2; off <= 2; off++) {
         const d = new Date(today); d.setDate(d.getDate() + off);
-        const s = document.createElement("span");
-        s.textContent = d.getDate();
-        if (off === 0) s.className = "stage2-today";
-        row.appendChild(s);
+        const chip = document.createElement("span");
+        chip.className = "stage2-chip" + (off === 0 ? " stage2-today" : "");
+        const i = document.createElement("i");
+        i.textContent = wk("fr-FR", d);
+        i.dataset.en = wk("en-US", d);
+        i.dataset.de = wk("de-DE", d);
+        const b = document.createElement("b");
+        b.textContent = d.getDate();
+        chip.appendChild(i); chip.appendChild(b);
+        row.appendChild(chip);
       }
     })();
 
@@ -1186,7 +1250,7 @@
       <div class="grid">
         <div class="cell lead">
           <div class="leadrow">
-            <svg viewBox="0 0 30 30" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22.5V6.5l11 2.8"/><circle cx="9" cy="22.5" r="3.2"/><path d="M4.5 12.5c1.2 1.5 1.2 3.5 0 5M26 9.8c1.6 2.2 1.6 5.2 0 7.4" opacity=".55"/></svg>
+            <svg viewBox="0 0 30 30" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M11 21.5V6.8l12 3.2v14.5"/><circle cx="8" cy="21.5" r="3"/><circle cx="20" cy="24.5" r="3"/></svg>
             <div class="eq" aria-hidden="true"><i></i><i></i><i></i><i></i></div>
           </div>
           <h3 data-en="Music &amp; lyrics" data-de="Musik &amp; Liedtexte">Musique &amp; paroles</h3>
