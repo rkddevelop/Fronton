@@ -1,0 +1,257 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Fronton — Juridique</title>
+<meta name="description" content="Conditions d'utilisation, remboursement et confidentialité de Fronton.">
+<style>
+  /* Même peau que la page d'accueil — les mêmes jetons, à l'identique. */
+  :root {
+    --ground: #0c0c0e;
+    --panel:  #141416;
+    --edge:   rgba(255,255,255,.085);
+    --ink:    #f4f2ee;
+    --ink-2:  rgba(244,242,238,.62);
+    --ink-3:  rgba(244,242,238,.55);
+    --accent: #e8833a;
+    --w: min(760px, calc(100vw - 48px));
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  @media (prefers-reduced-motion: no-preference) { html { scroll-behavior: smooth; } }
+  body {
+    background: var(--ground);
+    color: var(--ink);
+    font: 16px/1.65 system-ui, -apple-system, "Segoe UI", sans-serif;
+    -webkit-font-smoothing: antialiased;
+  }
+  a { color: inherit; }
+  a:focus-visible, button:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; border-radius: 6px; }
+  header {
+    max-width: var(--w); margin: 0 auto; padding: 22px 0 0;
+    display: flex; align-items: center; gap: 14px;
+  }
+  header a.retour { text-decoration: none; color: var(--ink-2); font-size: 14px; }
+  header a.retour:hover { color: var(--ink); }
+  header .grow { flex: 1; }
+  #langBtn {
+    background: none; border: 1px solid var(--edge); color: var(--ink-2);
+    border-radius: 999px; padding: 4px 12px; font: 600 12px/1 system-ui;
+    cursor: pointer; letter-spacing: .06em;
+  }
+  #langBtn:hover { color: var(--ink); border-color: rgba(255,255,255,.2); }
+  main { max-width: var(--w); margin: 0 auto; padding: 44px 0 80px; }
+  h1 { font-size: 30px; line-height: 1.2; letter-spacing: -.01em; text-wrap: balance; }
+  .maj { color: var(--ink-3); font-size: 13px; margin-top: 8px; }
+  .cadre {
+    margin-top: 26px; padding: 18px 20px; border: 1px solid var(--edge);
+    border-radius: 14px; background: var(--panel); color: var(--ink-2); font-size: 15px;
+  }
+  .cadre b { color: var(--ink); font-weight: 600; }
+  nav.sommaire { margin-top: 22px; display: flex; gap: 18px; flex-wrap: wrap; font-size: 14px; }
+  nav.sommaire a { color: var(--ink-2); text-decoration: none; border-bottom: 1px solid var(--edge); padding-bottom: 1px; }
+  nav.sommaire a:hover { color: var(--ink); border-color: var(--accent); }
+  section { margin-top: 52px; }
+  h2 { font-size: 21px; letter-spacing: -.01em; }
+  h3 { font-size: 16px; margin-top: 26px; }
+  p, li { color: var(--ink-2); font-size: 15.5px; }
+  section p { margin-top: 12px; }
+  ul { margin: 12px 0 0 1.15em; }
+  li { margin-top: 8px; }
+  li b, p b { color: var(--ink); font-weight: 600; }
+  .filet { border: 0; border-top: 1px solid var(--edge); margin-top: 52px; }
+  footer { max-width: var(--w); margin: 0 auto; padding: 22px 0 40px; display: flex; gap: 16px; color: var(--ink-3); font-size: 13px; }
+  footer .grow { flex: 1; }
+  footer a { color: var(--ink-3); text-decoration: none; }
+  footer a:hover { color: var(--ink-2); }
+</style>
+</head>
+<body>
+
+<header>
+  <a class="retour" href="index.html" data-en="← Fronton" data-de="← Fronton">← Fronton</a>
+  <span class="grow"></span>
+  <button id="langBtn" type="button" lang="en" aria-label="Switch to English">EN</button>
+</header>
+
+<main>
+  <h1 data-en="The legal page — as brief as honesty allows" data-de="Die Rechtsseite — so kurz, wie Ehrlichkeit erlaubt">La page juridique — aussi brève que l’honnêteté le permet</h1>
+  <p class="maj" data-en="Last updated: August 28, 2026" data-de="Zuletzt aktualisiert: 28. August 2026">Dernière mise à jour : 28 août 2026</p>
+
+  <div class="cadre"
+       data-en="<b>Fronton</b> is published by an independent developer based in Switzerland. Sales are handled by <b>Polar</b> (polar.sh) as merchant of record: Polar issues the invoice, collects applicable VAT and processes payments. Contact: <a href='mailto:bonjour@fronton.app'>bonjour@fronton.app</a>."
+       data-de="<b>Fronton</b> wird von einem unabhängigen Entwickler mit Sitz in der Schweiz herausgegeben. Der Verkauf läuft über <b>Polar</b> (polar.sh) als Merchant of Record: Polar stellt die Rechnung aus, erhebt die anfallende Mehrwertsteuer und wickelt die Zahlung ab. Kontakt: <a href='mailto:bonjour@fronton.app'>bonjour@fronton.app</a>.">
+    <b>Fronton</b> est édité par un développeur indépendant établi en Suisse. Les ventes sont opérées par <b>Polar</b> (polar.sh) en qualité de revendeur officiel (« merchant of record ») : c’est Polar qui établit la facture, collecte la TVA applicable et traite le paiement. Contact : <a href="mailto:bonjour@fronton.app">bonjour@fronton.app</a>.
+  </div>
+
+  <nav class="sommaire" aria-label="Sommaire">
+    <a href="#licence" data-en="License &amp; terms" data-de="Lizenz &amp; Bedingungen">Licence &amp; conditions</a>
+    <a href="#remboursement" data-en="Refunds" data-de="Erstattung">Remboursement</a>
+    <a href="#confidentialite" data-en="Privacy" data-de="Datenschutz">Confidentialité</a>
+  </nav>
+
+  <!-- ============================= LICENCE ============================= -->
+  <section id="licence">
+    <h2 data-en="License &amp; terms of use" data-de="Lizenz &amp; Nutzungsbedingungen">Licence &amp; conditions d’utilisation</h2>
+
+    <p data-en="Buying Fronton grants you a personal, non-exclusive, non-transferable license to use the software. The software itself remains the property of its publisher. One license activates Fronton on up to <b>two Macs</b>; you can free a Mac at any time from the app’s settings or the Polar customer portal."
+       data-de="Mit dem Kauf von Fronton erhältst du eine persönliche, nicht exklusive und nicht übertragbare Lizenz zur Nutzung der Software. Die Software selbst bleibt Eigentum ihres Herausgebers. Eine Lizenz aktiviert Fronton auf bis zu <b>zwei Macs</b>; du kannst einen Mac jederzeit in den Einstellungen der App oder im Polar-Kundenportal freigeben.">
+      Acheter Fronton vous donne une licence d’utilisation personnelle, non exclusive et non transférable. Le logiciel lui-même reste la propriété de son éditeur. Une licence active Fronton sur <b>deux Mac au plus</b> ; vous pouvez libérer un Mac à tout moment depuis les réglages de l’app ou le portail client Polar.
+    </p>
+
+    <h3 data-en="The two plans" data-de="Die zwei Formeln">Les deux formules</h3>
+    <ul>
+      <li data-en="<b>Lifetime license</b> — one payment. All features, and every update on the stable channel, for as long as Fronton exists."
+          data-de="<b>Lizenz auf Lebenszeit</b> — eine Zahlung. Alle Funktionen und jedes Update des stabilen Kanals, solange es Fronton gibt.">
+        <b>Licence à vie</b> — un seul paiement. Toutes les fonctions, et toutes les mises à jour du canal stable, aussi longtemps que Fronton existe.</li>
+      <li data-en="<b>Monthly subscription</b> — same features, plus early access to what’s new: the beta update channel and features marked “beta”, for as long as the subscription is active. Cancel anytime from the customer portal; at the end of the paid period the key is deactivated."
+          data-de="<b>Monatsabo</b> — dieselben Funktionen, plus früher Zugang zu Neuem: der Beta-Kanal und als „Beta“ markierte Funktionen, solange das Abo aktiv ist. Jederzeit im Kundenportal kündbar; am Ende des bezahlten Zeitraums wird der Schlüssel deaktiviert.">
+        <b>Abonnement mensuel</b> — les mêmes fonctions, plus l’accès en avance aux nouveautés : le canal de mises à jour bêta et les fonctions marquées « bêta », tant que l’abonnement est actif. Résiliable à tout moment depuis le portail client ; à la fin de la période payée, la clé est désactivée.</li>
+    </ul>
+
+    <p data-en="The <b>free trial</b> lasts 14 days, with every feature unlocked and no payment details required. When it ends, the app simply locks its panel until a license is entered — nothing is deleted."
+       data-de="Der <b>Testzeitraum</b> dauert 14 Tage, mit allen Funktionen und ohne Zahlungsdaten. Danach sperrt die App lediglich ihr Panel, bis eine Lizenz eingetragen wird — nichts wird gelöscht.">
+      L’<b>essai gratuit</b> dure 14 jours, toutes fonctions ouvertes, sans moyen de paiement. À son terme, l’app se contente de verrouiller son panneau jusqu’à la saisie d’une licence — rien n’est effacé.
+    </p>
+
+    <h3 data-en="What you should know" data-de="Was du wissen solltest">Ce qu’il faut savoir</h3>
+    <ul>
+      <li data-en="Fronton requires <b>macOS 26</b> or later on an Apple Silicon Mac. Updates are delivered inside the app (Sparkle) and can be turned off."
+          data-de="Fronton benötigt <b>macOS 26</b> oder neuer auf einem Apple-Silicon-Mac. Updates kommen in der App selbst (Sparkle) und lassen sich abschalten.">
+        Fronton demande <b>macOS 26</b> ou plus récent, sur un Mac Apple Silicon. Les mises à jour arrivent dans l’app elle-même (Sparkle) et peuvent être désactivées.</li>
+      <li data-en="Some features display content provided by third-party services (lyrics, weather, artwork). That content belongs to its rights holders; these features may evolve or be withdrawn if required."
+          data-de="Einige Funktionen zeigen Inhalte von Drittdiensten (Liedtexte, Wetter, Cover). Diese Inhalte gehören ihren Rechteinhabern; solche Funktionen können sich ändern oder nötigenfalls entfallen.">
+        Certaines fonctions affichent des contenus fournis par des services tiers (paroles, météo, pochettes). Ces contenus appartiennent à leurs ayants droit ; ces fonctions peuvent évoluer ou être retirées si nécessaire.</li>
+      <li data-en="Fronton is provided “as is”, without warranty of fitness for a particular purpose. To the extent permitted by law, the publisher’s liability is limited to the amount you paid."
+          data-de="Fronton wird „wie besehen“ bereitgestellt, ohne Gewähr für einen bestimmten Zweck. Soweit gesetzlich zulässig, ist die Haftung des Herausgebers auf den gezahlten Betrag beschränkt.">
+        Fronton est fourni « tel quel », sans garantie d’aptitude à un usage particulier. Dans les limites du droit applicable, la responsabilité de l’éditeur est limitée au montant payé.</li>
+      <li data-en="These terms are governed by <b>Swiss law</b>."
+          data-de="Es gilt <b>Schweizer Recht</b>.">
+        Ces conditions sont régies par le <b>droit suisse</b>.</li>
+    </ul>
+  </section>
+
+  <!-- =========================== REMBOURSEMENT =========================== -->
+  <section id="remboursement">
+    <h2 data-en="Refunds" data-de="Erstattung">Remboursement</h2>
+
+    <p data-en="<b>14 days, no questions asked.</b> If Fronton isn’t for you, write to <a href='mailto:bonjour@fronton.app'>bonjour@fronton.app</a> within 14 days of purchase — from the email address used to buy, or simply reply to Polar’s receipt. You’ll be refunded in full on the original payment method, usually within a few business days (the refund is processed by Polar)."
+       data-de="<b>14 Tage, ohne Fragen.</b> Wenn Fronton nichts für dich ist, schreib innerhalb von 14 Tagen nach dem Kauf an <a href='mailto:bonjour@fronton.app'>bonjour@fronton.app</a> — von der Kauf-Adresse aus, oder antworte einfach auf die Quittung von Polar. Du bekommst den vollen Betrag auf das ursprüngliche Zahlungsmittel zurück, in der Regel binnen weniger Werktage (die Erstattung führt Polar aus).">
+      <b>14 jours, sans justification.</b> Si Fronton ne vous convient pas, écrivez à <a href="mailto:bonjour@fronton.app">bonjour@fronton.app</a> dans les 14 jours suivant l’achat — depuis l’adresse utilisée pour acheter, ou répondez simplement au reçu de Polar. Vous êtes remboursé intégralement sur le moyen de paiement d’origine, en général sous quelques jours ouvrés (le remboursement est exécuté par Polar).
+    </p>
+
+    <p data-en="And since the free trial already unlocks everything for 14 days, you can know before paying whether Fronton belongs on your Mac."
+       data-de="Und weil der Testzeitraum bereits 14 Tage lang alles freischaltet, weißt du schon vor dem Kauf, ob Fronton auf deinen Mac gehört.">
+      Et comme l’essai gratuit ouvre déjà tout pendant 14 jours, vous pouvez savoir avant de payer si Fronton a sa place sur votre Mac.
+    </p>
+  </section>
+
+  <!-- ========================== CONFIDENTIALITÉ ========================== -->
+  <section id="confidentialite">
+    <h2 data-en="Privacy" data-de="Datenschutz">Confidentialité</h2>
+
+    <p data-en="The principle: <b>Fronton runs on your Mac.</b> No account, no Fronton server, no usage analytics, no trackers. The AI — assistant, rewriting, translation, live subtitles — runs on the device. Fronton never sees what it processes for you."
+       data-de="Das Prinzip: <b>Fronton läuft auf deinem Mac.</b> Kein Konto, kein Fronton-Server, keine Nutzungsstatistiken, keine Tracker. Die KI — Assistent, Umformulieren, Übersetzung, Live-Untertitel — arbeitet auf dem Gerät. Fronton sieht nie, was es für dich verarbeitet.">
+      Le principe : <b>Fronton fonctionne sur votre Mac.</b> Pas de compte, pas de serveur Fronton, pas de statistiques d’usage, pas de traqueurs. L’IA — assistant, réécriture, traduction, sous-titres en direct — s’exécute sur l’appareil. Fronton ne voit jamais ce qu’il traite pour vous.
+    </p>
+
+    <h3 data-en="What leaves your Mac — the complete list" data-de="Was deinen Mac verlässt — die vollständige Liste">Ce qui sort de votre Mac — la liste complète</h3>
+    <ul>
+      <li data-en="<b>License check → Polar.</b> Your key and an anonymised device identifier (a salted hash — never the hardware identifier), plus your Mac’s name as a label in the customer portal."
+          data-de="<b>Lizenzprüfung → Polar.</b> Dein Schlüssel und eine anonymisierte Gerätekennung (ein gesalzener Hash — nie die Hardware-Kennung), dazu der Name deines Mac als Beschriftung im Kundenportal.">
+        <b>Vérification de licence → Polar.</b> Votre clé et un identifiant d’appareil anonymisé (une empreinte salée — jamais l’identifiant matériel), plus le nom de votre Mac comme libellé dans le portail client.</li>
+      <li data-en="<b>Update check → GitHub</b> (Sparkle). Can be turned off in Settings."
+          data-de="<b>Update-Prüfung → GitHub</b> (Sparkle). In den Einstellungen abschaltbar.">
+        <b>Recherche de mises à jour → GitHub</b> (Sparkle). Désactivable dans les Réglages.</li>
+      <li data-en="<b>Weather → Open-Meteo.</b> Approximate coordinates, to the nearest kilometre. Can be turned off."
+          data-de="<b>Wetter → Open-Meteo.</b> Ungefähre Koordinaten, auf den Kilometer gerundet. Abschaltbar.">
+        <b>Météo → Open-Meteo.</b> Des coordonnées approximatives, au kilomètre près. Désactivable.</li>
+      <li data-en="<b>Lyrics → LRCLIB.</b> The title and artist of the current track. Only after your explicit consent, given once inside the app."
+          data-de="<b>Liedtexte → LRCLIB.</b> Titel und Interpret des laufenden Stücks. Nur nach deiner ausdrücklichen Zustimmung, einmalig in der App erteilt.">
+        <b>Paroles → LRCLIB.</b> Le titre et l’artiste du morceau en cours. Seulement après votre accord explicite, donné une fois dans l’app.</li>
+      <li data-en="<b>Artwork → iTunes Search.</b> Title and artist, only when your music app provides no artwork itself."
+          data-de="<b>Cover → iTunes-Suche.</b> Titel und Interpret, nur wenn deine Musik-App selbst kein Cover liefert.">
+        <b>Pochettes → recherche iTunes.</b> Titre et artiste, seulement quand votre app de musique n’en fournit pas elle-même.</li>
+      <li data-en="<b>Assistant web search → DuckDuckGo.</b> Your question, nothing else. Off by default."
+          data-de="<b>Websuche des Assistenten → DuckDuckGo.</b> Deine Frage, sonst nichts. Standardmäßig aus.">
+        <b>Recherche web de l’assistant → DuckDuckGo.</b> Votre question, rien d’autre. Désactivée par défaut.</li>
+      <li data-en="<b>Google translation</b> — only if you provide your own API key, stored in the macOS Keychain. Otherwise translation stays on-device."
+          data-de="<b>Google-Übersetzung</b> — nur, wenn du deinen eigenen API-Schlüssel hinterlegst, gespeichert im macOS-Schlüsselbund. Sonst bleibt die Übersetzung auf dem Gerät.">
+        <b>Traduction Google</b> — uniquement si vous fournissez votre propre clé API, gardée dans le Trousseau de macOS. Sinon la traduction reste sur l’appareil.</li>
+    </ul>
+
+    <p data-en="<b>Live subtitles:</b> the system audio Fronton listens to is processed in memory, on the device, then discarded. It is never recorded, never stored, never transmitted."
+       data-de="<b>Live-Untertitel:</b> der Systemton, den Fronton hört, wird im Arbeitsspeicher auf dem Gerät verarbeitet und dann verworfen. Er wird nie aufgezeichnet, nie gespeichert, nie übertragen.">
+      <b>Sous-titres en direct :</b> le son que Fronton écoute est traité en mémoire, sur l’appareil, puis jeté. Il n’est jamais enregistré, jamais conservé, jamais transmis.
+    </p>
+
+    <p data-en="<b>What stays on your Mac:</b> your settings, your license (in the macOS Keychain), the clipboard history (local, erasable in one click). <b>Purchase data</b> (email, billing) is handled by Polar as the seller — see their privacy policy; the app itself has no access to it."
+       data-de="<b>Was auf deinem Mac bleibt:</b> deine Einstellungen, deine Lizenz (im macOS-Schlüsselbund), der Zwischenablage-Verlauf (lokal, mit einem Klick löschbar). <b>Kaufdaten</b> (E-Mail, Rechnung) verarbeitet Polar als Verkäufer — siehe deren Datenschutzerklärung; die App selbst hat keinen Zugriff darauf.">
+      <b>Ce qui reste sur votre Mac :</b> vos réglages, votre licence (dans le Trousseau de macOS), l’historique du presse-papiers (local, effaçable en un clic). <b>Les données d’achat</b> (email, facturation) sont traitées par Polar en qualité de vendeur — voir sa politique de confidentialité ; l’app elle-même n’y a pas accès.</p>
+
+    <p data-en="<b>Your rights</b> (GDPR / Swiss nFADP): outside the emails you choose to send us, the publisher holds no personal data about you. For purchase data, contact Polar. For anything else: <a href='mailto:bonjour@fronton.app'>bonjour@fronton.app</a>."
+       data-de="<b>Deine Rechte</b> (DSGVO / Schweizer nDSG): außer den E-Mails, die du uns selbst schreibst, hält der Herausgeber keine personenbezogenen Daten über dich. Für Kaufdaten wende dich an Polar. Für alles andere: <a href='mailto:bonjour@fronton.app'>bonjour@fronton.app</a>.">
+      <b>Vos droits</b> (RGPD / nLPD suisse) : en dehors des mails que vous choisissez de nous écrire, l’éditeur ne détient aucune donnée personnelle vous concernant. Pour les données d’achat, adressez-vous à Polar. Pour tout le reste : <a href="mailto:bonjour@fronton.app">bonjour@fronton.app</a>.
+    </p>
+  </section>
+
+  <hr class="filet">
+</main>
+
+<footer>
+  <span data-en="© 2026 Fronton — handcrafted for macOS." data-de="© 2026 Fronton — handgefertigt für macOS.">© 2026 Fronton — fait à la main, pour macOS.</span>
+  <span class="grow"></span>
+  <a href="index.html" data-en="Back to Fronton" data-de="Zurück zu Fronton">Retour à Fronton</a>
+</footer>
+
+<script>
+  // Même mécanisme que la page d'accueil : le FRANÇAIS est le contenu réel,
+  // l'anglais vit dans data-en, l'allemand dans data-de. Même clé de langue
+  // (frontonLang) : la langue choisie sur une page suit sur l'autre.
+  (function () {
+    document.querySelectorAll("[data-en]").forEach(el => { el.dataset.fr = el.innerHTML; });
+
+    const btn = document.getElementById("langBtn");
+    const LANGS = ["fr", "en", "de"];
+    const TITres = {
+      fr: "Fronton — Juridique",
+      en: "Fronton — Legal",
+      de: "Fronton — Rechtliches",
+    };
+    const ARIA = {
+      fr: "Passer en français",
+      en: "Switch to English",
+      de: "Auf Deutsch wechseln",
+    };
+    let lang = (() => {
+      const nav = (navigator.language || "en").toLowerCase();
+      if (nav.startsWith("fr")) return "fr";
+      if (nav.startsWith("de")) return "de";
+      return "en";
+    })();
+    try {
+      const saved = localStorage.frontonLang;
+      if (LANGS.includes(saved)) lang = saved;
+    } catch (e) {}
+
+    function apply() {
+      document.documentElement.lang = lang;
+      document.querySelectorAll("[data-en]").forEach(el => {
+        el.innerHTML = el.dataset[lang];
+      });
+      const next = LANGS[(LANGS.indexOf(lang) + 1) % LANGS.length];
+      btn.textContent = next.toUpperCase();
+      btn.setAttribute("aria-label", ARIA[next]);
+      btn.lang = next;
+      document.title = TITres[lang];
+    }
+    btn.addEventListener("click", () => {
+      lang = LANGS[(LANGS.indexOf(lang) + 1) % LANGS.length];
+      try { localStorage.frontonLang = lang; } catch (e) {}
+      apply();
+    });
+    apply();
+  })();
+</script>
+</body>
+</html>
