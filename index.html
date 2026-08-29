@@ -522,7 +522,7 @@
   }
   /* au repos : l'ENCOCHE nue, 185×32 — rien d'autre */
   .stage2[data-state="rest"]:not([data-open]) .stage2-island { width: 185px; }
-  .stage2[data-state="timer"]:not([data-open]) .stage2-island { width: 265px; }
+  .stage2[data-state="timer"]:not([data-open]) .stage2-island { width: 185px; }
   .stage2[data-state="lyrics"]:not([data-open]) .stage2-island {
     width: 504px; height: 152px;
     border-radius: 0 0 19px 19px;
@@ -561,9 +561,6 @@
   .stage2[data-open] .stage2-island::after { transform: scale(1); }
   /* l'épaule gauche prend la teinte du lavis quand la musique colore
      l'îlot — la silhouette est UNE forme, la couleur ne s'y coupe pas */
-  .stage2[data-state="music"] .stage2-island::before,
-  .stage2[data-state="lyrics"] .stage2-island::before,
-  .stage2[data-state="fold"] .stage2-island::before,
   .stage2[data-open] .stage2-island::before { background: #241611; }
 
   /* La découpe intérieure : les contenus sont taillés par la
@@ -585,8 +582,6 @@
     transform: translateX(-105%);
     transition: transform 1.5s cubic-bezier(.33,0,.55,1);
   }
-  .stage2[data-state="music"] .stage2-wash,
-  .stage2[data-state="lyrics"] .stage2-wash,
   .stage2[data-open] .stage2-wash {
     transform: none;
     transition-duration: .5s;
@@ -618,9 +613,6 @@
   .stage2-cover-lg { width: 59px; height: 59px; border-radius: 16px; }
   .stage2-cover-xl { width: 84px; height: 84px; border-radius: 14px; }
 
-  .stage2-track { min-width: 0; text-align: left; }
-  .stage2-track b { display: block; font-size: 13px; letter-spacing: -.01em; line-height: 1.2; white-space: nowrap; }
-  .stage2-track span { display: block; font-size: 10.5px; color: var(--ink-3); line-height: 1.25; white-space: nowrap; }
 
   .stage2-eq { margin-left: auto; display: flex; align-items: flex-end; gap: 2px; height: 13px; }
   .stage2-eq i { width: 2.5px; border-radius: 99px; background: var(--ink-2); transform-origin: bottom; }
@@ -893,11 +885,11 @@
 
           <!-- visage compact : musique (un titre ne se traduit pas) -->
           <div class="stage2-face stage2-face-music">
+            <!-- Pas de titre ici : au centre vit l'ENCOCHE PHYSIQUE, elle
+                 est noire quoi qu'il arrive (constat de Yassin, 29 août
+                 2026). Pochette à gauche, barres à droite, le noir entre
+                 les deux est la vérité du matériel. -->
             <i class="stage2-cover stage2-cover-sm"></i>
-            <div class="stage2-track">
-              <b>Fil de cuivre</b>
-              <span>Les Lisières</span>
-            </div>
             <div class="stage2-eq"><i></i><i></i><i></i><i></i></div>
           </div>
 
@@ -913,10 +905,11 @@
           </div>
 
           <!-- visage compact : minuteur (l'îlot reste nu, le trait parle) -->
-          <div class="stage2-face stage2-face-timer">
-            <svg viewBox="0 0 16 16" fill="none" stroke-width="1.5" stroke-linecap="round"><circle cx="8" cy="9.2" r="5.2"/><path d="M8 6.6v2.6l1.9 1.4M6.6 1.6h2.8"/></svg>
-            <span class="stage2-count" data-count2>4:32</span>
-          </div>
+          <!-- Minuteur compact : AUCUN chiffre — l'encoche physique est au
+               centre, et le vrai compact n'écrit rien : « la progression se
+               lit de loin, sans un chiffre », c'est la promesse de la grille
+               juste au-dessus. Le trait orange fait tout. -->
+          <div class="stage2-face stage2-face-timer"></div>
 
           <!-- le panneau ouvert : l'ACCUEIL réel (splitNowPlaying) -->
           <div class="stage2-panelface">
@@ -1107,6 +1100,10 @@
     let countSecs = 272;       // 4:32
 
     function renderCount() {
+      // Le compteur a quitté le bandeau compact (l'encoche physique est
+      // noire) ; le time-lapse ne sert plus que si un compteur existe
+      // ailleurs un jour.
+      if (!countEl) return;
       countEl.textContent =
         Math.floor(countSecs / 60) + ":" + String(countSecs % 60).padStart(2, "0");
     }
