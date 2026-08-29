@@ -110,6 +110,15 @@
     padding: 6px 14px; cursor: pointer; background: none;
     transition: color .15s, border-color .15s;
   }
+  /* Le sélecteur de langue est un vrai <select> : les trois langues se
+     voient d'un clic (un cycle ne montrait que la suivante). Chevron en
+     fond SVG — appearance:none retire celui du navigateur. */
+  select.lang {
+    appearance: none; -webkit-appearance: none;
+    padding-right: 30px;
+    background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="10" height="6"><path d="M1 1l4 4 4-4" fill="none" stroke="rgba(244,242,238,.55)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>') no-repeat right 12px center;
+  }
+  select.lang option { background: #1c1c1e; color: #f4f2ee; }
   .pill-link { margin-left: auto; }
   .lang:hover, .pill-link:hover { color: var(--ink); border-color: rgba(255,255,255,.2); }
 
@@ -382,7 +391,11 @@
     <span class="brand">Fronton</span>
     <span class="vtag" data-en="beta" data-de="Beta">bêta</span>
     <a class="pill-link" href="#faq" data-en="Get invited" data-de="Einladung erhalten">Invitation</a>
-    <button class="lang" id="langBtn" type="button" aria-label="Switch to English">EN</button>
+    <select class="lang" id="langSel" aria-label="Langue — Language — Sprache">
+      <option value="fr" lang="fr">Français</option>
+      <option value="en" lang="en">English</option>
+      <option value="de" lang="de">Deutsch</option>
+    </select>
   </div>
 </header>
 
@@ -1423,7 +1436,7 @@
     // Renseigner l'URL du checkout Polar ci-dessous transforme le bouton
     // du héros et les deux cartes tarifs en boutons d'achat, dans les
     // trois langues, sans toucher au HTML. Vide = état invitation.
-    const CHECKOUT_URL = "";
+    const CHECKOUT_URL = "https://buy.polar.sh/polar_cl_vMZYCvn0O7RUEpzI1cgZ9gD19YDcNdYGJIA7M41IGVL";
     if (CHECKOUT_URL) {
       const buy = (el, fr, en, de, href) => {
         if (!el) return;
@@ -1440,21 +1453,17 @@
           "Acheter à vie — 29 €", "Buy once — €29", "Einmal kaufen — 29 €", CHECKOUT_URL);
     }
 
-    const btn = document.getElementById("langBtn");
+    const sel = document.getElementById("langSel");
     const reduced = matchMedia("(prefers-reduced-motion: reduce)").matches;
 
-    // Trois langues en cycle : FR (contenu reel) -> EN -> DE. Le bouton
-    // affiche la PROCHAINE langue du cycle.
+    // Trois langues, choisies DIRECTEMENT dans un menu déroulant — le
+    // cycle d'avant n'affichait que la langue suivante, et un visiteur
+    // allemand devant « EN » concluait qu'il n'y avait que deux langues.
     const LANGS = ["fr", "en", "de"];
     const TITres = {
       fr: "Fronton — l'îlot au sommet de votre Mac",
       en: "Fronton — the island at the top of your screen",
       de: "Fronton — die Insel ganz oben auf deinem Mac",
-    };
-    const ARIA = {
-      fr: "Passer en français",
-      en: "Switch to English",
-      de: "Auf Deutsch wechseln",
     };
     let lang = (() => {
       const nav = (navigator.language || "en").toLowerCase();
@@ -1472,10 +1481,7 @@
       document.querySelectorAll("[data-en]").forEach(el => {
         el.innerHTML = el.dataset[lang];
       });
-      const next = LANGS[(LANGS.indexOf(lang) + 1) % LANGS.length];
-      btn.textContent = next.toUpperCase();
-      btn.setAttribute("aria-label", ARIA[next]);
-      btn.lang = next;
+      sel.value = lang;
       // l'aria-label trilingue de la zone démo (data-label-fr/-en/-de)
       document.querySelectorAll("[data-label-fr]").forEach(el => {
         const cle = "label" + lang.charAt(0).toUpperCase() + lang.slice(1);
@@ -1483,8 +1489,9 @@
       });
       document.title = TITres[lang];
     }
-    btn.addEventListener("click", () => {
-      lang = LANGS[(LANGS.indexOf(lang) + 1) % LANGS.length];
+    sel.addEventListener("change", () => {
+      if (!LANGS.includes(sel.value)) return;
+      lang = sel.value;
       try { localStorage.frontonLang = lang; } catch (e) {}
       apply();
     });
