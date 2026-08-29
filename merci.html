@@ -1,0 +1,186 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Merci — Fronton</title>
+<!-- Page d'arrivee du paiement Polar (Success URL du lien de checkout).
+     Jamais indexee : on n'y arrive qu'en ayant paye. -->
+<meta name="robots" content="noindex">
+<meta name="theme-color" content="#0c0c0e">
+<link rel="icon" type="image/svg+xml" href='data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 22 22"><g fill="none" stroke="%23e8833a" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12.5 L11 7.8 L19 12.5"/><path d="M2.2 15.5 L19.8 15.5" stroke-width="2"/></g></svg>'>
+<script>document.documentElement.classList.add("js")</script>
+<style>
+  :root {
+    --ground: #0c0c0e;
+    --ink:    #f4f2ee;
+    --ink-2:  rgba(244,242,238,.72);
+    --ink-3:  rgba(244,242,238,.55);
+    --edge:   rgba(255,255,255,.09);
+    --accent: #e8833a;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    background: var(--ground); color: var(--ink);
+    font: 16px/1.6 system-ui, -apple-system, "Segoe UI", sans-serif;
+    -webkit-font-smoothing: antialiased;
+    min-height: 100svh; display: flex; flex-direction: column;
+  }
+  a { color: inherit; text-decoration: none; }
+  a:focus-visible, button:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; border-radius: 6px; }
+  ::selection { background: var(--accent); color: #0c0c0e; }
+
+  header { display: flex; justify-content: center; }
+  .bar { width: min(660px, calc(100vw - 48px)); display: flex; align-items: center; gap: 10px; padding: 22px 0; }
+  .mark { width: 24px; height: 24px; }
+  .brand { font-weight: 700; font-size: 17px; letter-spacing: -.02em; }
+  .lang {
+    margin-left: auto; font-size: 13px; font-weight: 600; color: var(--ink-2);
+    border: 1px solid var(--edge); border-radius: 99px;
+    padding: 5px 13px; cursor: pointer; background: none;
+  }
+  .lang:hover { color: var(--ink); }
+
+  main { flex: 1; display: flex; justify-content: center; padding: 40px 24px 80px; }
+  .inner { width: min(660px, 100%); }
+
+  h1 { font-size: clamp(34px, 6vw, 46px); font-weight: 800; letter-spacing: -.03em; line-height: 1.1; }
+  h1 .lift { position: relative; white-space: nowrap; }
+  h1 .lift::after {
+    content: ""; position: absolute; left: 2%; right: 2%; bottom: .05em;
+    height: .09em; border-radius: 99px; background: var(--accent); opacity: .9; z-index: -1;
+  }
+  .sub { margin-top: 14px; font-size: 17px; color: var(--ink-2); max-width: 46ch; }
+
+  ol.steps { margin-top: 40px; list-style: none; counter-reset: e; display: flex; flex-direction: column; gap: 18px; }
+  ol.steps li {
+    counter-increment: e; position: relative; padding: 18px 20px 18px 60px;
+    border: 1px solid var(--edge); border-radius: 16px;
+  }
+  ol.steps li::before {
+    content: counter(e); position: absolute; left: 20px; top: 18px;
+    width: 26px; height: 26px; border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 13.5px; font-weight: 700; color: var(--accent);
+    border: 1.5px solid var(--accent);
+  }
+  ol.steps h2 { font-size: 16.5px; font-weight: 700; letter-spacing: -.01em; }
+  ol.steps p { margin-top: 4px; font-size: 14.5px; color: var(--ink-2); }
+  ol.steps kbd {
+    font: 600 12.5px/1 system-ui, sans-serif; color: var(--ink);
+    border: 1px solid var(--edge); border-bottom-width: 2px;
+    border-radius: 6px; padding: 2.5px 7px; white-space: nowrap;
+  }
+  .dl {
+    display: none; margin-top: 12px;
+    background: var(--ink); color: var(--ground);
+    font-size: 15px; font-weight: 700; padding: 11px 22px; border-radius: 99px;
+  }
+  .js .has-dl .dl { display: inline-block; }
+  .js .has-dl .dl-fallback { display: none; }
+
+  .aside { margin-top: 36px; font-size: 14px; color: var(--ink-3); max-width: 52ch; }
+  .aside a { color: var(--ink-2); border-bottom: 1px solid var(--edge); }
+  .aside a:hover { color: var(--ink); }
+
+  footer { display: flex; justify-content: center; padding: 0 24px 34px; }
+  footer .inner { display: flex; gap: 18px; font-size: 13px; color: var(--ink-3); }
+  footer a:hover { color: var(--ink); }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="bar">
+    <a href="https://fronton.app/" aria-label="Fronton" style="display:flex;align-items:center;gap:10px">
+      <svg class="mark" viewBox="0 0 22 22" fill="none" stroke="var(--accent)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+        <path d="M3 12.5 L11 7.8 L19 12.5"/><path d="M2.2 15.5 L19.8 15.5" stroke-width="2"/>
+      </svg>
+      <span class="brand">Fronton</span>
+    </a>
+    <button class="lang" id="langBtn" type="button">EN</button>
+  </div>
+</header>
+
+<main>
+  <div class="inner">
+    <h1 data-en='Thank you. The island is <span class="lift">yours</span>.' data-de='Danke. Die Insel gehört jetzt <span class="lift">dir</span>.'>Merci. L&rsquo;îlot est à <span class="lift">vous</span>.</h1>
+    <p class="sub" data-en="Your payment went through. Your licence key is on its way to the email address you used at checkout — it usually arrives within a minute." data-de="Deine Zahlung ist eingegangen. Dein Lizenzschlüssel ist unterwegs an die E-Mail-Adresse aus dem Kauf — er kommt meist innerhalb einer Minute an.">Votre paiement est passé. Votre clé de licence arrive à l&rsquo;adresse e-mail utilisée pour l&rsquo;achat — comptez une minute, rarement plus.</p>
+
+    <ol class="steps">
+      <li id="step-dl">
+        <h2 data-en="Download Fronton" data-de="Fronton laden">Téléchargez Fronton</h2>
+        <p class="dl-fallback" data-en="The download link is in the same email as your key." data-de="Der Download-Link steht in derselben E-Mail wie dein Schlüssel.">Le lien de téléchargement est dans le même e-mail que votre clé.</p>
+        <a class="dl" href="" data-en="Download for Mac" data-de="Für Mac laden">Télécharger pour Mac</a>
+        <p data-en="macOS 26 · Apple Silicon · notch or no notch" data-de="macOS 26 · Apple Silicon · mit oder ohne Notch">macOS 26 · Apple Silicon · avec ou sans encoche</p>
+      </li>
+      <li>
+        <h2 data-en="Paste your key" data-de="Schlüssel einsetzen">Collez votre clé</h2>
+        <p data-en='Click the Fronton mark in the menu bar, open <kbd>Settings</kbd> → <kbd>License</kbd>, paste the key from the email, then click <kbd>Activate</kbd>.' data-de='Klicke das Fronton-Zeichen in der Menüleiste, öffne <kbd>Einstellungen</kbd> → <kbd>Lizenz</kbd>, setze den Schlüssel aus der E-Mail ein und klicke <kbd>Aktivieren</kbd>.'>Cliquez le fronton dans la barre des menus, ouvrez <kbd>Réglages</kbd> → <kbd>Licence</kbd>, collez la clé reçue par e-mail, puis <kbd>Activer la clé</kbd>.</p>
+      </li>
+      <li>
+        <h2 data-en="Hover the top of your screen" data-de="Fahre an den oberen Bildschirmrand">Survolez le haut de l&rsquo;écran</h2>
+        <p data-en="That&rsquo;s the only gesture to learn: the island opens, and everything is there. In and out in under thirty seconds." data-de="Das ist die einzige Geste, die du brauchst: Die Insel öffnet sich, und alles ist da. Rein und raus in weniger als dreißig Sekunden.">C&rsquo;est le seul geste à connaître : l&rsquo;îlot s&rsquo;ouvre, et tout est là. Entré, sorti — jamais plus de trente secondes.</p>
+      </li>
+    </ol>
+
+    <p class="aside" data-en='No email after a few minutes? Check your spam folder, then write to <a href="mailto:contact@fronton.app">contact@fronton.app</a> — the address also honours the 14-day refund, no questions asked.' data-de='Keine E-Mail nach ein paar Minuten? Sieh im Spam-Ordner nach und schreib dann an <a href="mailto:contact@fronton.app">contact@fronton.app</a> — dieselbe Adresse gilt auch für die 14-Tage-Erstattung, ohne Begründung.'>Pas d&rsquo;e-mail au bout de quelques minutes ? Regardez dans les indésirables, puis écrivez à <a href="mailto:contact@fronton.app">contact@fronton.app</a> — la même adresse vaut pour le remboursement sous 14 jours, sans justification.</p>
+  </div>
+</main>
+
+<footer>
+  <div class="inner">
+    <a href="https://fronton.app/" data-en="fronton.app" data-de="fronton.app">fronton.app</a>
+    <a href="https://fronton.app/juridique.html" data-en="Legal" data-de="Rechtliches">Juridique</a>
+    <a href="https://polar.sh/fronton/portal" data-en="Manage my purchase" data-de="Meinen Kauf verwalten">Gérer mon achat</a>
+  </div>
+</footer>
+
+<script>
+  (function () {
+    "use strict";
+    /* Le lien de telechargement : VIDE tant qu'Apple n'a pas notarise.
+       Vide, l'etape 1 renvoie a l'e-mail ; rempli, le bouton parait.
+       Meme patron que CHECKOUT_URL dans index.html. */
+    var DOWNLOAD_URL = "";
+
+    // FR = contenu reel ; l'EN et le DE vivent dans data-en / data-de.
+    document.querySelectorAll("[data-en]").forEach(function (el) {
+      el.dataset.fr = el.innerHTML;
+    });
+
+    if (DOWNLOAD_URL) {
+      document.getElementById("step-dl").classList.add("has-dl");
+      document.querySelector(".dl").setAttribute("href", DOWNLOAD_URL);
+    }
+
+    var LANGS = ["fr", "en", "de"];
+    var TITres = { fr: "Merci — Fronton", en: "Thank you — Fronton", de: "Danke — Fronton" };
+    var lang = (function () {
+      try { if (LANGS.indexOf(localStorage.frontonLang) !== -1) return localStorage.frontonLang; } catch (e) {}
+      var nav = (navigator.language || "en").toLowerCase();
+      if (nav.indexOf("fr") === 0) return "fr";
+      if (nav.indexOf("de") === 0) return "de";
+      return "en";
+    })();
+
+    var btn = document.getElementById("langBtn");
+    function apply() {
+      document.documentElement.lang = lang;
+      document.querySelectorAll("[data-en]").forEach(function (el) {
+        el.innerHTML = el.dataset[lang];
+      });
+      var next = LANGS[(LANGS.indexOf(lang) + 1) % LANGS.length];
+      btn.textContent = next.toUpperCase();
+      document.title = TITres[lang];
+    }
+    btn.addEventListener("click", function () {
+      lang = LANGS[(LANGS.indexOf(lang) + 1) % LANGS.length];
+      try { localStorage.frontonLang = lang; } catch (e) {}
+      apply();
+    });
+    apply();
+  })();
+</script>
+</body>
+</html>
