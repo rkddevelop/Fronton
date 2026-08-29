@@ -606,7 +606,12 @@
 
   .stage2-cover {
     flex: none; border-radius: 8px;
-    background: radial-gradient(80% 80% at 30% 25%, #d99a63 0%, #a14f30 45%, #57241a 100%);
+    /* La pochette porte la MARQUE (idée de Yassin) : le morceau diégétique
+       n'a pas de vraie pochette — autant que l'îlot montre le fronton,
+       comme l'icône de l'app. Chevron blanc, linteau orange, fond sombre. */
+    background:
+      url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 22 22"><g fill="none" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12.5 L11 7.8 L19 12.5" stroke="%23f4f2ee" stroke-width="1.8"/><path d="M2.2 15.5 L19.8 15.5" stroke="%23e8833a" stroke-width="2"/></g></svg>') center / 62% no-repeat,
+      linear-gradient(180deg, #26262c 0%, #101013 100%);
     border: 1px solid rgba(255,255,255,.12);
   }
   .stage2-cover-sm { width: 26px; height: 26px; border-radius: 6px; }
