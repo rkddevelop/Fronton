@@ -476,26 +476,57 @@
     box-shadow: 0 24px 60px -30px rgba(0,0,0,.85);
   }
   .stage2-win2 { right: 8%; bottom: 14%; width: 33%; height: 38%; background: rgba(255,255,255,.025); }
-  /* L'armement de taper-traduire : l'îlot montre la barre du module
-     Traduction — paire de langues, bouton clavier — et le clic s'y joue
-     (anneau qui pulse, glyphe qui passe au bleu). Puis l'îlot se referme
-     et la conversation prend le relais. */
-  /* Ailes, jamais le centre : l'encoche physique reste noire — la paire
-     de langues vit sur l'aile gauche, le clavier sur la droite. */
-  .stage2-face-key { width: 305px; justify-content: space-between; padding: 0 14px; }
-  .stage2[data-state="typing"]:not([data-typing-phase="chat"]):not([data-open]) .stage2-face-key { opacity: 1; }
-  .stage2[data-state="typing"]:not([data-typing-phase="chat"]):not([data-open]) .stage2-island { width: 305px; }
+  /* L'armement de taper-traduire se joue dans le VRAI panneau : le
+     module Traduction s'ouvre (même coquille que l'accueil), la barre de
+     langues porte le bouton clavier, le clic s'y voit — anneau qui pulse,
+     glyphe qui passe au bleu — puis le panneau se referme et la
+     conversation prend le relais. */
   .stage2[data-state="typing"][data-typing-phase="chat"]:not([data-open]) .stage2-island { width: 185px; }
-  .stage2-keypair { font-size: 11.5px; color: var(--ink-2); letter-spacing: .02em; }
-  .stage2-keybtn { position: relative; width: 22px; height: 18px; display: flex; align-items: center; justify-content: center; }
-  .stage2-keybtn svg { width: 16px; height: 16px; stroke: var(--ink-2); transition: stroke .25s ease; }
+  .stage2-panelface-trad {
+    position: absolute; top: 0; left: 50%; transform: translateX(-50%);
+    width: 702px; height: 265px;
+    display: flex; flex-direction: column;
+    padding: 5px 0 6px; text-align: left;
+    opacity: 0; transition: opacity .1s ease;
+    pointer-events: none;
+  }
+  .stage2[data-open][data-panel="trad"] .stage2-panelface-trad {
+    opacity: 1; transition: opacity .28s ease .14s;
+  }
+  .stage2[data-panel="trad"] .stage2-panelface { opacity: 0 !important; }
+  /* le lavis appartient a l'ACCUEIL : le module Traduction reste noir */
+  .stage2[data-panel="trad"] .stage2-wash { transform: translateX(-105%); }
+  .stage2-ptradhead {
+    height: 38px; flex: none; margin-bottom: 6px;
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 0 24px 0 30px;
+    font-size: 19px; font-weight: 700; color: var(--ink);
+  }
+  .stage2-ptradbar {
+    margin: 8px 30px 0; display: flex; align-items: center; gap: 12px;
+  }
+  .stage2-langpill {
+    font-size: 15px; color: var(--ink-2);
+    border: 1px solid rgba(255,255,255,.12); border-radius: 99px;
+    padding: 7px 16px;
+  }
+  .stage2-ptradbar svg.arrows { width: 17px; height: 17px; stroke: var(--ink-3); }
+  .stage2-keybtn {
+    position: relative; margin-left: auto;
+    width: 34px; height: 30px; display: flex; align-items: center; justify-content: center;
+  }
+  .stage2-keybtn svg { width: 22px; height: 22px; stroke: var(--ink-2); transition: stroke .25s ease; }
   .stage2[data-typing-armed] .stage2-keybtn svg { stroke: #4a8dff; }
   .stage2-keybtn::after {
-    content: ""; position: absolute; inset: -4px; border-radius: 8px;
-    border: 1.5px solid rgba(74,141,255,.0); transform: scale(1.3); opacity: 0;
+    content: ""; position: absolute; inset: -3px; border-radius: 9px;
+    border: 1.5px solid rgba(74,141,255,0); transform: scale(1.3); opacity: 0;
   }
   .stage2[data-typing-armed] .stage2-keybtn::after {
     animation: stage2-keyclick .5s ease;
+  }
+  .stage2-ptradhint {
+    flex: 1; display: flex; align-items: center; justify-content: center;
+    font-size: 15px; color: var(--ink-3);
   }
   @keyframes stage2-keyclick {
     0% { opacity: 0; transform: scale(1.35); border-color: rgba(74,141,255,.8); }
@@ -877,7 +908,11 @@
   }
   .stage2[data-state="rest"] .stage2-zoneClosed { width: 230px; }
   .stage2[data-state="timer"] .stage2-zoneClosed { width: 305px; }
-  .stage2[data-state="lyrics"] .stage2-zoneClosed { width: 544px; height: 168px; }
+  .stage2[data-state="lyrics"] .stage2-zoneClosed,
+  .stage2[data-lyrics-held] .stage2-zoneClosed { width: 544px; height: 168px; }
+  /* piège 11 bis, appris dans l'app : une zone qui commande le RETRAIT de
+     ce qu'elle mesure garde une géométrie INDÉPENDANTE de l'état replié —
+     sinon le repli sort le curseur de sa propre zone et tout clignote. */
   .stage2[data-open] .stage2-zoneClosed { pointer-events: none; }
   .stage2-zoneOpen {
     position: absolute; top: 0; left: 50%; transform: translateX(-50%);
@@ -987,12 +1022,6 @@
           </div>
 
           <!-- visage compact : minuteur (l'îlot reste nu, le trait parle) -->
-          <!-- visage : l'armement de taper-traduire, la barre du module -->
-          <div class="stage2-face stage2-face-key">
-            <span class="stage2-keypair" data-typing-pair>FR &rarr; EN</span>
-            <span class="stage2-keybtn"><svg viewBox="0 0 24 24" fill="none" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="2.5" y="6" width="19" height="12" rx="2.5"/><path d="M6 9.5h.5M9.5 9.5h.5M13 9.5h.5M16.5 9.5h.5M6 14.5h12"/></svg></span>
-          </div>
-
           <!-- Minuteur compact : AUCUN chiffre — l'encoche physique est au
                centre, et le vrai compact n'écrit rien : « la progression se
                lit de loin, sans un chiffre », c'est la promesse de la grille
@@ -1000,6 +1029,20 @@
           <div class="stage2-face stage2-face-timer"></div>
 
           <!-- le panneau ouvert : l'ACCUEIL réel (splitNowPlaying) -->
+          <div class="stage2-panelface-trad" aria-hidden="true">
+            <div class="stage2-ptradhead">
+              <span data-en="Translation" data-de="Übersetzung">Traduction</span>
+              <span class="stage2-weather" style="font-size:15px">&#9729; 21&deg;</span>
+            </div>
+            <div class="stage2-ptradbar">
+              <span class="stage2-langpill" data-en="English" data-de="Deutsch">Français</span>
+              <svg class="arrows" viewBox="0 0 20 20" fill="none" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M13 4l3.5 3.5L13 11M16.5 7.5h-13M7 9.5 3.5 13 7 16.5M3.5 13h13"/></svg>
+              <span class="stage2-langpill" data-en="French" data-de="Englisch">Anglais</span>
+              <span class="stage2-keybtn"><svg viewBox="0 0 24 24" fill="none" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="2.5" y="6" width="19" height="12" rx="2.5"/><path d="M6 9.5h.5M9.5 9.5h.5M13 9.5h.5M16.5 9.5h.5M6 14.5h12"/></svg></span>
+            </div>
+            <div class="stage2-ptradhint" data-en="Drop or type a text — or write anywhere once the mode is armed." data-de="Text ablegen oder tippen — oder überall schreiben, sobald der Modus aktiv ist.">Déposez ou tapez un texte — ou écrivez n'importe où une fois le mode armé.</div>
+          </div>
+
           <div class="stage2-panelface">
             <div class="stage2-phead">
               <span class="stage2-weather">
@@ -1248,6 +1291,10 @@
       typeI = typeT = null;
       delete root.dataset.typingPhase;
       delete root.dataset.typingArmed;
+      if (root.dataset.panel === "trad") {
+        delete root.dataset.open;
+        delete root.dataset.panel;
+      }
     }
     function startTypingScene() {
       if (!typeReply) return;
@@ -1258,19 +1305,16 @@
       typeReply.classList.remove("done");
       delete root.dataset.typingPhase;
       delete root.dataset.typingArmed;
-      // la paire affichée suit la langue du site : on tape la sienne,
-      // la pause l'envoie dans celle de l'autre
-      const pairEl = $("[data-typing-pair]");
-      if (pairEl) {
-        const lang = (document.documentElement.lang || "fr").toUpperCase();
-        pairEl.textContent = lang + " \u2192 " + (lang === "EN" ? "FR" : "EN");
-      }
-      // 1. L'ARMEMENT : la barre du module Traduction, le clic sur le
-      //    clavier (anneau + glyphe bleu)…
+      // 1. L'ARMEMENT : le panneau s'ouvre sur le module Traduction
+      //    (même coquille que l'accueil), le clic tombe sur le clavier…
+      root.dataset.open = "1";
+      root.dataset.panel = "trad";
       typeT = setTimeout(() => {
         root.dataset.typingArmed = "1";
-        // 2. …l'îlot se referme, la conversation paraît, la frappe part.
+        // 2. …le panneau se referme, la conversation paraît, la frappe part.
         typeT = setTimeout(() => {
+          delete root.dataset.open;
+          delete root.dataset.panel;
           root.dataset.typingPhase = "chat";
           let i = 0;
           typeI = setInterval(() => {
@@ -1297,8 +1341,8 @@
               }, 1500);
             }
           }, 55);
-        }, 900);
-      }, 1300);
+        }, 1100);
+      }, 1900);
     }
 
     // La partition du cycle : le retrait (fold) garde la géométrie de
@@ -1327,6 +1371,7 @@
     function openPanel() {
       if (open) return;
       lyricsHeld = false;
+      delete root.dataset.lyricsHeld;
       open = true;
       root.dataset.open = "1";
       clearTimeout(closeT); closeT = null;
@@ -1351,6 +1396,7 @@
       // et l'écran est rendu. Le cycle attend que le curseur reparte.
       if (!open && root.dataset.state === "lyrics") {
         lyricsHeld = true;
+        root.dataset.lyricsHeld = "1";   // la zone garde la taille de la bande
         clearTimeout(stepT);
         setState("music");
         return;
@@ -1361,6 +1407,7 @@
       clearTimeout(hoverT);
       if (lyricsHeld) {
         lyricsHeld = false;
+        delete root.dataset.lyricsHeld;
         runStep(2);   // sortie du périmètre : les paroles reviennent
       }
     });
