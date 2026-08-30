@@ -10,6 +10,11 @@
 <meta name="theme-color" content="#0c0c0e">
 <link rel="icon" type="image/svg+xml" href='data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 22 22"><g fill="none" stroke="%23e8833a" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12.5 L11 7.8 L19 12.5"/><path d="M2.2 15.5 L19.8 15.5" stroke-width="2"/></g></svg>'>
 <script>document.documentElement.classList.add("js")</script>
+<!-- Mesure d'audience SANS cookies (Plausible, UE) : pays, pages,
+     provenance — aucun identifiant, aucune bannière à consentir.
+     Déclarée sur la page juridique. -->
+<script async src="https://plausible.io/js/pa-4gKY5dOdwWyryTxebqhT-.js"></script>
+<script>window.plausible=window.plausible||function(){(plausible.q=plausible.q||[]).push(arguments)},plausible.init=plausible.init||function(i){plausible.o=i||{}};plausible.init()</script>
 <style>
   :root {
     --ground: #0c0c0e;
@@ -37,9 +42,12 @@
   .lang {
     margin-left: auto; font-size: 13px; font-weight: 600; color: var(--ink-2);
     border: 1px solid var(--edge); border-radius: 99px;
-    padding: 5px 13px; cursor: pointer; background: none;
+    padding: 5px 30px 5px 13px; cursor: pointer;
+    appearance: none; -webkit-appearance: none;
+    background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="10" height="6"><path d="M1 1l4 4 4-4" fill="none" stroke="rgba(244,242,238,.55)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>') no-repeat right 12px center;
   }
   .lang:hover { color: var(--ink); }
+  .lang option { background: #1c1c1e; color: #f4f2ee; }
 
   main { flex: 1; display: flex; justify-content: center; padding: 40px 24px 80px; }
   .inner { width: min(660px, 100%); }
@@ -98,7 +106,11 @@
       </svg>
       <span class="brand">Fronton</span>
     </a>
-    <button class="lang" id="langBtn" type="button">EN</button>
+    <select class="lang" id="langSel" aria-label="Langue — Language — Sprache">
+      <option value="fr" lang="fr">Français</option>
+      <option value="en" lang="en">English</option>
+      <option value="de" lang="de">Deutsch</option>
+    </select>
   </div>
 </header>
 
@@ -164,18 +176,18 @@
       return "en";
     })();
 
-    var btn = document.getElementById("langBtn");
+    var sel = document.getElementById("langSel");
     function apply() {
       document.documentElement.lang = lang;
       document.querySelectorAll("[data-en]").forEach(function (el) {
         el.innerHTML = el.dataset[lang];
       });
-      var next = LANGS[(LANGS.indexOf(lang) + 1) % LANGS.length];
-      btn.textContent = next.toUpperCase();
+      sel.value = lang;
       document.title = TITres[lang];
     }
-    btn.addEventListener("click", function () {
-      lang = LANGS[(LANGS.indexOf(lang) + 1) % LANGS.length];
+    sel.addEventListener("change", function () {
+      if (LANGS.indexOf(sel.value) === -1) return;
+      lang = sel.value;
       try { localStorage.frontonLang = lang; } catch (e) {}
       apply();
     });
