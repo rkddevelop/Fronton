@@ -1659,16 +1659,44 @@
     // du héros et les deux cartes tarifs en boutons d'achat, dans les
     // trois langues, sans toucher au HTML. Vide = état invitation.
     const CHECKOUT_URL = "https://buy.polar.sh/polar_cl_vMZYCvn0O7RUEpzI1cgZ9gD19YDcNdYGJIA7M41IGVL";
+
+    // L'ADRESSE DE TÉLÉCHARGEMENT. Le bouton du héros y mène — et non au
+    // checkout (décision de Yassin, 1er septembre 2026) : le parcours est
+    // « télécharger, essayer quatorze jours, acheter », jamais l'inverse.
+    // Personne ne paie 29 € une app qu'il n'a pas vue tourner. Les deux
+    // cartes tarifs, elles, gardent le checkout.
+    const DOWNLOAD_URL = "https://github.com/rkddevelop/Fronton/releases/download/updates/Fronton-1.0.zip";
+    if (DOWNLOAD_URL) {
+      const hero = document.querySelector("a.cta");
+      if (hero) hero.setAttribute("href", DOWNLOAD_URL);
+      const libelle = document.querySelector("a.cta span[data-en]");
+      if (libelle) {
+        libelle.dataset.fr = "Télécharger — 14 jours d’essai";
+        libelle.dataset.en = "Download — 14-day trial";
+        libelle.dataset.de = "Laden — 14 Tage testen";
+      }
+      const fin = document.querySelector("p.fineprint");
+      if (fin) {
+        fin.dataset.fr = "Gratuit 14 jours · macOS 26 · Apple Silicon · avec ou sans encoche";
+        fin.dataset.en = "Free for 14 days · macOS 26 · Apple Silicon · notch or no notch";
+        fin.dataset.de = "14 Tage gratis · macOS 26 · Apple Silicon · mit oder ohne Notch";
+      }
+    }
+
+    // Les boutons d'ACHAT ne s'allument que sur les cartes tarifs : le héros
+    // appartient à l'essai dès qu'une adresse de téléchargement existe.
     if (CHECKOUT_URL) {
       const buy = (el, fr, en, de, href) => {
         if (!el) return;
         el.dataset.fr = fr; el.dataset.en = en; el.dataset.de = de;
         if (href) el.setAttribute("href", href);
       };
-      const hero = document.querySelector("a.cta");
-      if (hero) hero.setAttribute("href", CHECKOUT_URL);
-      buy(document.querySelector("a.cta span[data-en]"),
-          "Acheter Fronton", "Get Fronton", "Fronton kaufen");
+      if (!DOWNLOAD_URL) {
+        const hero = document.querySelector("a.cta");
+        if (hero) hero.setAttribute("href", CHECKOUT_URL);
+        buy(document.querySelector("a.cta span[data-en]"),
+            "Acheter Fronton", "Get Fronton", "Fronton kaufen");
+      }
       buy(document.querySelector(".plan.star .plan-cta"),
           "S’abonner — 5 €/mois", "Subscribe — €5/mo", "Abonnieren — 5 €/Monat", CHECKOUT_URL);
       buy(document.querySelector(".plan:not(.star) .plan-cta"),
