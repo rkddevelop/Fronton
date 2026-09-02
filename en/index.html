@@ -1,0 +1,1741 @@
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1" name="viewport"/>
+<title>Fronton — the island at the top of your screen</title>
+<meta content="Music, timer, clipboard, translation, local AI — one hover away, never more than 30 seconds. Notch or no notch." name="description"/>
+<meta content="#0c0c0e" name="theme-color"/>
+<link href="https://fronton.app/en/" rel="canonical"/>
+<link href="https://fronton.app/" hreflang="fr" rel="alternate"/>
+<link href="https://fronton.app/en/" hreflang="en" rel="alternate"/>
+<link href="https://fronton.app/de/" hreflang="de" rel="alternate"/>
+<link href="https://fronton.app/" hreflang="x-default" rel="alternate"/>
+<meta content="website" property="og:type"/><meta content="en_US" property="og:locale"/>
+<meta content="Fronton" property="og:site_name"/>
+<meta content="Fronton — the island at the top of your screen" property="og:title"/>
+<meta content="Music, timer, clipboard, translation, local AI — one hover away, never more than 30 seconds. Notch or no notch." property="og:description"/>
+<meta content="https://fronton.app/en/" property="og:url"/>
+<meta content="https://fronton.app/og.png" property="og:image"/>
+<meta content="2400" property="og:image:width"/>
+<meta content="1260" property="og:image:height"/>
+<meta content="L'îlot Fronton suspendu au bord haut de l'écran : météo, lecteur, minuteur, et le trait orange qui longe son contour." property="og:image:alt"/>
+<meta content="summary_large_image" name="twitter:card"/>
+<meta content="https://fronton.app/og.png" name="twitter:image"/>
+<link href="https://fronton.app/favicon.png" rel="icon" sizes="96x96" type="image/png"/>
+<link href="https://fronton.app/apple-touch-icon.png" rel="apple-touch-icon" sizes="180x180"/>
+<link href='data:image/svg+xml,&lt;svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 22 22"&gt;&lt;g fill="none" stroke="%23e8833a" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"&gt;&lt;path d="M3 12.5 L11 7.8 L19 12.5"/&gt;&lt;path d="M2.2 15.5 L19.8 15.5" stroke-width="2"/&gt;&lt;/g&gt;&lt;/svg&gt;' rel="icon" type="image/svg+xml"/>
+<link href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAAAXNSR0IArs4c6QAAAERlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAA6ABAAMAAAABAAEAAKACAAQAAAABAAAAIKADAAQAAAABAAAAIAAAAACshmLzAAACkUlEQVRYCe1STWgTQRR+s5s0TWmQpkkqgkpBvehRD0XRYKFtiidRDx4UpKDtVjRFiHjQ6kEMSKPYNApB0KOKR9MGKlGUHvToTaFoQWwSUyW1MT+7zzdZJz+YlKQGRcwc9s18773ve/vNADRX04GmA00H/ncH2FoNiN0a3CnJ6OX9mso89tNPXq+Fq+4BFiZ6zG2tHZepcYwE5Z+iKgJMrHxfurRxbC5VzyB1DRCd7NsrS4YgNW2tJEJDvFW13JBjNPy8Ur4SVtMAMe9ui9y+7howHAZgoieDqF3lpIxJFyi06AKIgCygLn89b/e8TOpY9a8gq1rx2d8/wJh8hwo2iSJEfMVy6gnrmfAbjiVu9u1Ag3yXMbZL1FD8gKie7FRmpkuwX7ZVB3g/taejHSw+Buy46KJ/o/vFi7ORkO/IQ1AFzuODwyD3Ol1u8uMKeWQWObLj3jIk3ZtHXiwJrDRWHCDuHzjIQPIT0fpCMeKzHGhDDmXmXQGrsIn6+7cYQArSvewTaRr8E4Km2JTpxwITsWyAj9edNpPZHCArD4kCelhJpqHHOhq6TRgda1osMek6hRLzkoBFdNDVPUqnUsMbzkXiApPEhsdWc1uwXBxDgLntJB6gdK3inArzPdRLVxDiAF+cm2voJ/1rKD1QH4lwUzChIbhtSuh+eb6+U6cSXqCOwbjfdUxi4CNuq65R5Clz4Fv6y1EA9cCKltn2u+JFCQDOxTk5t65RzBbewPg4SCN2p4NlTAWsWNa4HbakcSoWiZKexlnzYos3eruMRtMcnbobJ7UKE8J8Npvu6To7u5i/AqPRuP+Pieu/3Z3XpH1+gGw2+5Te+PwqMzc2lXeANGkV7vtvvYHG/lmTrenAv+jAD7t55LydWcP6AAAAAElFTkSuQmCC" rel="icon" sizes="32x32" type="image/png"/>
+<script>
+(function () {
+  var r = document.documentElement;
+  r.classList.add("js");
+  /* L'ouverture : seul « sommet » paraît, le trait se trace, puis le site.
+     Jamais sur un lien profond (#tarifs…), jamais en mouvement réduit — et
+     un filet retire l'état quoi qu'il arrive, même si un script échoue. */
+  if (!location.hash && !matchMedia("(prefers-reduced-motion: reduce)").matches) {
+    r.classList.add("intro");
+    setTimeout(function () { r.classList.remove("intro"); }, 3400);
+  }
+})();
+</script>
+
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"SoftwareApplication","inLanguage":"en","name":"Fronton","operatingSystem":"macOS 26","applicationCategory":"UtilitiesApplication","description":"Music, timer, clipboard, translation, local AI — one hover away, never more than 30 seconds. Notch or no notch.","offers":{"@type":"AggregateOffer","lowPrice":"5","highPrice":"29","priceCurrency":"EUR","offerCount":"2"},"downloadUrl":"https://github.com/rkddevelop/Fronton/releases/download/updates/Fronton-1.0.zip","softwareVersion":"1.0","processorRequirements":"Apple Silicon","url":"https://fronton.app","author":{"@type":"Organization","name":"Fronton","url":"https://fronton.app"}}</script>
+<!-- Mesure d'audience SANS cookies (Plausible, UE) : pays, pages,
+     provenance — aucun identifiant, aucune bannière à consentir.
+     Déclarée sur la page juridique. -->
+<script async="" src="https://plausible.io/js/pa-4gKY5dOdwWyryTxebqhT-.js"></script>
+<script>window.plausible=window.plausible||function(){(plausible.q=plausible.q||[]).push(arguments)},plausible.init=plausible.init||function(i){plausible.o=i||{}};plausible.init()</script>
+<style>
+  /* ================================================================
+     Fronton — page unique, aucun asset externe, aucune dépendance.
+     Squelette inspiré des meilleures pages de la catégorie ; peau,
+     textes et dessins originaux. Sombre par choix : le site a la
+     couleur de l'îlot.
+
+     Le FRANÇAIS est écrit en dur dans la page : c'est la langue
+     canonique, lisible sans JavaScript et indexable. L'anglais vit
+     dans data-en, l'allemand dans data-de ; le script récolte le
+     français au démarrage puis bascule (cycle FR → EN → DE).
+     ================================================================ */
+  :root {
+    --ground: #0c0c0e;          /* le noir de l'îlot, à peine réchauffé */
+    --panel:  #141416;
+    --edge:   rgba(255,255,255,.085);
+    --ink:    #f4f2ee;          /* blanc cassé, jamais pur */
+    --ink-2:  rgba(244,242,238,.62);
+    --ink-3:  rgba(244,242,238,.55);   /* texte secondaire : passe AA */
+    --dim:    rgba(244,242,238,.38);   /* réservé au DÉCOR de la démo */
+    --accent: #e8833a;          /* l'orange du trait signature (minuteur) */
+    --accent-soft: rgba(232,131,58,.14);
+    --wash-a: #7a4a3a;          /* le lavis de pochette de la démo */
+    --radius-island: 30px;
+    --w: min(1060px, calc(100vw - 48px));
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  @media (prefers-reduced-motion: no-preference) {
+    html { scroll-behavior: smooth; }
+  }
+  body {
+    background: var(--ground);
+    color: var(--ink);
+    font: 16px/1.6 system-ui, -apple-system, "Segoe UI", sans-serif;
+    -webkit-font-smoothing: antialiased;
+  }
+  a { color: inherit; text-decoration: none; }
+  a:focus-visible, button:focus-visible, summary:focus-visible {
+    outline: 2px solid var(--accent); outline-offset: 3px; border-radius: 6px;
+  }
+  ::selection { background: var(--accent); color: #0c0c0e; }
+
+  /* ---------- apparition au défilement (seulement si JS est là) ---------- */
+  .js .reveal { opacity: 0; transform: translateY(16px); transition: opacity .6s ease, transform .6s ease; }
+  .js .reveal.in { opacity: 1; transform: none; }
+  @media (prefers-reduced-motion: reduce) {
+    .js .reveal { opacity: 1; transform: none; transition: none; }
+  }
+
+  /* ---------- en-tête fixe ---------- */
+  header {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 40;
+    display: flex; justify-content: center;
+    background: linear-gradient(to bottom, rgba(12,12,14,.92), rgba(12,12,14,.75) 70%, transparent);
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
+  }
+  .bar {
+    width: var(--w);
+    display: flex; align-items: center; gap: 10px;
+    padding: 18px 0;
+  }
+  .mark { width: 26px; height: 26px; flex: none; }
+  .brand { font-weight: 700; font-size: 18px; letter-spacing: -.02em; }
+  .vtag {
+    font-size: 11.5px; color: var(--ink-3);
+    border: 1px solid var(--edge); border-radius: 99px;
+    padding: 1.5px 8px; margin-top: 2px;
+  }
+  .lang, .pill-link {
+    font-size: 13px; font-weight: 600; color: var(--ink-2);
+    border: 1px solid var(--edge); border-radius: 99px;
+    padding: 6px 14px; cursor: pointer; background: none;
+    transition: color .15s, border-color .15s;
+  }
+  /* Le sélecteur de langue est un vrai <select> : les trois langues se
+     voient d'un clic (un cycle ne montrait que la suivante). Chevron en
+     fond SVG — appearance:none retire celui du navigateur. */
+  select.lang {
+    appearance: none; -webkit-appearance: none;
+    padding-right: 30px;
+    background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="10" height="6"><path d="M1 1l4 4 4-4" fill="none" stroke="rgba(244,242,238,.55)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>') no-repeat right 12px center;
+  }
+  select.lang option { background: #1c1c1e; color: #f4f2ee; }
+  .pill-link { margin-left: auto; }
+  .lang:hover, .pill-link:hover { color: var(--ink); border-color: rgba(255,255,255,.2); }
+
+  /* ---------- héros ---------- */
+  .hero {
+    min-height: 92svh;
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    text-align: center; padding: 120px 24px 40px;
+  }
+  h1 {
+    font-size: clamp(42px, 7.2vw, 76px);
+    line-height: 1.04; font-weight: 800; letter-spacing: -.035em;
+    text-wrap: balance; max-width: 15ch;
+    overflow-wrap: break-word;
+  }
+  h1 .lift { position: relative; white-space: nowrap; }
+  h1 .lift::after {
+    /* le surlignage : un trait, pas un aplat — la grammaire de l'app */
+    content: ""; position: absolute; left: 2%; right: 2%; bottom: .04em;
+    height: .09em; border-radius: 99px;
+    background: var(--accent); opacity: .9; z-index: -1;
+  }
+
+  /* ---------- l'ouverture ----------
+     Au chargement : « sommet » paraît seul, le trait se trace dessous de
+     gauche à droite, et sa fin libère la page — la phrase se complète
+     autour du mot, puis le héros se lève élément par élément dans l'ordre
+     de lecture (même grammaire que .reveal : fondu + petite montée), et
+     l'en-tête descend en dernier. L'état `intro` est posé par le script
+     de l'en-tête — donc jamais sans JS, jamais en mouvement réduit,
+     jamais sur un lien profond. */
+  html.intro { overflow: hidden; }
+  .intro section, .intro footer { opacity: 0; }
+  .intro header { opacity: 0; transform: translateY(-10px); }
+  .intro .hero > :not(h1) { opacity: 0; transform: translateY(14px); }
+  .intro h1 { color: transparent; }
+  .intro h1 .lift { color: var(--ink); animation: intro-word .45s ease both; }
+  /* Le trait grandit par sa LARGEUR, pas par scaleX : l'écrasement
+     horizontal aplatissait les bouts arrondis au départ (constat de
+     Yassin). En largeur, la pilule garde ses coins pleins dès le point
+     de naissance ; à l'arrivée (left 2 % + 96 %) la géométrie est
+     identique au trait de repos (left 2 % / right 2 %). */
+  .intro h1 .lift::after {
+    right: auto; width: 0;
+    animation: intro-lift 1.2s cubic-bezier(.65,0,.35,1) .5s forwards;
+  }
+  @keyframes intro-word { from { opacity: 0; } }
+  @keyframes intro-lift { to { width: 96%; } }
+  .intro-out h1 { transition: color .6s ease; }
+  .intro-out section, .intro-out footer { transition: opacity .6s ease; }
+  /* Liste EXPLICITE, pas `.hero > :not(h1)` : :not() compte la spécificité
+     de son argument, et (0,2,1) battait les règles de délai (0,2,0) — le
+     raccourci `transition` remettait tous les délais à zéro (mesuré). */
+  .intro-out .sub, .intro-out .cta, .intro-out .seeprices,
+  .intro-out .fineprint, .intro-out .stage2 {
+    transition: opacity .65s cubic-bezier(.2,.7,.2,1),
+                transform .65s cubic-bezier(.2,.7,.2,1);
+  }
+  .intro-out .sub       { transition-delay: .15s; }
+  .intro-out .cta       { transition-delay: .28s; }
+  .intro-out .seeprices { transition-delay: .38s; }
+  .intro-out .fineprint { transition-delay: .46s; }
+  .intro-out .stage2    { transition-delay: .55s; transition-duration: .85s; }
+  .intro-out header {
+    transition: opacity .55s ease .65s, transform .55s ease .65s;
+  }
+  .sub {
+    margin-top: 22px; max-width: 46ch;
+    font-size: clamp(16px, 2vw, 19px); color: var(--ink-2); text-wrap: balance;
+  }
+  .cta {
+    margin-top: 36px;
+    display: inline-flex; align-items: center; gap: 10px;
+    background: var(--ink); color: var(--ground);
+    font-size: 17px; font-weight: 700;
+    padding: 16px 30px; border-radius: 99px;
+    transition: transform .15s ease, box-shadow .15s ease;
+  }
+  .cta:hover { transform: translateY(-1px); box-shadow: 0 6px 30px -8px rgba(0,0,0,.55); }
+  .cta svg { width: 17px; height: 17px; }
+  .seeprices { margin-top: 16px; font-size: 14.5px; color: var(--ink-2); }
+  .seeprices:hover { color: var(--ink); }
+  .fineprint { margin-top: 12px; font-size: 13px; color: var(--ink-3); }
+
+  /* ---------- la démo vit dans son bloc autonome (.stage2, dans le
+     héros) ; ne restent ici que les barres d'égaliseur, réutilisées
+     par la grille des fonctions ---------- */
+  .eq { display: flex; align-items: flex-end; gap: 2.5px; height: 16px; }
+  .eq i {
+    width: 3px; border-radius: 99px; background: var(--ink-2);
+    transform-origin: bottom;
+    animation: eq 1.1s ease-in-out infinite;
+  }
+  .eq i:nth-child(1) { height: 60%; animation-delay: 0s; }
+  .eq i:nth-child(2) { height: 100%; animation-delay: .18s; }
+  .eq i:nth-child(3) { height: 45%; animation-delay: .34s; }
+  .eq i:nth-child(4) { height: 80%; animation-delay: .5s; }
+  @keyframes eq { 50% { transform: scaleY(.4); } }
+  @media (prefers-reduced-motion: reduce) {
+    .eq i { animation: none !important; }
+  }
+
+  /* ---------- sections ---------- */
+  section { display: flex; justify-content: center; padding: 96px 24px; }
+  .inner { width: var(--w); }
+  .eyebrow {
+    font-size: 12.5px; font-weight: 700; letter-spacing: .14em;
+    text-transform: uppercase; color: var(--ink-3);
+  }
+  h2 {
+    margin-top: 10px;
+    font-size: clamp(28px, 4vw, 44px);
+    font-weight: 800; letter-spacing: -.03em; line-height: 1.1;
+    text-wrap: balance;
+  }
+  .lede { margin-top: 18px; max-width: 58ch; font-size: 17.5px; color: var(--ink-2); }
+
+  /* la règle des 30 secondes : le manifeste se typographie comme tel */
+  .rule { text-align: center; padding: 150px 24px; }
+  .rule .inner { display: flex; flex-direction: column; align-items: center; }
+  .rule .lede {
+    font-size: clamp(20px, 2.8vw, 27px); max-width: 52ch; color: var(--ink);
+  }
+  .rule .chute {
+    margin-top: 26px; font-size: clamp(20px, 2.8vw, 27px); font-weight: 700;
+    max-width: 52ch; text-wrap: balance;
+  }
+
+  /* grille de fonctions : une cellule maîtresse ouvre la lecture */
+  .grid {
+    margin-top: 48px;
+    display: grid; gap: 14px;
+    grid-template-columns: repeat(3, 1fr);
+  }
+  .cell {
+    background: var(--panel);
+    border: 1px solid var(--edge);
+    border-radius: 20px;
+    padding: 26px 24px 24px;
+    transition: border-color .2s, transform .2s;
+  }
+  .cell:hover { border-color: rgba(255,255,255,.16); transform: translateY(-2px); }
+  .cell svg { width: 30px; height: 30px; stroke: var(--ink); }
+  .cell h3 { margin-top: 16px; font-size: 16.5px; font-weight: 700; letter-spacing: -.01em; }
+  .cell p { margin-top: 6px; font-size: 14px; color: var(--ink-2); line-height: 1.5; }
+  .cell.lead { grid-column: span 2; }
+  .cell.lead h3 { font-size: 19px; }
+  .cell.lead p { font-size: 15px; max-width: 52ch; }
+  .leadrow { display: flex; align-items: center; justify-content: space-between; }
+  @media (max-width: 900px) {
+    .grid { grid-template-columns: repeat(2, 1fr); }
+  }
+  @media (max-width: 560px) {
+    .grid { grid-template-columns: 1fr; }
+    .cell.lead { grid-column: auto; }
+  }
+
+  /* vie privée */
+  .privacy .inner {
+    border: 1px solid var(--edge); border-radius: 24px;
+    background: linear-gradient(135deg, var(--accent-soft), transparent 45%);
+    padding: 44px 40px;
+  }
+  .privacy .lede { max-width: 62ch; }
+
+  /* tarifs */
+  .plans {
+    margin-top: 44px;
+    display: grid; grid-template-columns: repeat(auto-fit, minmax(270px, 1fr));
+    gap: 14px; max-width: 720px;
+  }
+  .plan {
+    background: var(--panel); border: 1px solid var(--edge);
+    border-radius: 22px; padding: 30px 28px;
+    display: flex; flex-direction: column; gap: 4px;
+  }
+  .plan.star {
+    border-color: rgba(232,131,58,.5);
+    box-shadow: 0 0 44px -20px rgba(232,131,58,.45);
+  }
+  .plan .name { font-size: 14px; font-weight: 700; color: var(--ink-2); }
+  .plan .price { font-size: 40px; font-weight: 800; letter-spacing: -.03em; }
+  .plan .price small { font-size: 16px; font-weight: 600; color: var(--ink-3); letter-spacing: 0; }
+  .plan .equiv { font-size: 12.5px; color: var(--ink-3); margin-top: -2px; }
+  .plan p { font-size: 14px; color: var(--ink-2); margin-top: 6px; flex: 1; }
+  .plan .tag {
+    align-self: flex-start; margin-bottom: 10px;
+    font-size: 11px; font-weight: 700; letter-spacing: .1em; text-transform: uppercase;
+    color: var(--accent); background: var(--accent-soft);
+    border-radius: 99px; padding: 3px 10px;
+  }
+  .cell .beta {
+    font-size: 10px; font-weight: 700; letter-spacing: .09em;
+    text-transform: uppercase; color: var(--accent);
+    background: var(--accent-soft); border-radius: 99px;
+    padding: 2px 8px; margin-left: 8px; vertical-align: 3px;
+  }
+  .plan ul { list-style: none; margin: 12px 0 2px; }
+  .plan li {
+    position: relative; padding-left: 20px; margin-top: 7px;
+    font-size: 14px; color: var(--ink-2); line-height: 1.45;
+  }
+  .plan li::before {
+    content: "✓"; position: absolute; left: 0;
+    color: var(--accent); font-weight: 700;
+  }
+  .plan-cta {
+    margin-top: 16px; align-self: flex-start;
+    font-size: 14px; font-weight: 700;
+    padding: 10px 20px; border-radius: 99px;
+    background: var(--ink); color: var(--ground);
+    transition: transform .15s ease;
+  }
+  .plan-cta:hover { transform: translateY(-1px); }
+  .plan-cta.ghost { background: none; color: var(--ink); border: 1px solid var(--edge); }
+
+  /* FAQ */
+  .faq { margin-top: 40px; max-width: 720px; }
+  .faq details {
+    border-top: 1px solid var(--edge);
+    padding: 4px 0;
+  }
+  .faq details:last-child { border-bottom: 1px solid var(--edge); }
+  .faq summary {
+    list-style: none; cursor: pointer;
+    display: flex; align-items: center; justify-content: space-between; gap: 16px;
+    padding: 16px 4px;
+    font-size: 16px; font-weight: 650;
+  }
+  .faq summary::-webkit-details-marker { display: none; }
+  .faq summary::after {
+    content: "+"; flex: none;
+    /* le signe est décoratif : muet pour les lecteurs d'écran */
+    content: "+" / "";
+    font-size: 20px; font-weight: 400; color: var(--ink-3);
+    transition: transform .2s ease;
+  }
+  .faq details[open] summary::after { transform: rotate(45deg); }
+  .faq .a {
+    padding: 0 4px 18px; max-width: 60ch;
+    font-size: 15px; color: var(--ink-2);
+  }
+
+  /* pied de page */
+  footer {
+    display: flex; justify-content: center;
+    border-top: 1px solid var(--edge);
+    padding: 42px 24px 54px;
+  }
+  footer .inner {
+    display: flex; align-items: center; gap: 18px; flex-wrap: wrap;
+    font-size: 13.5px; color: var(--ink-3);
+  }
+  footer .mark { width: 20px; height: 20px; opacity: .55; }
+  footer .grow { flex: 1; }
+  footer a:hover { color: var(--ink-2); }
+  footer .dead { color: var(--dim); }
+</style>
+</head>
+<body>
+<header>
+<div class="bar">
+<!-- La marque : le fronton — un faîte très aplati posé sur sa corniche -->
+<svg aria-hidden="true" class="mark" fill="none" stroke="var(--accent)" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" viewbox="0 0 22 22">
+<path d="M3 12.5 L11 7.8 L19 12.5"></path>
+<path d="M2.2 15.5 L19.8 15.5" stroke-width="2"></path>
+</svg>
+<span class="brand">Fronton</span>
+<a class="pill-link" data-de="Laden" data-en="Download" href="https://github.com/rkddevelop/Fronton/releases/download/updates/Fronton-1.0.zip">Download</a>
+<select aria-label="Langue — Language — Sprache" class="lang" id="langSel">
+<option lang="fr" value="fr">Français</option>
+<option lang="en" value="en">English</option>
+<option lang="de" value="de">Deutsch</option>
+</select>
+</div>
+</header>
+<main>
+<!-- ============================== héros ============================== -->
+<div class="hero">
+<h1 data-de='Die Insel ganz &lt;span class="lift"&gt;oben&lt;/span&gt; auf deinem Bildschirm' data-en='The island at the &lt;span class="lift"&gt;top&lt;/span&gt; of your screen'>The island at the <span class="lift">top</span> of your screen</h1>
+<p class="sub" data-de="Musik, Timer, Zwischenablage, Übersetzung, lokale KI — alles nur eine Zeigerbewegung entfernt. Rein und raus in weniger als dreißig Sekunden." data-en="Music, timer, clipboard, translation, local AI — all one hover away. In and out in under thirty seconds.">Music, timer, clipboard, translation, local AI — all one hover away. In and out in under thirty seconds.</p>
+<a class="cta" href="https://github.com/rkddevelop/Fronton/releases/download/updates/Fronton-1.0.zip">
+<svg aria-hidden="true" fill="currentColor" viewbox="0 0 17 17"><path d="M8.5 1.2c.4 1.9-.5 3-2 3.2-.3-1.9.7-3 2-3.2Zm3.4 4.1c-1.1 0-2 .6-2.6.6-.6 0-1.6-.6-2.7-.6-2 0-3.9 1.7-3.9 4.8 0 3 2.2 6.4 3.6 6.4.8 0 1.4-.6 2.6-.6 1.2 0 1.7.6 2.7.6 1.4 0 3.4-3.2 3.4-5.1-1.8-.8-2.2-3.4-.3-4.5-.7-1-1.8-1.6-2.8-1.6Z"></path></svg>
+<span data-de="Laden — 14 Tage testen" data-en="Download — 14-day trial">Download — 14-day trial</span>
+</a>
+<a class="seeprices" data-de="Preise ansehen →" data-en="See pricing →" href="#tarifs">See pricing →</a>
+<p class="fineprint" data-de="14 Tage gratis · macOS 26 · Apple Silicon · mit oder ohne Notch" data-en="Free for 14 days · macOS 26 · Apple Silicon · notch or no notch">Free for 14 days · macOS 26 · Apple Silicon · notch or no notch</p>
+<!-- DEBUT DEMO ======================================================
+     La démo interactive de l'îlot. Autonome : styles et script vivent
+     dans ce bloc, tout est préfixé .stage2 (aucune collision avec la
+     page). Dépend seulement des variables CSS du :root de la page
+     (--ink, --ink-2, --ink-3, --dim, --edge, --accent, --wash-a).
+     Cycle automatique : repos 2,5 s → musique 7 s → paroles 6 s →
+     retrait (le lavis glisse dehors) 2 s → minuteur au trait 7 s →
+     repos… Le survol du visiteur interrompt tout et ouvre le panneau
+     au ressort ; la sortie referme et le cycle reprend à la musique.
+     ================================================================ -->
+<div class="stage2" data-state="music">
+<style>
+  /* ---- Géométrie : l'écran est un VRAI 14 pouces — 1512×982, les
+     mesures de l'app s'y posent À L'ÉCHELLE ×1 (un schéma ×2,5 lisait
+     « diagramme », plus « Mac »). Encoche 185×32 coins 13 dans une
+     barre de menus de 38 (plus haute qu'elle : l'encoche s'y fond au
+     repos). Musique +120 → 305×32. Minuteur 265×32 (évocation).
+     Paroles 504×152 coins 19 — le SEUL état compact qui descend.
+     Seul le panneau ouvert s'autorise ×1,35 pour rester lisible :
+     702×265, coins 40, épaules 22 ; dedans : marge 6 / en-tête 44 /
+     5 / corps 166 / 5 / socle 39 = 265. ---- */
+
+  .stage2 { width: min(1160px, 100%); margin-top: 64px; }
+
+  /* Le faux écran : dessiné à taille fixe 1512×982, mis à l'échelle
+     d'un bloc (transform) pour que le panneau ouvert reste DEDANS
+     quelle que soit la largeur de la page. */
+  .stage2-frame { position: relative; width: 100%; aspect-ratio: 1512 / 982; }
+  .stage2-screen {
+    position: absolute; top: 0; left: 0;
+    width: 1512px; height: 982px;
+    transform-origin: 0 0;
+    border-radius: 20px; overflow: hidden;
+    border: 1px solid var(--edge);
+    background: #101318;
+    box-shadow: 0 40px 90px -55px rgba(0,0,0,.9);
+  }
+
+  /* Le bureau : abstrait, dessiné — lumières froides/chaudes, deux
+     fenêtres fantômes pour la profondeur, un soupçon de Dock. */
+  .stage2-desk {
+    position: absolute; inset: 0;
+    background:
+      radial-gradient(120% 90% at 18% 8%, #2b3a52 0%, transparent 55%),
+      radial-gradient(90% 70% at 86% 20%, #52352b 0%, transparent 52%),
+      radial-gradient(130% 110% at 55% 100%, #1d2b33 0%, #12181e 62%);
+  }
+  .stage2-desk::after {  /* vignette : le regard reste au centre */
+    content: ""; position: absolute; inset: 0;
+    background: radial-gradient(150% 120% at 50% 0%, transparent 58%, rgba(0,0,0,.38));
+  }
+  .stage2-win { position: absolute; border-radius: 16px; border: 1px solid rgba(255,255,255,.06); }
+  .stage2-win::before {  /* barre de titre fantôme */
+    content: ""; position: absolute; left: 0; right: 0; top: 0; height: 38px;
+    border-radius: 16px 16px 0 0;
+    background: rgba(255,255,255,.035);
+    border-bottom: 1px solid rgba(255,255,255,.045);
+  }
+  .stage2-win1 {
+    left: 6%; bottom: -10%; width: 44%; height: 55%;
+    background: rgba(255,255,255,.035);
+    box-shadow: 0 24px 60px -30px rgba(0,0,0,.85);
+  }
+  .stage2-win2 { right: 8%; bottom: 14%; width: 33%; height: 38%; background: rgba(255,255,255,.025); }
+  /* L'armement de taper-traduire se joue dans le VRAI panneau : le
+     module Traduction s'ouvre (même coquille que l'accueil), la barre de
+     langues porte le bouton clavier, le clic s'y voit — anneau qui pulse,
+     glyphe qui passe au bleu — puis le panneau se referme et la
+     conversation prend le relais. */
+  .stage2[data-state="typing"][data-typing-phase="chat"]:not([data-open]) .stage2-island { width: 185px; }
+  .stage2-panelface-trad {
+    position: absolute; top: 0; left: 50%; transform: translateX(-50%);
+    width: 702px; height: 265px;
+    display: flex; flex-direction: column;
+    padding: 5px 0 6px; text-align: left;
+    opacity: 0; transition: opacity .1s ease;
+    pointer-events: none;
+  }
+  .stage2[data-open][data-panel="trad"] .stage2-panelface-trad {
+    opacity: 1; transition: opacity .28s ease .14s;
+  }
+  .stage2[data-panel="trad"] .stage2-panelface { opacity: 0 !important; }
+  /* le lavis appartient a l'ACCUEIL : le module Traduction reste noir */
+  .stage2[data-panel="trad"] .stage2-wash { transform: translateX(-105%); }
+  .stage2-ptradhead {
+    height: 38px; flex: none; margin-bottom: 6px;
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 0 24px 0 30px;
+    font-size: 19px; font-weight: 700; color: var(--ink);
+  }
+  .stage2-ptradbar {
+    margin: 8px 30px 0; display: flex; align-items: center; gap: 12px;
+  }
+  .stage2-langpill {
+    font-size: 15px; color: var(--ink-2);
+    border: 1px solid rgba(255,255,255,.12); border-radius: 99px;
+    padding: 7px 16px;
+  }
+  .stage2-ptradbar svg.arrows { width: 17px; height: 17px; stroke: var(--ink-3); }
+  .stage2-keybtn {
+    position: relative; margin-left: auto;
+    width: 34px; height: 30px; display: flex; align-items: center; justify-content: center;
+  }
+  .stage2-keybtn svg { width: 22px; height: 22px; stroke: var(--ink-2); transition: stroke .25s ease; }
+  .stage2[data-typing-armed] .stage2-keybtn svg { stroke: #4a8dff; }
+  .stage2-keybtn::after {
+    content: ""; position: absolute; inset: -3px; border-radius: 9px;
+    border: 1.5px solid rgba(74,141,255,0); transform: scale(1.3); opacity: 0;
+  }
+  .stage2[data-typing-armed] .stage2-keybtn::after {
+    animation: stage2-keyclick .5s ease;
+  }
+  .stage2-ptradhint {
+    flex: 1; display: flex; align-items: center; justify-content: center;
+    font-size: 15px; color: var(--ink-3);
+  }
+  @keyframes stage2-keyclick {
+    0% { opacity: 0; transform: scale(1.35); border-color: rgba(74,141,255,.8); }
+    45% { opacity: 1; transform: scale(1); border-color: rgba(74,141,255,.8); }
+    100% { opacity: 0; transform: scale(1); }
+  }
+
+  /* La conversation de taper-traduire : une fenêtre de discussion
+     NEUTRE (règle diégétique — jamais de vraie app). Visible seulement
+     pendant la scène ; la bulle reçue est dans la langue de l'autre,
+     la réponse se tape dans celle du visiteur puis devient la sienne. */
+  .stage2-chat {
+    position: absolute; right: 7%; bottom: 16%; width: 36%;
+    border-radius: 16px; border: 1px solid rgba(255,255,255,.08);
+    background: rgba(20,20,24,.92);
+    box-shadow: 0 24px 60px -30px rgba(0,0,0,.85);
+    padding: 34px 14px 14px;
+    opacity: 0; transform: translateY(8px);
+    transition: opacity .4s ease, transform .4s ease;
+    z-index: 1;
+  }
+  .stage2-chat::before {
+    content: ""; position: absolute; top: 0; left: 0; right: 0; height: 22px;
+    border-bottom: 1px solid rgba(255,255,255,.05);
+  }
+  .stage2[data-state="typing"][data-typing-phase="chat"]:not([data-open]) .stage2-chat {
+    opacity: 1; transform: none;
+  }
+  .stage2-bubble {
+    display: block; max-width: 82%; width: fit-content;
+    font-size: 12px; line-height: 1.45; font-style: normal;
+    padding: 7px 11px; border-radius: 14px; margin-bottom: 8px;
+  }
+  .stage2-bubble-them {
+    background: rgba(255,255,255,.10); color: var(--ink-2);
+    border-bottom-left-radius: 5px;
+  }
+  .stage2-bubble-me {
+    margin-left: auto; background: #2f6fe4; color: #fff;
+    border-bottom-right-radius: 5px; min-height: 1.45em; min-width: 14px;
+  }
+  .stage2-bubble-me::after {
+    content: ""; display: inline-block; width: 1.5px; height: .95em;
+    margin-left: 2px; vertical-align: -0.15em; background: #fff;
+    animation: stage2-caret 1s steps(1) infinite;
+  }
+  @keyframes stage2-caret { 50% { opacity: 0; } }
+  .stage2-bubble-me.done { animation: stage2-swap .7s ease; }
+  @keyframes stage2-swap { 30% { filter: brightness(1.7); } }
+
+  .stage2-dockhint {
+    position: absolute; bottom: 18px; left: 50%; transform: translateX(-50%);
+    width: 552px; height: 40px; border-radius: 20px;
+    background-color: rgba(255,255,255,.045);
+    background-image: radial-gradient(circle, rgba(255,255,255,.13) 8px, transparent 9px);
+    background-size: 55px 40px; background-position: 27px 50%;
+    border: 1px solid rgba(255,255,255,.05);
+  }
+
+  /* La barre des menus : 38 pt — PLUS HAUTE que l'encoche (32), comme
+     sur la vraie dalle : l'encoche s'y pose, jamais elle n'en pend.
+     Assez sombre pour que le noir de l'encoche s'y fonde au repos. */
+  .stage2-menubar {
+    position: absolute; top: 0; left: 0; right: 0; height: 38px;
+    display: flex; align-items: center; justify-content: space-between; gap: 16px;
+    padding: 0 16px;
+    background: rgba(12,12,16,.82);
+    font-size: 15px; color: var(--dim);
+  }
+  .stage2-menubar b { font-weight: 600; color: var(--ink-3); }
+  .stage2-menubar .stage2-side { display: flex; align-items: center; gap: 15px; }
+
+  /* ================= l'îlot : UNE géométrie qui respire =============
+     Le même élément passe de 231×40 à 381×40 à 630×190 à 610×245 :
+     la largeur, la hauteur et les coins se transitionnent AU RESSORT
+     (léger dépassement de 5 %, jamais mou). C'est un événement, pas
+     une boucle — le coût de layout est payé 0,55 s, puis plus rien. */
+  .stage2-island {
+    position: absolute; top: 0; left: 50%;
+    transform: translateX(-50%);
+    width: 305px; height: 32px;
+    background: #000;
+    border-radius: 0 0 13px 13px;
+    z-index: 3;
+    transition:
+      width  .55s cubic-bezier(.32,1.2,.35,1),
+      height .55s cubic-bezier(.32,1.2,.35,1),
+      border-radius .55s cubic-bezier(.32,1.2,.35,1);
+    transition-timing-function:
+      linear(0, 0.064 3.6%, 0.212 7.1%, 0.392 10.7%, 0.569 14.3%, 0.724 17.9%,
+             0.847 21.4%, 0.937 25%, 0.998 28.6%, 1.033 32.1%, 1.05 35.7%,
+             1.054 39.3%, 1.05 42.9%, 1.032 50%, 1.014 57.1%, 1.003 64.3%,
+             0.998 71.4%, 0.997 78.6%, 0.998 85.7%, 0.999 92.9%, 1);
+  }
+  /* au repos : l'ENCOCHE nue, 185×32 — rien d'autre */
+  .stage2[data-state="rest"]:not([data-open]) .stage2-island { width: 185px; }
+  .stage2[data-state="timer"]:not([data-open]) .stage2-island { width: 185px; }
+  .stage2[data-state="lyrics"]:not([data-open]) .stage2-island {
+    width: 504px; height: 152px;
+    border-radius: 0 0 19px 19px;
+  }
+  .stage2[data-open] .stage2-island {
+    width: 702px; height: 265px;
+    border-radius: 0 0 40px 40px;
+  }
+
+  /* Les épaules : l'évasement du haut vers les bords de l'écran —
+     la silhouette de l'app, conservée dans tous les états. Elles
+     grandissent avec le panneau, du même ressort. */
+  /* compactes, les épaules sont quasi nulles (sur la vraie dalle le
+     noir se fond au noir ; ici la barre est plus claire, des épaules
+     marquées liraient « cornes ») — elles se déploient au panneau */
+  .stage2-island::before, .stage2-island::after {
+    content: ""; position: absolute; top: 0;
+    width: 22px; height: 30px; background: #000;
+    transform: scale(.28);
+    transition: transform .55s cubic-bezier(.32,1.2,.35,1), background-color .6s ease;
+    transition-timing-function:
+      linear(0, 0.064 3.6%, 0.212 7.1%, 0.392 10.7%, 0.569 14.3%, 0.724 17.9%,
+             0.847 21.4%, 0.937 25%, 0.998 28.6%, 1.033 32.1%, 1.05 35.7%,
+             1.054 39.3%, 1.05 42.9%, 1.032 50%, 1.014 57.1%, 1.003 64.3%,
+             0.998 71.4%, 0.997 78.6%, 0.998 85.7%, 0.999 92.9%, 1), ease;
+  }
+  .stage2-island::before {
+    left: -22px; transform-origin: top right;
+    clip-path: path("M0 0 H22 V30 Q 22 6 0 0 Z");
+  }
+  .stage2-island::after {
+    right: -22px; transform-origin: top left;
+    clip-path: path("M22 0 H0 V30 Q 0 6 22 0 Z");
+  }
+  .stage2[data-open] .stage2-island::before,
+  .stage2[data-open] .stage2-island::after { transform: scale(1); }
+  /* l'épaule gauche prend la teinte du lavis quand la musique colore
+     l'îlot — la silhouette est UNE forme, la couleur ne s'y coupe pas */
+  .stage2[data-open] .stage2-island::before { background: #241611; }
+
+  /* La découpe intérieure : les contenus sont taillés par la
+     silhouette pendant qu'elle respire (les épaules restent dehors). */
+  .stage2-clip {
+    position: absolute; inset: 0; overflow: hidden;
+    border-radius: inherit;
+  }
+
+  /* Le lavis de pochette : la couleur du disque naît au bord gauche,
+     éteinte vers 62 % (34 % → 11 % → 0). À l'arrêt de la musique elle
+     GLISSE hors du panneau par la gauche (1,5 s) ; elle revient plus
+     vite qu'elle ne part (0,5 s) — on la regarde partir, on ne
+     l'attend pas revenir. */
+  .stage2-wash {
+    position: absolute; inset: 0; pointer-events: none;
+    background: linear-gradient(90deg,
+      rgba(122,74,58,.34) 0%, rgba(122,74,58,.11) 30%, transparent 62%);
+    transform: translateX(-105%);
+    transition: transform 1.5s cubic-bezier(.33,0,.55,1);
+  }
+  .stage2[data-open] .stage2-wash {
+    transform: none;
+    transition-duration: .5s;
+  }
+
+  /* ---- les visages compacts ---- */
+  .stage2-face {
+    position: absolute; top: 0; left: 50%; transform: translateX(-50%);
+    height: 32px; display: flex; align-items: center;
+    opacity: 0; transition: opacity .15s ease;
+    pointer-events: none;
+  }
+  .stage2-face-music { width: 305px; gap: 8px; padding: 0 12px 0 4px; }
+  .stage2[data-state="music"]:not([data-open]) .stage2-face-music,
+  .stage2[data-state="fold"]:not([data-open]) .stage2-face-music {
+    opacity: 1; transition: opacity .25s ease .15s;
+  }
+  .stage2-face-timer { width: 265px; justify-content: center; gap: 8px; }
+  .stage2[data-state="timer"]:not([data-open]) .stage2-face-timer {
+    opacity: 1; transition: opacity .25s ease .15s;
+  }
+
+  .stage2-cover {
+    flex: none; border-radius: 8px;
+    /* La pochette porte la MARQUE (idée de Yassin) : le morceau diégétique
+       n'a pas de vraie pochette — autant que l'îlot montre le fronton,
+       comme l'icône de l'app. Chevron blanc, linteau orange, fond sombre. */
+    background:
+      url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 22 22"><g fill="none" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12.5 L11 7.8 L19 12.5" stroke="%23f4f2ee" stroke-width="1.8"/><path d="M2.2 15.5 L19.8 15.5" stroke="%23e8833a" stroke-width="2"/></g></svg>') center / 62% no-repeat,
+      linear-gradient(180deg, #26262c 0%, #101013 100%);
+    border: 1px solid rgba(255,255,255,.12);
+  }
+  .stage2-cover-sm { width: 26px; height: 26px; border-radius: 6px; }
+  .stage2-cover-lg { width: 59px; height: 59px; border-radius: 16px; }
+  .stage2-cover-xl { width: 84px; height: 84px; border-radius: 14px; }
+
+
+  .stage2-eq { margin-left: auto; display: flex; align-items: flex-end; gap: 2px; height: 13px; }
+  .stage2-eq i { width: 2.5px; border-radius: 99px; background: var(--ink-2); transform-origin: bottom; }
+  .stage2-eq i:nth-child(1) { height: 60%; }
+  .stage2-eq i:nth-child(2) { height: 100%; animation-delay: .18s; }
+  .stage2-eq i:nth-child(3) { height: 45%; animation-delay: .34s; }
+  .stage2-eq i:nth-child(4) { height: 80%; animation-delay: .5s; }
+  .stage2[data-state="music"]:not([data-open]) .stage2-eq i {
+    animation: stage2-eq 1.1s ease-in-out infinite;
+  }
+  @keyframes stage2-eq { 50% { transform: scaleY(.4); } }
+  /* au retrait, l'égaliseur s'immobilise et s'éteint à demi */
+  .stage2[data-state="fold"] .stage2-eq i { opacity: .45; }
+
+  .stage2-face-timer svg { width: 15px; height: 15px; stroke: var(--ink-2); }
+  .stage2-count {
+    font-size: 15px; font-weight: 700; letter-spacing: .02em;
+    font-variant-numeric: tabular-nums;
+  }
+
+  /* ---- les paroles : 504×152 (la bande réelle), le SEUL état qui
+     descend ---- Pochette à gauche, fenêtre de trois lignes à droite ;
+     la ligne vivante est balayée en blanc, les autres restent éteintes. */
+  .stage2-face-lyrics { width: 504px; height: 152px; gap: 20px; padding: 0 26px; }
+  .stage2[data-state="lyrics"]:not([data-open]) .stage2-face-lyrics {
+    opacity: 1; transition: opacity .25s ease .15s;
+  }
+  .stage2-lywin { flex: 1; min-width: 0; height: 72px; overflow: hidden; text-align: left; }
+  /* display block OBLIGATOIRE : un span inline IGNORE transform — la
+     translation de la phase B n'a jamais joué tant qu'il manquait */
+  .stage2-lines { display: block; transition: transform .45s ease; }
+  .stage2-face-lyrics.pb .stage2-lines { transform: translateY(-24px); }
+  .stage2-lyr {
+    display: block; height: 24px; line-height: 24px;
+    font-size: 15.5px; font-weight: 700; letter-spacing: -.012em;
+    white-space: nowrap; overflow: hidden;
+    background: linear-gradient(90deg, var(--ink) 50%, var(--ink-3) 50%);
+    background-size: 210% 100%; background-position: 100% 0;
+    -webkit-background-clip: text; background-clip: text; color: transparent;
+    transition: opacity .35s ease;
+  }
+  .stage2-lyr.live { animation: stage2-sweep 2.6s linear .3s both; }
+  @keyframes stage2-sweep { to { background-position: 0% 0; } }
+  .stage2-lyr:nth-child(4) { opacity: 0; }
+  .stage2-face-lyrics.pb .stage2-lyr:nth-child(1) { opacity: 0; }
+  .stage2-face-lyrics.pb .stage2-lyr:nth-child(4) { opacity: 1; }
+
+  /* Le trait signature : 3 pt, EXTÉRIEUR du contour, ANTI-HORAIRE —
+     il descend à gauche, longe le bas, remonte à droite. Le halo est
+     un second trait large et pâle (aucun filtre à payer). */
+  .stage2-outline {
+    position: absolute; top: 0; left: 50%; margin-left: -150px;
+    width: 300px; height: 44px; overflow: visible;
+    z-index: 2; pointer-events: none;
+    opacity: 0; transition: opacity .3s ease;
+  }
+  .stage2-outline path {
+    fill: none; stroke-linecap: round;
+    stroke-dasharray: 100; stroke-dashoffset: 100;
+  }
+  .stage2-outline .stage2-halo { stroke: rgba(232,131,58,.30); stroke-width: 7; }
+  .stage2-outline .stage2-core { stroke: var(--accent); stroke-width: 2.5; }
+  .stage2[data-state="timer"]:not([data-open]) .stage2-outline { opacity: 1; }
+  .stage2[data-state="timer"]:not([data-open]) .stage2-outline path {
+    animation: stage2-trace 6.5s linear forwards;
+  }
+  @keyframes stage2-trace { from { stroke-dashoffset: 100; } to { stroke-dashoffset: 0; } }
+
+  /* ================= le panneau ouvert (au survol) =================
+     702×265 (l'app ×1,35 — seul écart d'échelle assumé, pour la
+     lisibilité). L'ACCUEIL RÉEL, transcrit de NotchView.swift
+     (splitNowPlaying) : PAS de titre — la bande du haut porte la météo
+     seule, à GAUCHE (icône + degrés, blanc 85 %) ; corps scindé :
+     lecteur complet moitié gauche (pochette 44→59 coins 12→16, titre
+     14→19 bold, artiste 11→15 à 40 %, bulle paroles BLEUE, barre
+     blanche à lueur encadrée des deux temps, 5 commandes en cinquièmes
+     — actifs BLANCS, éteints 56 %) ; moitié droite 186→251 = widget
+     Calendrier (« Août » + chips jour/numéro, AUJOURD'HUI sur fond
+     bleu, puis les événements en barrettes de couleur). */
+  .stage2-panelface {
+    position: absolute; top: 0; left: 50%; transform: translateX(-50%);
+    width: 702px; height: 265px;
+    display: flex; flex-direction: column;
+    padding: 5px 0 6px; text-align: left;
+    opacity: 0; transition: opacity .1s ease;
+    pointer-events: none;
+  }
+  .stage2[data-open] .stage2-panelface {
+    opacity: 1; transition: opacity .28s ease .14s;
+  }
+  /* la bande du haut : la météo seule, à gauche, dans le noir que
+     personne n'occupait — aucune horloge (la barre des menus la porte) */
+  .stage2-phead {
+    height: 38px; flex: none; margin-bottom: 6px;
+    display: flex; align-items: center; justify-content: flex-start;
+    padding: 0 24px 0 30px;
+  }
+  .stage2-weather {
+    display: flex; align-items: center; gap: 7px;
+    font-size: 19px; font-weight: 600; color: rgba(255,255,255,.85);
+    font-variant-numeric: tabular-nums;
+  }
+  .stage2-weather svg { width: 18px; height: 18px; }
+
+  .stage2-pbody {
+    height: 166px; flex: none; margin-bottom: 5px;
+    display: flex; align-items: center; gap: 24px;
+    padding: 0 8px 0 14px;
+  }
+
+  /* ---- moitié gauche : le lecteur entier, resserré ---- */
+  .stage2-player { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 10px; }
+  .stage2-prow { display: flex; align-items: center; gap: 13px; }
+  .stage2-ptrack { min-width: 0; flex: 1; }
+  .stage2-ptrack b { display: block; font-size: 19px; font-weight: 700; letter-spacing: -.01em; white-space: nowrap; overflow: hidden; }
+  .stage2-ptrack span { display: block; margin-top: 1px; font-size: 15px; font-weight: 500; color: rgba(255,255,255,.4); white-space: nowrap; }
+  .stage2-plyr { flex: none; color: #3f82f6; }   /* la bulle paroles, BLEUE (actives) */
+  .stage2-plyr svg { width: 16px; height: 16px; display: block; }
+
+  .stage2-pbarrow {
+    display: flex; align-items: center; gap: 13px;
+    font-size: 15px; font-weight: 500; color: rgba(255,255,255,.56);
+    font-variant-numeric: tabular-nums;
+  }
+  .stage2-pbar {
+    flex: 1; height: 8px; border-radius: 99px;
+    background: rgba(255,255,255,.22); position: relative;
+  }
+  .stage2-pbar i {
+    position: absolute; inset: 0; border-radius: 99px;
+    background: #fff; transform-origin: left; transform: scaleX(.32);
+    box-shadow: 0 0 8px rgba(255,255,255,.5), 0 0 16px rgba(255,255,255,.18);
+  }
+  .stage2[data-open] .stage2-pbar i { animation: stage2-play 26s linear infinite; }
+  @keyframes stage2-play { from { transform: scaleX(.32); } to { transform: scaleX(.94); } }
+
+  .stage2-pctrl { display: flex; align-items: center; }
+  .stage2-pctrl > span { flex: 1; display: grid; place-items: center; color: rgba(255,255,255,.56); }
+  .stage2-pctrl > span.on { color: #fff; }
+  .stage2-pctrl svg { width: 22px; height: 22px; }
+  .stage2-pctrl .stage2-pplay svg { width: 30px; height: 30px; }
+
+  /* ---- moitié droite : le widget Calendrier (186→251) ---- */
+  .stage2-cal { flex: none; width: 251px; display: flex; flex-direction: column; gap: 9px; }
+  .stage2-calstrip { display: flex; align-items: center; gap: 11px; min-width: 0; }
+  .stage2-calmonth { font-size: 16px; font-weight: 600; color: #fff; flex: none; }
+  .stage2-caldays { display: flex; gap: 3px; min-width: 0; overflow: hidden; }
+  .stage2-caldays .stage2-chip {
+    flex: none; width: 36px; height: 43px; border-radius: 11px;
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+  }
+  .stage2-chip i { font-style: normal; font-size: 11px; font-weight: 500; color: rgba(255,255,255,.45); text-transform: uppercase; letter-spacing: .02em; }
+  .stage2-chip b { font-size: 16px; font-weight: 600; color: rgba(255,255,255,.6); font-variant-numeric: tabular-nums; }
+  .stage2-chip.stage2-today { background: #2f6fed; }
+  .stage2-chip.stage2-today i, .stage2-chip.stage2-today b { color: #fff; }
+
+  .stage2-calev { display: flex; flex-direction: column; gap: 8px; }
+  .stage2-calev .stage2-ev { display: flex; align-items: center; gap: 9px; }
+  .stage2-ev u { flex: none; width: 4px; height: 35px; border-radius: 2px; text-decoration: none; }
+  .stage2-ev b { flex: 1; min-width: 0; font-size: 16px; font-weight: 600; white-space: nowrap; overflow: hidden; }
+  .stage2-ev span { flex: none; font-size: 15px; font-weight: 600; color: rgba(255,255,255,.85); font-variant-numeric: tabular-nums; }
+
+  /* le socle : les six modules gravés à même le noir — l'actif est
+     blanc et porte le point live (la musique joue) */
+  .stage2-dock {
+    height: 39px; flex: none;
+    display: flex; align-items: center; justify-content: center; gap: 31px;
+  }
+  .stage2-mod { position: relative; display: grid; place-items: center; color: rgba(244,242,238,.45); }
+  .stage2-mod svg { width: 18px; height: 18px; }
+  .stage2-mod-on { color: var(--ink); }
+  .stage2-live {
+    position: absolute; left: 50%; bottom: -6px;
+    width: 3px; height: 3px; margin-left: -1.5px;
+    border-radius: 99px; background: var(--ink);
+  }
+
+  /* ============ les zones de survol (avec hystérésis) ============
+     Entrer = une petite zone autour de l'îlot fermé ; sortir = une
+     zone bien plus large autour du panneau ouvert. La première est
+     incluse dans la seconde : aucune oscillation possible à la
+     frontière. La zone ouverte ne capte rien — c'est un rectangle de
+     mesure, le script suit le pointeur sur l'écran. */
+  .stage2-zoneClosed {
+    position: absolute; top: 0; left: 50%; transform: translateX(-50%);
+    width: 345px; height: 48px; z-index: 5;
+  }
+  .stage2[data-state="rest"] .stage2-zoneClosed { width: 230px; }
+  .stage2[data-state="timer"] .stage2-zoneClosed { width: 305px; }
+  .stage2[data-state="lyrics"] .stage2-zoneClosed,
+  .stage2[data-lyrics-held] .stage2-zoneClosed { width: 544px; height: 168px; }
+  /* piège 11 bis, appris dans l'app : une zone qui commande le RETRAIT de
+     ce qu'elle mesure garde une géométrie INDÉPENDANTE de l'état replié —
+     sinon le repli sort le curseur de sa propre zone et tout clignote. */
+  .stage2[data-open] .stage2-zoneClosed { pointer-events: none; }
+  .stage2-zoneOpen {
+    position: absolute; top: 0; left: 50%; transform: translateX(-50%);
+    width: 782px; height: 305px; z-index: 4;
+    pointer-events: none;
+  }
+
+  /* hors du viewport, tout s'arrête : rien ne chauffe pour personne */
+  .stage2[data-offstage] *,
+  .stage2[data-offstage] *::before,
+  .stage2[data-offstage] *::after { animation-play-state: paused !important; }
+
+  /* les légendes vivent SOUS l'écran : une par scène, calmes ;
+     l'invitation au geste s'efface dès qu'il a été joué */
+  .stage2-cap {
+    margin-top: 18px; text-align: center;
+    font-size: 13px; color: var(--ink-3);
+  }
+  .stage2-capline { display: grid; min-height: 1.7em; }
+  .stage2-capline > span {
+    grid-area: 1 / 1; opacity: 0; transition: opacity .35s ease;
+  }
+  .stage2[data-state="rest"]:not([data-open])   [data-cap="rest"],
+  .stage2[data-state="music"]:not([data-open])  [data-cap="music"],
+  .stage2[data-state="lyrics"]:not([data-open]) [data-cap="lyrics"],
+  .stage2[data-state="timer"]:not([data-open])  [data-cap="timer"],
+  .stage2[data-state="typing"]:not([data-open]) [data-cap="typing"],
+  .stage2[data-open] [data-cap="open"] { opacity: 1; }
+  /* pendant le retrait (fold), aucune légende : le silence accompagne */
+  .stage2-invite {
+    display: block; margin-top: 6px; font-size: 12px; color: var(--ink-3);
+    opacity: .8; transition: opacity .3s ease;
+  }
+  .stage2[data-open] .stage2-invite,
+  .stage2[data-played] .stage2-invite { opacity: 0; }
+  /* animations réduites : la légende constate au lieu de raconter */
+  .stage2[data-reduced] .stage2-capline > span[data-cap] { opacity: 0 !important; }
+  .stage2[data-reduced] .stage2-capline > span[data-cap="open"] { opacity: 1 !important; }
+
+  /* Animations réduites : UN état, immobile — la scène musique. */
+  @media (prefers-reduced-motion: reduce) {
+    .stage2 *, .stage2 *::before, .stage2 *::after {
+      animation: none !important; transition: none !important;
+    }
+    .stage2-outline, .stage2-zoneClosed, .stage2-zoneOpen { display: none; }
+  }
+</style>
+<div class="stage2-frame">
+<div aria-label="Fronton island demo: nothing at rest; music widens it, lyrics drop into a band, the timer traces itself in orange around the contour, type-to-translate answers in the other person's language; hovered, it opens into a panel — player, calendar, six modules." class="stage2-screen" data-label-de="Demo der Fronton-Insel: in Ruhe nichts; Musik macht sie breiter, Liedtexte senken sich als Band herab, der Timer zeichnet sich orange um die Kontur, Tippen &amp; Übersetzen antwortet in der Sprache des anderen; unter dem Zeiger öffnet sie sich zu einem Panel — Player, Kalender, sechs Module." data-label-en="Fronton island demo: nothing at rest; music widens it, lyrics drop into a band, the timer traces itself in orange around the contour, type-to-translate answers in the other person's language; hovered, it opens into a panel — player, calendar, six modules." data-label-fr="Démo de l'îlot Fronton : rien au repos ; la musique l'élargit, les paroles descendent en bande, le minuteur se trace en orange autour du contour, taper-traduire répond dans la langue de l'autre ; survolé, il s'ouvre en panneau — lecteur, calendrier, six modules." role="img">
+<div class="stage2-desk">
+<div class="stage2-win stage2-win2"></div>
+<div class="stage2-win stage2-win1"></div>
+<div aria-hidden="true" class="stage2-chat">
+<i class="stage2-bubble stage2-bubble-them" data-de="See you tomorrow at the lake?" data-en="On se voit demain au lac ?">On se voit demain au lac ?</i>
+<i class="stage2-bubble stage2-bubble-me" data-typing-reply=""></i>
+<span data-de="perfekt, ich bringe den Kaffee mit" data-en="perfect, I’ll bring the coffee" data-typing-src="" hidden="">perfect, I’ll bring the coffee</span>
+<span data-de="perfect, I’ll bring the coffee" data-en="parfait, j’apporte le café" data-typing-dst="" hidden="">parfait, j’apporte le café</span>
+</div>
+<div class="stage2-dockhint"></div>
+</div>
+<div aria-hidden="true" class="stage2-menubar">
+<span data-de="&lt;b&gt;Finder&lt;/b&gt; Ablage Bearbeiten Darstellung Fenster" data-en="&lt;b&gt;Finder&lt;/b&gt; File Edit View Window"><b>Finder</b> File Edit View Window</span>
+<span class="stage2-side"><span>◐</span><span>♪</span><span data-clock2="">9:41</span></span>
+</div>
+<!-- le trait signature, autour de l'îlot nu pendant le minuteur -->
+<!-- le chemin épouse la silhouette 265×32 entière, épaules
+           comprises, à 3,5 px au large : départ au bord haut, flare de
+           l'épaule gauche, descente, coins bas r16,5, remontée, flare
+           droit. -->
+<svg aria-hidden="true" class="stage2-outline" viewbox="0 0 300 44">
+<path class="stage2-halo" d="M 46,0 Q 54,2.5 54,13 L 54,19 Q 54,35.5 70.5,35.5 L 229.5,35.5 Q 246,35.5 246,19 L 246,13 Q 246,2.5 254,0" pathlength="100"></path>
+<path class="stage2-core" d="M 46,0 Q 54,2.5 54,13 L 54,19 Q 54,35.5 70.5,35.5 L 229.5,35.5 Q 246,35.5 246,19 L 246,13 Q 246,2.5 254,0" pathlength="100"></path>
+</svg>
+<div class="stage2-island">
+<div class="stage2-clip">
+<i aria-hidden="true" class="stage2-wash"></i>
+<!-- visage compact : musique (un titre ne se traduit pas) -->
+<div class="stage2-face stage2-face-music">
+<!-- Pas de titre ici : au centre vit l'ENCOCHE PHYSIQUE, elle
+                 est noire quoi qu'il arrive (constat de Yassin, 29 août
+                 2026). Pochette à gauche, barres à droite, le noir entre
+                 les deux est la vérité du matériel. -->
+<i class="stage2-cover stage2-cover-sm"></i>
+<div class="stage2-eq"><i></i><i></i><i></i><i></i></div>
+</div>
+<!-- visage : paroles — la seule descente de l'îlot -->
+<div class="stage2-face stage2-face-lyrics">
+<i class="stage2-cover stage2-cover-xl"></i>
+<span class="stage2-lywin"><span class="stage2-lines">
+<span class="stage2-lyr" data-de="Wir hängten ein Licht ganz nach oben" data-en="We set a beacon at the very top">We set a beacon at the very top</span>
+<span class="stage2-lyr" data-de="es leuchtet auf, wenn Musik spielt" data-en="it lights up when the music plays">it lights up when the music plays</span>
+<span class="stage2-lyr" data-de="und tritt beiseite, kommst du näher" data-en="and steps aside as you come near">and steps aside as you come near</span>
+<span class="stage2-lyr" data-de="und gibt dir den Bildschirm wortlos zurück" data-en="to give the screen back, without a word">to give the screen back, without a word</span>
+</span></span>
+</div>
+<!-- visage compact : minuteur (l'îlot reste nu, le trait parle) -->
+<!-- Minuteur compact : AUCUN chiffre — l'encoche physique est au
+               centre, et le vrai compact n'écrit rien : « la progression se
+               lit de loin, sans un chiffre », c'est la promesse de la grille
+               juste au-dessus. Le trait orange fait tout. -->
+<div class="stage2-face stage2-face-timer"></div>
+<!-- le panneau ouvert : l'ACCUEIL réel (splitNowPlaying) -->
+<div aria-hidden="true" class="stage2-panelface-trad">
+<div class="stage2-ptradhead">
+<span data-de="Übersetzung" data-en="Translation">Translation</span>
+<span class="stage2-weather" style="font-size:15px">☁ 21°</span>
+</div>
+<div class="stage2-ptradbar">
+<span class="stage2-langpill" data-de="Deutsch" data-en="English">English</span>
+<svg class="arrows" fill="none" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.6" viewbox="0 0 20 20"><path d="M13 4l3.5 3.5L13 11M16.5 7.5h-13M7 9.5 3.5 13 7 16.5M3.5 13h13"></path></svg>
+<span class="stage2-langpill" data-de="Englisch" data-en="French">French</span>
+<span class="stage2-keybtn"><svg fill="none" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.6" viewbox="0 0 24 24"><rect height="12" rx="2.5" width="19" x="2.5" y="6"></rect><path d="M6 9.5h.5M9.5 9.5h.5M13 9.5h.5M16.5 9.5h.5M6 14.5h12"></path></svg></span>
+</div>
+<div class="stage2-ptradhint" data-de="Text ablegen oder tippen — oder überall schreiben, sobald der Modus aktiv ist." data-en="Drop or type a text — or write anywhere once the mode is armed.">Drop or type a text — or write anywhere once the mode is armed.</div>
+</div>
+<div class="stage2-panelface">
+<div class="stage2-phead">
+<span class="stage2-weather">
+<svg aria-hidden="true" fill="none" stroke="rgba(255,255,255,.75)" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" viewbox="0 0 20 20"><path d="M5.4 15.2a3.6 3.6 0 0 1-.3-7.2 4.6 4.6 0 0 1 9-1.1 3.4 3.4 0 0 1-.4 6.8Z" fill="rgba(255,255,255,.14)"></path></svg>
+                21°
+              </span>
+</div>
+<div class="stage2-pbody">
+<div class="stage2-player">
+<div class="stage2-prow">
+<i class="stage2-cover stage2-cover-lg"></i>
+<div class="stage2-ptrack">
+<b>Fil de cuivre</b>
+<span>Les Lisières</span>
+</div>
+<span aria-hidden="true" class="stage2-plyr">
+<svg fill="currentColor" viewbox="0 0 20 20"><path d="M10 2.4c-4.4 0-7.6 2.8-7.6 6.5 0 3.7 3.2 6.5 7.6 6.5.5 0 1-.04 1.5-.11l2.9 2.1a.5.5 0 0 0 .79-.47l-.23-2.4c1.6-1.2 2.64-3 2.64-5.1 0-3.7-3.2-6.5-7.6-6.5Zm-3.4 4.8h2.1c.3 0 .5.2.5.5v.1c-.1 1.5-.7 2.6-1.9 3.2a.4.4 0 0 1-.5-.6c.5-.5.8-1 .9-1.6h-1.1a.6.6 0 0 1-.6-.6v-.4c0-.3.3-.6.6-.6Zm5 0h2.1c.3 0 .5.2.5.5v.1c-.1 1.5-.7 2.6-1.9 3.2a.4.4 0 0 1-.5-.6c.5-.5.8-1 .9-1.6h-1.1a.6.6 0 0 1-.6-.6v-.4c0-.3.3-.6.6-.6Z"></path></svg>
+</span>
+</div>
+<div class="stage2-pbarrow">
+<span>1:24</span>
+<div class="stage2-pbar"><i></i></div>
+<span>-3:08</span>
+</div>
+<div class="stage2-pctrl">
+<span aria-hidden="true" class="on"><svg fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.7" viewbox="0 0 22 22"><path d="M2.5 6.5h3.2c4.6 0 6 9 10.6 9h2.7M2.5 15.5h3.2c1.5 0 2.6-.9 3.6-2M19 4l-2.6 2.5M19 4l-2.6-2.4M19 4h-3.5c-1.9 0-3.2.9-4.2 2.1M19 18l-2.6 2.4M19 18l-2.6-2.5"></path></svg></span>
+<span aria-hidden="true"><svg fill="currentColor" viewbox="0 0 22 22"><path d="M10.6 10.2 18 5.1a1 1 0 0 1 1.6.8v10.2a1 1 0 0 1-1.6.8l-7.4-5.1V16a1 1 0 0 1-1.6.8L1.6 11.7a1 1 0 0 1 0-1.6L9 5.1a1 1 0 0 1 1.6.8Z"></path></svg></span>
+<span aria-hidden="true" class="stage2-pplay"><svg fill="currentColor" viewbox="0 0 22 22"><rect height="15" rx="1.3" width="4.6" x="4.5" y="3.5"></rect><rect height="15" rx="1.3" width="4.6" x="12.9" y="3.5"></rect></svg></span>
+<span aria-hidden="true"><svg fill="currentColor" viewbox="0 0 22 22"><path d="M11.4 10.2 4 5.1a1 1 0 0 0-1.6.8v10.2a1 1 0 0 0 1.6.8l7.4-5.1V16a1 1 0 0 0 1.6.8l6.4-4.1a1 1 0 0 0 0-1.6L13 5.1a1 1 0 0 0-1.6.8Z"></path></svg></span>
+<span aria-hidden="true"><svg fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.7" viewbox="0 0 22 22"><path d="M4.5 8.2a4.7 4.7 0 0 1 4.4-3h8.6M15 2.6l2.6 2.6L15 7.8M17.5 13.8a4.7 4.7 0 0 1-4.4 3H4.5M7 19.4l-2.6-2.6L7 14.2"></path></svg></span>
+</div>
+</div>
+<div class="stage2-cal">
+<div class="stage2-calstrip">
+<span class="stage2-calmonth" data-de="Aug." data-en="Aug" data-month2="">Aug</span>
+<div class="stage2-caldays" data-days2=""></div>
+</div>
+<div class="stage2-calev">
+<span class="stage2-ev">
+<u style="background:#3f82f6"></u>
+<b data-de="Produkt-Sync" data-en="Product sync">Product sync</b>
+<span data-de="14:00" data-en="2:00 PM">2:00 PM</span>
+</span>
+<span class="stage2-ev">
+<u style="background:#4fae5c"></u>
+<b data-de="Probe" data-en="Rehearsal">Rehearsal</b>
+<span data-de="18:30" data-en="6:30 PM">6:30 PM</span>
+</span>
+</div>
+</div>
+</div>
+<div class="stage2-dock">
+<i class="stage2-mod stage2-mod-on">
+<svg fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" viewbox="0 0 16 16"><path d="M3.2 8.2 8 3.8l4.8 4.4M4.8 7.4v4.8h6.4V7.4"></path></svg>
+<u class="stage2-live"></u>
+</i>
+<i class="stage2-mod">
+<svg fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.4" viewbox="0 0 16 16"><path d="M13 8.6V5.5C13 4.1 11.9 3 10.5 3h-5C4.1 3 3 4.1 3 5.5v3.1c0 1.4 1.1 2.5 2.5 2.5h1l1.5 2 1.5-2h1c1.4 0 2.5-1.1 2.5-2.5Z"></path><path d="M6.4 8.4 8 4.7l1.6 3.7M6.9 7.2h2.2" stroke-width="1.1"></path></svg>
+</i>
+<i class="stage2-mod">
+<svg fill="currentColor" viewbox="0 0 16 16"><path d="M8 1.6C8.6 5 9.9 6.4 13.4 8 9.9 9.6 8.6 11 8 14.4 7.4 11 6.1 9.6 2.6 8 6.1 6.4 7.4 5 8 1.6Z"></path></svg>
+</i>
+<i class="stage2-mod">
+<svg fill="none" stroke="currentColor" stroke-linecap="round" stroke-width="1.5" viewbox="0 0 16 16"><circle cx="8" cy="9.2" r="5.2"></circle><path d="M8 6.6v2.6l1.9 1.4M6.6 1.6h2.8"></path></svg>
+</i>
+<i class="stage2-mod">
+<svg fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.4" viewbox="0 0 16 16"><rect height="10.6" rx="1.6" width="8.4" x="3.8" y="3.2"></rect><path d="M6.2 3.2V2.4h3.6v.8M6.2 7.2h3.6M6.2 9.7h2.6"></path></svg>
+</i>
+<i class="stage2-mod">
+<svg fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.4" viewbox="0 0 16 16"><path d="M2.8 9.5v2.2c0 1 .8 1.8 1.8 1.8h6.8c1 0 1.8-.8 1.8-1.8V9.5M2.8 9.5h2.6l1 1.4h3.2l1-1.4h2.6"></path><path d="M8 2.6v4.2M6.2 5.2 8 7l1.8-1.8"></path></svg>
+</i>
+</div>
+</div>
+</div>
+</div>
+<!-- zones de survol : la petite ouvre, la grande (rectangle de
+           mesure, jamais capteur) définit la frontière de fermeture -->
+<div class="stage2-zoneClosed" data-zc=""></div>
+<div aria-hidden="true" class="stage2-zoneOpen" data-zo=""></div>
+</div>
+</div>
+<!-- une légende par scène ; le marketing vit ici, jamais dans l'îlot -->
+<p class="stage2-cap">
+<span aria-live="off" class="stage2-capline">
+<span data-cap="rest" data-de="In Ruhe: nichts. Die Insel existiert nur, wenn sie dient." data-en="At rest: nothing. The island only exists when it serves.">At rest: nothing. The island only exists when it serves.</span>
+<span data-cap="music" data-de="Ein Ton setzt ein — die Insel entsteht, das Cover färbt das Schwarz." data-en="A note starts — the island is born, the artwork tints the black.">A note starts — the island is born, the artwork tints the black.</span>
+<span data-cap="lyrics" data-de="Liedtexte senken sich herab, im Takt der Stimme geführt." data-en="Lyrics descend, swept in time with the voice.">Lyrics descend, swept in time with the voice.</span>
+<span data-cap="timer" data-de="Ein Timer: Die Linie läuft außen die Kontur entlang, in Stille." data-en="A timer: the outline runs the contour, outside, in silence.">A timer: the outline runs the contour, outside, in silence.</span>
+<span data-cap="typing" data-de="Tippen &amp; Übersetzen — im Modul Übersetzung aktiviert. Schreib in deiner Sprache: nach 1,5 s Pause löscht sich der Text und klebt in ihrer." data-en="Type-to-translate — armed in the Translation module. Write in your language: after a 1.5 s pause, the text erases itself and pastes in theirs.">Type-to-translate — armed in the Translation module. Write in your language: after a 1.5 s pause, the text erases itself and pastes in theirs.</span>
+<span data-cap="open" data-de="Die Insel öffnet sich nur unter dem Zeiger. Die übrige Zeit: nichts." data-en="The island only opens when hovered. The rest of the time: nothing.">The island only opens when hovered. The rest of the time: nothing.</span>
+</span>
+<span class="stage2-invite" data-de="Fahre mit dem Zeiger über die Insel." data-en="Hover the island.">Hover the island.</span>
+</p>
+<script>
+  // ----------------------------------------------------------------
+  // La démo interactive : cycle sobre repos → musique → paroles →
+  // retrait → minuteur, mis en pause dès que le visiteur survole
+  // l'îlot — le panneau s'ouvre au ressort, exactement le geste de
+  // l'app. Tout est scopé au bloc.
+  // ----------------------------------------------------------------
+  (function () {
+    const root = (document.currentScript && document.currentScript.closest(".stage2"))
+               || document.querySelector(".stage2");
+    if (!root) return;
+    const $ = s => root.querySelector(s);
+
+    const screen  = $(".stage2-screen");
+    const zc      = $("[data-zc]");
+    const zo      = $("[data-zo]");
+    const countEl = $("[data-count2]");
+    const lyricsFace  = $(".stage2-face-lyrics");
+    const lyricLines  = root.querySelectorAll(".stage2-lyr");
+    const reduced = matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+    // -- l'écran dessiné à 1512×982, mis à l'échelle du conteneur --
+    const frame = $(".stage2-frame");
+    function fit() {
+      screen.style.transform = "scale(" + (frame.clientWidth / 1512) + ")";
+    }
+    if ("ResizeObserver" in window) new ResizeObserver(fit).observe(frame);
+    fit();
+
+    // -- l'horloge de la barre des menus : l'heure vraie --
+    const clock = $("[data-clock2]");
+    function tick() {
+      const d = new Date();
+      clock.textContent = d.getHours() + ":" + String(d.getMinutes()).padStart(2, "0");
+    }
+    tick(); setInterval(tick, 30000);
+
+    // -- le widget Calendrier : le jour vrai en chips (semaine/numéro),
+    //    aujourd'hui sur fond bleu — la rangée réelle défile sur le
+    //    mois entier, la démo en fige cinq autour d'aujourd'hui --
+    (function calendar() {
+      const today = new Date();
+      const cap = s => s.charAt(0).toUpperCase() + s.slice(1);
+      const monthIn = l =>
+        cap(new Intl.DateTimeFormat(l, { month: "short" }).format(today));
+      const mEl = $("[data-month2]");
+      mEl.textContent = monthIn("fr-FR");
+      mEl.dataset.en = monthIn("en-US");
+      mEl.dataset.de = monthIn("de-DE");
+      const wk = (l, d) =>
+        new Intl.DateTimeFormat(l, { weekday: "short" }).format(d)
+          .replace(/\.$/, "");
+      const row = $("[data-days2]");
+      row.innerHTML = "";
+      for (let off = -2; off <= 2; off++) {
+        const d = new Date(today); d.setDate(d.getDate() + off);
+        const chip = document.createElement("span");
+        chip.className = "stage2-chip" + (off === 0 ? " stage2-today" : "");
+        const i = document.createElement("i");
+        i.textContent = wk("fr-FR", d);
+        i.dataset.en = wk("en-US", d);
+        i.dataset.de = wk("de-DE", d);
+        const b = document.createElement("b");
+        b.textContent = d.getDate();
+        chip.appendChild(i); chip.appendChild(b);
+        row.appendChild(chip);
+      }
+    })();
+
+    // Animations réduites : un seul état, immobile — la scène musique
+    // (le data-state="music" du balisage). La légende constate au lieu
+    // d'inviter à un geste sans effet.
+    if (reduced) {
+      root.dataset.reduced = "1";
+      root.dataset.played = "1";
+      return;
+    }
+
+    // -------------------- la machine à états --------------------
+    let open = false;          // le panneau est déployé
+    let offstage = false;      // la démo est hors du viewport
+    let stalled = false;       // le cycle attend (survol ou hors écran)
+    let stepIdx = 0;
+    let stepT = null, hoverT = null, closeT = null;
+    let lyricsHeld = false;   // paroles repliées par le survol (geste de l'app)
+    let countT = null, lyricsT = null;
+    let countSecs = 272;       // 4:32
+
+    function renderCount() {
+      // Le compteur a quitté le bandeau compact (l'encoche physique est
+      // noire) ; le time-lapse ne sert plus que si un compteur existe
+      // ailleurs un jour.
+      if (!countEl) return;
+      countEl.textContent =
+        Math.floor(countSecs / 60) + ":" + String(countSecs % 60).padStart(2, "0");
+    }
+    // Time-lapse : le compte 4:32 fond jusqu'à 0:00 en ~6,5 s, calé
+    // sur le trait qui se dessine — chiffres et trait racontent LA
+    // MÊME progression (un vrai décompte semblerait immobile, et un
+    // trait qui boucle sans mesure trahirait sa doctrine).
+    function startCount() {
+      countSecs = 272; renderCount();
+      clearInterval(countT);
+      countT = setInterval(() => {
+        if (offstage || open) return;
+        countSecs = Math.max(0, countSecs - 4);
+        renderCount();
+      }, 95);
+    }
+
+    // -- paroles : deux phases, la ligne vivante balayée en blanc --
+    function lyricsPhaseA() {
+      lyricsFace.classList.remove("pb");
+      lyricLines.forEach(l => l.classList.remove("live"));
+      void lyricsFace.offsetWidth;      // rejoue le balayage à chaque tour
+      lyricLines[1].classList.add("live");
+    }
+    function lyricsPhaseB() {
+      lyricsFace.classList.add("pb");
+      lyricLines[1].classList.remove("live");
+      lyricLines[2].classList.add("live");
+    }
+
+    function setState(s) {
+      root.dataset.state = s;
+      if (s === "timer") startCount();
+      else { clearInterval(countT); countT = null; }
+      clearTimeout(lyricsT); lyricsT = null;
+      if (s === "lyrics") {
+        lyricsPhaseA();
+        lyricsT = setTimeout(lyricsPhaseB, 3000);
+      }
+      if (s === "typing") startTypingScene();
+      else stopTypingScene();
+    }
+
+    // -------- taper-traduire : la reponse se tape, la pause la traduit ----
+    const typeReply = $("[data-typing-reply]");
+    const typeSrcEl = $("[data-typing-src]");
+    const typeDstEl = $("[data-typing-dst]");
+    let typeI = null, typeT = null;
+    function stopTypingScene() {
+      clearInterval(typeI); clearTimeout(typeT);
+      typeI = typeT = null;
+      delete root.dataset.typingPhase;
+      delete root.dataset.typingArmed;
+      if (root.dataset.panel === "trad") {
+        delete root.dataset.open;
+        delete root.dataset.panel;
+      }
+    }
+    function startTypingScene() {
+      if (!typeReply) return;
+      stopTypingScene();
+      const src = typeSrcEl.textContent;
+      const dst = typeDstEl.textContent;
+      typeReply.textContent = "";
+      typeReply.classList.remove("done");
+      delete root.dataset.typingPhase;
+      delete root.dataset.typingArmed;
+      // 1. L'ARMEMENT : le panneau s'ouvre sur le module Traduction
+      //    (même coquille que l'accueil), le clic tombe sur le clavier…
+      root.dataset.open = "1";
+      root.dataset.panel = "trad";
+      typeT = setTimeout(() => {
+        root.dataset.typingArmed = "1";
+        // 2. …le panneau se referme, la conversation paraît, la frappe part.
+        typeT = setTimeout(() => {
+          delete root.dataset.open;
+          delete root.dataset.panel;
+          root.dataset.typingPhase = "chat";
+          let i = 0;
+          typeI = setInterval(() => {
+            i += 1;
+            typeReply.textContent = src.slice(0, i);
+            if (i >= src.length) {
+              clearInterval(typeI); typeI = null;
+              // 3. LA PAUSE — 1,5 s exactement, comme dans l'app — puis
+              //    la phrase S'EFFACE (retours arrière) et la traduction
+              //    se COLLE d'un bloc.
+              typeT = setTimeout(() => {
+                let j = src.length;
+                typeI = setInterval(() => {
+                  j -= 2;
+                  typeReply.textContent = src.slice(0, Math.max(0, j));
+                  if (j <= 0) {
+                    clearInterval(typeI); typeI = null;
+                    typeT = setTimeout(() => {
+                      typeReply.textContent = dst;
+                      typeReply.classList.add("done");
+                    }, 140);
+                  }
+                }, 14);
+              }, 1500);
+            }
+          }, 55);
+        }, 1100);
+      }, 1900);
+    }
+
+    // La partition du cycle : le retrait (fold) garde la géométrie de
+    // la musique pendant que le lavis glisse dehors (1,5 s, déjà codé
+    // pour la pause) — le repli en 231 arrive avec le minuteur.
+    const steps = [
+      { s: "rest",   d: 2500 },
+      { s: "music",  d: 7000 },
+      { s: "lyrics", d: 6000 },
+      { s: "fold",   d: 2000 },
+      { s: "timer",  d: 7000 },
+      { s: "typing", d: 8600 },
+    ];
+    function runStep(i) {
+      stepIdx = i;
+      setState(steps[i].s);
+      clearTimeout(stepT);
+      stepT = setTimeout(() => {
+        if (open || offstage) { stalled = true; return; }
+        runStep((stepIdx + 1) % steps.length);
+      }, steps[i].d);
+    }
+    runStep(0);
+
+    // -------------------- ouvrir / fermer --------------------
+    function openPanel() {
+      if (open) return;
+      lyricsHeld = false;
+      delete root.dataset.lyricsHeld;
+      open = true;
+      root.dataset.open = "1";
+      clearTimeout(closeT); closeT = null;
+    }
+    function closePanel() {
+      if (!open) return;
+      open = false;
+      delete root.dataset.open;
+      clearTimeout(closeT); closeT = null;
+      root.dataset.played = "1";   // l'invitation a servi, elle s'efface
+      stalled = false;
+      runStep(1);                  // le cycle reprend à la musique, proprement
+    }
+
+    // Entrer : petite zone autour de l'îlot fermé, 90 ms de pose
+    // (un trajet qui traverse ne déclenche rien).
+    zc.addEventListener("pointerenter", e => {
+      if (e.pointerType !== "mouse") return;
+      clearTimeout(hoverT);
+      // Le geste signature de l'app : survoler les PAROLES les replie —
+      // il ne reste que la pochette et les barres, à hauteur d'encoche,
+      // et l'écran est rendu. Le cycle attend que le curseur reparte.
+      if (!open && root.dataset.state === "lyrics") {
+        lyricsHeld = true;
+        root.dataset.lyricsHeld = "1";   // la zone garde la taille de la bande
+        clearTimeout(stepT);
+        setState("music");
+        return;
+      }
+      hoverT = setTimeout(openPanel, 90);
+    });
+    zc.addEventListener("pointerleave", () => {
+      clearTimeout(hoverT);
+      if (lyricsHeld) {
+        lyricsHeld = false;
+        delete root.dataset.lyricsHeld;
+        runStep(2);   // sortie du périmètre : les paroles reviennent
+      }
+    });
+
+    // Sortir : le pointeur est suivi sur l'écran entier et comparé au
+    // rectangle large de la zone ouverte — hystérésis réelle, puis
+    // 160 ms de confirmation avant le repli (le retour l'annule).
+    function scheduleClose() {
+      if (!closeT) closeT = setTimeout(closePanel, 160);
+    }
+    function cancelClose() {
+      clearTimeout(closeT); closeT = null;
+    }
+    screen.addEventListener("pointermove", e => {
+      if (!open || e.pointerType !== "mouse") return;
+      const r = zo.getBoundingClientRect();
+      const inside = e.clientX >= r.left && e.clientX <= r.right &&
+                     e.clientY >= r.top  && e.clientY <= r.bottom;
+      if (inside) cancelClose(); else scheduleClose();
+    });
+    screen.addEventListener("pointerleave", () => { if (open) scheduleClose(); });
+
+    // Au toucher : un appui ouvre, un appui referme.
+    zc.addEventListener("click", e => {
+      e.stopPropagation();
+      clearTimeout(hoverT);
+      openPanel();
+    });
+    screen.addEventListener("click", () => { if (open) closePanel(); });
+
+    // Hors du viewport, tout s'arrête : rien ne chauffe pour personne.
+    if ("IntersectionObserver" in window) {
+      new IntersectionObserver(entries => {
+        entries.forEach(en => {
+          offstage = !en.isIntersecting;
+          if (offstage) root.dataset.offstage = "1";
+          else {
+            delete root.dataset.offstage;
+            if (stalled && !open) {
+              stalled = false;
+              runStep((stepIdx + 1) % steps.length);
+            }
+          }
+        });
+      }, { threshold: 0 }).observe(root);
+    }
+  })();
+</script>
+</div>
+<!-- FIN DEMO ======================================================= -->
+</div>
+<!-- ===================== la règle des 30 secondes ===================== -->
+<section class="rule reveal">
+<div class="inner">
+<p class="eyebrow" data-de="Die Doktrin" data-en="The doctrine">The doctrine</p>
+<h2 data-de="Die Dreißig-Sekunden-Regel" data-en="The thirty-second rule">The thirty-second rule</h2>
+<p class="lede" data-de="Fronton startet, fasst zusammen, merkt sich Dinge oder reicht weiter. Es wird nie zum Ort, an dem lange Aufgaben leben: Braucht eine Geste Zeit, endet sie in der richtigen App — nicht in der Insel." data-en="Fronton starts, summarizes, remembers, or hands off. It never becomes the place where long tasks live: when a gesture needs time, it finishes in the right app — not in the island.">Fronton starts, summarizes, remembers, or hands off. It never becomes the place where long tasks live: when a gesture needs time, it finishes in the right app — not in the island.</p>
+<p class="chute" data-de="Andere Apps sind gebaut, um dich zu halten. Fronton gibt dir deinen Bildschirm zurück." data-en="Other apps are built to keep you. Fronton gives you your screen back.">Other apps are built to keep you. Fronton gives you your screen back.</p>
+</div>
+</section>
+<!-- ========================= les fonctions ========================= -->
+<section class="reveal">
+<div class="inner">
+<p class="eyebrow" data-de="Was die Insel trägt" data-en="What it carries">What it carries</p>
+<h2 data-de="Neun Gesten, eine Zeigerbewegung" data-en="Nine gestures, one hover">Nine gestures, one hover</h2>
+<div class="grid">
+<div class="cell lead">
+<div class="leadrow">
+<svg fill="none" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" viewbox="0 0 30 30"><path d="M11 21.5V6.8l12 3.2v14.5"></path><circle cx="8" cy="21.5" r="3"></circle><circle cx="20" cy="24.5" r="3"></circle></svg>
+<div aria-hidden="true" class="eq"><i></i><i></i><i></i><i></i></div>
+</div>
+<h3 data-de="Musik &amp; Liedtexte" data-en="Music &amp; lyrics">Music &amp; lyrics</h3>
+<p data-de="Cover, Steuerung, synchronisiertes Karaoke. Fahre mit dem Zeiger über die Liedtexte: Sie treten beiseite und geben den Bildschirm zurück." data-en="Album art, controls, synced karaoke. Hover the lyrics: they step aside and give the screen back.">Album art, controls, synced karaoke. Hover the lyrics: they step aside and give the screen back.</p>
+</div>
+<div class="cell">
+<svg fill="none" stroke-linecap="round" stroke-width="1.8" viewbox="0 0 30 30"><circle cx="15" cy="17" r="9"></circle><path d="M15 12v5l3 3M12 3h6"></path></svg>
+<h3 data-de="Timer" data-en="Timer">Timer</h3>
+<p data-de="Die Signaturlinie läuft um die Insel: Den Fortschritt liest du quer durch den Raum ab, ganz ohne Ziffern." data-en="The signature outline runs around the island: progress reads from across the room, no digits needed.">The signature outline runs around the island: progress reads from across the room, no digits needed.</p>
+</div>
+<div class="cell">
+<svg fill="none" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" viewbox="0 0 30 30"><rect height="21" rx="3" width="18" x="6" y="5"></rect><path d="M11 5V3.5A1.5 1.5 0 0 1 12.5 2h5A1.5 1.5 0 0 1 19 3.5V5M10.5 12h9M10.5 17h9M10.5 22h5"></path></svg>
+<h3 data-de="Zwischenablage" data-en="Clipboard">Clipboard</h3>
+<p data-de="Die letzten dreißig Dinge, die du kopiert hast, nur im RAM gehalten. Tippe zum Filtern oder frage einfach in ganz normalen Worten." data-en="The last thirty things you copied, kept in RAM only. Type to filter, or just ask in plain English.">The last thirty things you copied, kept in RAM only. Type to filter, or just ask in plain English.</p>
+</div>
+<div class="cell">
+<svg fill="none" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" viewbox="0 0 30 30"><path d="M4 19v4a3 3 0 0 0 3 3h16a3 3 0 0 0 3-3v-4M4 19h6l2 3h6l2-3h6M15 4v12m0 0-4-4m4 4 4-4"></path></svg>
+<h3 data-de="Dateiablage" data-en="File shelf">File shelf</h3>
+<p data-de="Lege eine Datei auf der Insel ab: eine echte Kopie, die von selbst verfällt. Nimm sie wieder auf, wo immer du sie brauchst." data-en="Drop a file on the island: a real copy that expires on its own. Pick it up wherever you need it.">Drop a file on the island: a real copy that expires on its own. Pick it up wherever you need it.</p>
+</div>
+<div class="cell">
+<svg fill="none" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" viewbox="0 0 30 30"><path d="M4 6h10M9 3v3M12.5 6c-.8 4-3.5 8-8 10.5M6 10c1.5 3 4.5 5.5 7 6.5M17 26l5.5-13L28 26M18.7 22h7.6"></path></svg>
+<h3 data-de="Ziehen zum Übersetzen" data-en="Drag to translate">Drag to translate</h3>
+<p data-de="Ziehe einen beliebigen Text auf die Insel, und er kommt übersetzt zurück. Zehn Sprachen, komplett offline." data-en="Drag any text onto the island and it comes back translated. Ten languages, fully offline.">Drag any text onto the island and it comes back translated. Ten languages, fully offline.</p>
+</div>
+<div class="cell">
+<svg fill="none" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" viewbox="0 0 30 30"><rect height="14" rx="3" width="24" x="3" y="8"></rect><path d="M7 12h2M11 12h2M15 12h2M19 12h2M23 12h.5M7 15.5h1.5M11 15.5h8M22.5 15.5h.5M7 18.5h16"></path></svg>
+<h3 data-de='Tippen &amp; Übersetzen &lt;span class="beta"&gt;Beta&lt;/span&gt;' data-en='Type-to-translate &lt;span class="beta"&gt;beta&lt;/span&gt;'>Type-to-translate <span class="beta">beta</span></h3>
+<p data-de="Modus einschalten, dann in jeder App schreiben — Notizen, Discord, Browser. Kurz innehalten: Dein Satz wird durch die Übersetzung ersetzt, vorher von der lokalen KI korrigiert. Während der Beta den Abonnenten vorbehalten." data-en="Turn the mode on, then write in any app — Notes, Discord, your browser. Pause for a beat: your sentence is replaced by its translation, spelling corrected by the local AI first. Reserved for subscribers while in beta.">Turn the mode on, then write in any app — Notes, Discord, your browser. Pause for a beat: your sentence is replaced by its translation, spelling corrected by the local AI first. Reserved for subscribers while in beta.</p>
+</div>
+<div class="cell">
+<svg fill="none" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" viewbox="0 0 30 30"><path d="M15 3l2.4 6.4L24 12l-6.6 2.6L15 21l-2.4-6.4L6 12l6.6-2.6ZM24 20l1.2 3 3 1.2-3 1.2-1.2 3-1.2-3-3-1.2 3-1.2Z"></path></svg>
+<h3 data-de="Lokale KI" data-en="Local AI">Local AI</h3>
+<p data-de="Ein Assistent, der auf deinem Mac läuft, nicht in der Cloud. Kein Account, kein API-Schlüssel, nichts telefoniert nach Hause." data-en="An assistant that runs on your Mac, not in the cloud. No account, no API key, nothing phoned home.">An assistant that runs on your Mac, not in the cloud. No account, no API key, nothing phoned home.</p>
+</div>
+<div class="cell">
+<svg fill="none" stroke-linecap="round" stroke-width="1.8" viewbox="0 0 30 30"><path d="M15 4v3M15 23v3M4 15h3M23 15h3M7.2 7.2l2.1 2.1M20.7 20.7l2.1 2.1M7.2 22.8l2.1-2.1M20.7 9.3l2.1-2.1"></path><circle cx="15" cy="15" r="4.5"></circle></svg>
+<h3 data-de="Stille HUDs" data-en="Quiet HUDs">Quiet HUDs</h3>
+<p data-de="Lautstärke und Helligkeit, neu gezeichnet im Maßstab der Insel — Schluss mit der großen grauen Platte mitten auf deinem Bildschirm." data-en="Volume and brightness redrawn at island scale — no more big gray slab in the middle of your screen.">Volume and brightness redrawn at island scale — no more big gray slab in the middle of your screen.</p>
+</div>
+<div class="cell">
+<svg fill="none" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" viewbox="0 0 30 30"><rect height="16" rx="2.5" width="24" x="3" y="5"></rect><path d="M10 25h10M12 5h6v2.2a1.8 1.8 0 0 1-1.8 1.8h-2.4A1.8 1.8 0 0 1 12 7.2Z"></path></svg>
+<h3 data-de="Mit oder ohne Notch" data-en="Notch or no notch">Notch or no notch</h3>
+<p data-de="MacBook Pro, Air, mini, Studio, externes Display: Die Insel liest den Bildschirm, dann verankert sie sich oder schwebt. Automatisch." data-en="MacBook Pro, Air, mini, Studio, external display: the island reads the screen, then anchors or floats. Automatically.">MacBook Pro, Air, mini, Studio, external display: the island reads the screen, then anchors or floats. Automatically.</p>
+</div>
+</div>
+</div>
+</section>
+<!-- ========================= vie privée ========================= -->
+<section class="privacy reveal">
+<div class="inner">
+<p class="eyebrow" data-de="Datenschutz" data-en="Privacy">Privacy</p>
+<h2 data-de="Alles bleibt auf dem Mac" data-en="Everything stays on the Mac">Everything stays on the Mac</h2>
+<p class="lede" data-de="Der Assistent läuft lokal. Die Zwischenablage lebt im RAM und stirbt mit der App. Schlüssel wandern in den Schlüsselbund, nie in eine Datei. Fronton hat keine Accounts, keine Telemetrie und keinen eigenen Server." data-en="The assistant runs locally. The clipboard lives in RAM and dies with the app. Any keys go in the Keychain, never in a file. Fronton has no accounts, no telemetry, and no server of its own.">The assistant runs locally. The clipboard lives in RAM and dies with the app. Any keys go in the Keychain, never in a file. Fronton has no accounts, no telemetry, and no server of its own.</p>
+</div>
+</section>
+<!-- ========================= tarifs ========================= -->
+<section class="reveal" id="tarifs">
+<div class="inner">
+<p class="eyebrow" data-de="Preise" data-en="Pricing">Pricing</p>
+<h2 data-de="Die Beta begleiten oder einmal zahlen" data-en="Ride the beta, or pay once">Ride the beta, or pay once</h2>
+<p class="lede" data-de="Die Beta gibt es nur auf Einladung. Diese Preise gelten zum Start." data-en="The beta is invite-only. These prices apply at launch.">The beta is invite-only. These prices apply at launch.</p>
+<div class="plans">
+<div class="plan star">
+<span class="tag" data-de="Empfohlen" data-en="Recommended">Recommended</span>
+<span class="price">5 €<small data-de="/Monat" data-en="/mo">/mo</small></span>
+<span class="equiv" data-de="jederzeit kündbar, mit einem Klick" data-en="cancel anytime, in one click">cancel anytime, in one click</span>
+<span class="name" data-de="Die Beta unterstützen" data-en="Back the beta">Back the beta</span>
+<p data-de="Alles, was Fronton kann — plus die Beta, wo das Neue lebt:" data-en="Everything Fronton does — plus the beta, where the new things live:">Everything Fronton does — plus the beta, where the new things live:</p>
+<ul>
+<li data-de="&lt;b&gt;Tippen &amp; Übersetzen&lt;/b&gt; — schreib in jeder App, eine Pause macht aus deinem Satz die Übersetzung" data-en="&lt;b&gt;Type-to-translate&lt;/b&gt; — write in any app, a pause turns your sentence into its translation"><b>Type-to-translate</b> — write in any app, a pause turns your sentence into its translation</li>
+<li data-de="Jede Neuheit vor allen anderen, auf dem Beta-Kanal" data-en="Every new feature before everyone else, on the beta channel">Every new feature before everyone else, on the beta channel</li>
+<li data-de="Jeder Monat finanziert direkt, was als Nächstes kommt" data-en="Each month directly funds what's next">Each month directly funds what's next</li>
+</ul>
+<a class="plan-cta" data-de="Abonnieren — 5 €/Monat" data-en="Subscribe — €5/mo" href="https://buy.polar.sh/polar_cl_vMZYCvn0O7RUEpzI1cgZ9gD19YDcNdYGJIA7M41IGVL">Subscribe — €5/mo</a>
+</div>
+<div class="plan">
+<span class="tag" data-de="Lebenslange Lizenz" data-en="Lifetime">Lifetime</span>
+<span class="price">29 €</span>
+<span class="name" data-de="Einmal, für immer" data-en="Once, forever">Once, forever</span>
+<p data-de="Jedes Update auf dem stabilen Kanal, kein Abo, kein Account. Beta-Funktionen erreichen dich, sobald sie ausgereift sind. Einmal kaufen — die App gehört dir für immer." data-en="Every stable-channel update, no subscription, no account. Beta features reach you once they've matured. Buy once — the app is yours for good.">Every stable-channel update, no subscription, no account. Beta features reach you once they've matured. Buy once — the app is yours for good.</p>
+<a class="plan-cta ghost" data-de="Einmal kaufen — 29 €" data-en="Buy once — €29" href="https://buy.polar.sh/polar_cl_vMZYCvn0O7RUEpzI1cgZ9gD19YDcNdYGJIA7M41IGVL">Buy once — €29</a>
+</div>
+</div>
+</div>
+</section>
+<!-- ========================= questions ========================= -->
+<section class="reveal" id="faq">
+<div class="inner">
+<p class="eyebrow" data-de="Fragen" data-en="Questions">Questions</p>
+<h2 data-de="Was oft gefragt wird" data-en="What people ask">What people ask</h2>
+<div class="faq">
+<details>
+<summary data-de="Mein Mac hat keine Notch. Funktioniert das?" data-en="My Mac has no notch. Does it work?">My Mac has no notch. Does it work?</summary>
+<p class="a" data-de="Ja. Fronton liest das Display: Hat es eine Notch, setzt die Insel sie fort; hat es keine, schwebt die Insel oben in der Mitte und bleibt unsichtbar, bis sie etwas zu sagen hat. MacBook Air, mini, Studio, iMac, externes Display — dieselbe App, dieselbe Geste." data-en="Yes. Fronton reads the display: with a notch, the island extends it; without one, it floats at the top center and stays invisible until it has something to say. MacBook Air, mini, Studio, iMac, external display — same app, same gesture.">Yes. Fronton reads the display: with a notch, the island extends it; without one, it floats at the top center and stays invisible until it has something to say. MacBook Air, mini, Studio, iMac, external display — same app, same gesture.</p>
+</details>
+<details>
+<summary data-de="Wohin gehen meine Daten?" data-en="Where does my data go?">Where does my data go?</summary>
+<p class="a" data-de="Standardmäßig nirgendwohin. Der KI-Assistent läuft auf deinem Mac, die Zwischenablage lebt im RAM, und Fronton hat keine Accounts und keine Telemetrie. Das Netz liefert nur, was du wählst — Wetter, Liedtexte, die Suche nach Updates, optionale Online-Engines — und jeder Schalter liegt in den Einstellungen." data-en="Nowhere by default. The AI assistant runs on your machine, the clipboard lives in RAM, and Fronton has no accounts and no telemetry. The network only serves what you choose — weather, lyrics, update checks, optional online engines — and every switch lives in Settings.">Nowhere by default. The AI assistant runs on your machine, the clipboard lives in RAM, and Fronton has no accounts and no telemetry. The network only serves what you choose — weather, lyrics, update checks, optional online engines — and every switch lives in Settings.</p>
+</details>
+<details>
+<summary data-de="Welche Macs werden unterstützt?" data-en="Which Macs are supported?">Which Macs are supported?</summary>
+<p class="a" data-de="Macs mit Apple Silicon und macOS 26. Das ist Absicht: eine Architektur, gründlich getestet, statt zwei zur Hälfte." data-en="Apple Silicon Macs running macOS 26. That's deliberate: one architecture, tested deeply, rather than two halfway.">Apple Silicon Macs running macOS 26. That's deliberate: one architecture, tested deeply, rather than two halfway.</p>
+</details>
+<details>
+<summary data-de="Es gibt kostenlose Notch-Apps. Warum 29 €?" data-en="There are free notch apps. Why 29 €?">There are free notch apps. Why 29 €?</summary>
+<p class="a" data-de="Fronton lebt allein von seinem Preis: keine Telemetrie, kein Account, keine Gratis-Stufe, die dich zum Upgrade drängen soll. 29 € einmal — das bezahlt einen Handwerker für Jahre an Updates und kauft dir eine App, die niemandem Rechenschaft schuldet außer dir." data-en="Fronton lives on its price alone: no telemetry, no account, no free tier to upsell you from. 29 € once pays one craftsman for years of updates — and buys you an app that answers to no one but you.">Fronton lives on its price alone: no telemetry, no account, no free tier to upsell you from. 29 € once pays one craftsman for years of updates — and buys you an app that answers to no one but you.</p>
+</details>
+<details>
+<summary data-de="Bremst die lokale KI meinen Mac aus?" data-en="Will the local AI slow my Mac down?">Will the local AI slow my Mac down?</summary>
+<p class="a" data-de="Nein: Das Modell lädt bei Bedarf und entlädt sich nach Gebrauch. Die übrige Zeit kostet es nichts." data-en="No: the model loads on demand and unloads after use. The rest of the time, it costs nothing.">No: the model loads on demand and unloads after use. The rest of the time, it costs nothing.</p>
+</details>
+<details>
+<summary data-de="Wie kommen Updates an?" data-en="How do updates arrive?">How do updates arrive?</summary>
+<p class="a" data-de="In der App, automatisch, über Sparkle — den Standard für unabhängige Mac-Apps. Zwei Kanäle: stabil für alle, Beta für alle mit Monats-Abo, die neue Funktionen zuerst wollen." data-en="Inside the app, automatically, via Sparkle — the standard for independent Mac apps. Two channels: stable for everyone, beta for monthly subscribers who want new features first.">Inside the app, automatically, via Sparkle — the standard for independent Mac apps. Two channels: stable for everyone, beta for monthly subscribers who want new features first.</p>
+</details>
+<details>
+<summary data-de="Ich kaufe die lebenslange Lizenz. Bekomme ich Tippen &amp; Übersetzen?" data-en="I buy the lifetime licence. Do I get type-to-translate?">I buy the lifetime licence. Do I get type-to-translate?</summary>
+<p class="a" data-de="Während der Beta nicht: Tippen &amp; Übersetzen ist Abos vorbehalten, solange es reift. Wird eine Beta-Funktion stabil, geht sie an alle — die lebenslange Lizenz eingeschlossen, ohne Aufpreis. Das Abo kauft den Vorsprung, nicht die Funktion." data-en="Not while it is in beta: type-to-translate belongs to subscribers for as long as it matures. When a beta feature turns stable, it goes to everyone — lifetime included, at no extra cost. The subscription buys the head start, not the feature.">Not while it is in beta: type-to-translate belongs to subscribers for as long as it matures. When a beta feature turns stable, it goes to everyone — lifetime included, at no extra cost. The subscription buys the head start, not the feature.</p>
+</details>
+<details>
+<summary data-de="Spotify oder Apple Music?" data-en="Spotify or Apple Music?">Spotify or Apple Music?</summary>
+<p class="a" data-de="Beides. Fronton folgt dem, was gerade spielt, und entscheidet sauber, wenn beide spielen." data-en="Both. Fronton follows whichever is playing, and arbitrates cleanly when both are.">Both. Fronton follows whichever is playing, and arbitrates cleanly when both are.</p>
+</details>
+<details>
+<summary data-de="Wie probiere ich es heute aus?" data-en="How do I try it today?">How do I try it today?</summary>
+<p class="a" data-de="Die Beta gibt es nur auf Einladung, solange wir sie härten. Schreib uns eine kurze E-Mail, und du stehst auf der Liste." data-en="The beta is invite-only while we harden it. Drop a line by email and you're on the list.">The beta is invite-only while we harden it. Drop a line by email and you're on the list.</p>
+</details>
+</div>
+</div>
+</section>
+</main>
+<footer>
+<div class="inner">
+<svg aria-hidden="true" class="mark" fill="none" stroke="var(--accent)" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" viewbox="0 0 22 22">
+<path d="M3 12.5 L11 7.8 L19 12.5"></path>
+<path d="M2.2 15.5 L19.8 15.5" stroke-width="2"></path>
+</svg>
+<span data-de="© 2026 Fronton — handgefertigt für macOS." data-en="© 2026 Fronton — handcrafted for macOS.">© 2026 Fronton — handcrafted for macOS.</span>
+<span class="grow"></span>
+<a data-de="Fragen" data-en="Questions" href="#faq">Questions</a>
+<span class="dead" data-de="Changelog" data-en="Changelog">Changelog</span>
+<a data-de="Rechtliches" data-en="Legal" href="/juridique.html">Legal</a>
+<a data-de="Kontakt" data-en="Contact" href="mailto:contact@fronton.app">Contact</a>
+</div>
+</footer>
+<script>
+  // ------------------------------------------------------------------
+  // Trois langues, un seul fichier. Le FRANÇAIS est le contenu réel de
+  // la page (lisible sans JS, indexable) ; l'anglais vit dans data-en,
+  // l'allemand dans data-de — même récolte, même bascule.
+  // Au démarrage, le script récolte le français depuis le contenu —
+  // aucune chaîne n'est écrite deux fois. La démo du héros vit dans
+  // son propre bloc (.stage2) et s'auto-initialise AVANT ce script :
+  // ses légendes portent data-en comme le reste, et son aria-label
+  // bilingue passe par data-label-fr / data-label-en ci-dessous.
+  // ------------------------------------------------------------------
+  (function () {
+    // Page générée : le français vit sur / — rien à récolter ici.
+
+    // ---- CTA à deux états : invitation (défaut) / achat. ----
+    // Renseigner l'URL du checkout Polar ci-dessous transforme le bouton
+    // du héros et les deux cartes tarifs en boutons d'achat, dans les
+    // trois langues, sans toucher au HTML. Vide = état invitation.
+    const CHECKOUT_URL = "https://buy.polar.sh/polar_cl_vMZYCvn0O7RUEpzI1cgZ9gD19YDcNdYGJIA7M41IGVL";
+
+    // L'ADRESSE DE TÉLÉCHARGEMENT. Le bouton du héros y mène — et non au
+    // checkout (décision de Yassin, 1er septembre 2026) : le parcours est
+    // « télécharger, essayer quatorze jours, acheter », jamais l'inverse.
+    // Personne ne paie 29 € une app qu'il n'a pas vue tourner. Les deux
+    // cartes tarifs, elles, gardent le checkout.
+    const DOWNLOAD_URL = "https://github.com/rkddevelop/Fronton/releases/download/updates/Fronton-1.0.zip";
+    if (DOWNLOAD_URL) {
+      const hero = document.querySelector("a.cta");
+      if (hero) hero.setAttribute("href", DOWNLOAD_URL);
+      const libelle = document.querySelector("a.cta span[data-en]");
+      if (libelle) {
+        libelle.dataset.fr = "Télécharger — 14 jours d’essai";
+        libelle.dataset.en = "Download — 14-day trial";
+        libelle.dataset.de = "Laden — 14 Tage testen";
+      }
+      const pilule = document.querySelector("a.pill-link");
+      if (pilule) pilule.setAttribute("href", DOWNLOAD_URL);
+      const fin = document.querySelector("p.fineprint");
+      if (fin) {
+        fin.dataset.fr = "Gratuit 14 jours · macOS 26 · Apple Silicon · avec ou sans encoche";
+        fin.dataset.en = "Free for 14 days · macOS 26 · Apple Silicon · notch or no notch";
+        fin.dataset.de = "14 Tage gratis · macOS 26 · Apple Silicon · mit oder ohne Notch";
+      }
+    }
+
+    // Les boutons d'ACHAT ne s'allument que sur les cartes tarifs : le héros
+    // appartient à l'essai dès qu'une adresse de téléchargement existe.
+    if (CHECKOUT_URL) {
+      const buy = (el, fr, en, de, href) => {
+        if (!el) return;
+        el.dataset.fr = fr; el.dataset.en = en; el.dataset.de = de;
+        if (href) el.setAttribute("href", href);
+      };
+      if (!DOWNLOAD_URL) {
+        const hero = document.querySelector("a.cta");
+        if (hero) hero.setAttribute("href", CHECKOUT_URL);
+        buy(document.querySelector("a.cta span[data-en]"),
+            "Acheter Fronton", "Get Fronton", "Fronton kaufen");
+      }
+      buy(document.querySelector(".plan.star .plan-cta"),
+          "S’abonner — 5 €/mois", "Subscribe — €5/mo", "Abonnieren — 5 €/Monat", CHECKOUT_URL);
+      buy(document.querySelector(".plan:not(.star) .plan-cta"),
+          "Acheter à vie — 29 €", "Buy once — €29", "Einmal kaufen — 29 €", CHECKOUT_URL);
+    }
+
+    const sel = document.getElementById("langSel");
+    const reduced = matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+    // Trois langues, choisies DIRECTEMENT dans un menu déroulant — le
+    // cycle d'avant n'affichait que la langue suivante, et un visiteur
+    // allemand devant « EN » concluait qu'il n'y avait que deux langues.
+    const LANGS = ["fr", "en", "de"];
+    const TITres = {
+      fr: "Fronton — l'îlot au sommet de votre Mac",
+      en: "Fronton — the island at the top of your screen",
+      de: "Fronton — die Insel ganz oben auf deinem Mac",
+    };
+    let lang = "en";
+
+    function apply() {
+      document.documentElement.lang = lang;
+      document.querySelectorAll("[data-en]").forEach(el => {
+        el.innerHTML = el.dataset[lang];
+      });
+      sel.value = lang;
+      // l'aria-label trilingue de la zone démo (data-label-fr/-en/-de)
+      document.querySelectorAll("[data-label-fr]").forEach(el => {
+        const cle = "label" + lang.charAt(0).toUpperCase() + lang.slice(1);
+        el.setAttribute("aria-label", el.dataset[cle] || el.dataset.labelFr);
+      });
+      document.title = TITres[lang];
+    }
+    const URLS = { fr: "/", en: "/en/", de: "/de/" };
+    sel.addEventListener("change", () => {
+      if (URLS[sel.value]) location.href = URLS[sel.value];
+    });
+    apply();
+
+    // Apparition douce des sections au défilement.
+    const revealed = document.querySelectorAll(".reveal");
+    if (reduced || !("IntersectionObserver" in window)) {
+      revealed.forEach(el => el.classList.add("in"));
+    } else {
+      const io = new IntersectionObserver(entries => {
+        entries.forEach(e => {
+          if (e.isIntersecting) { e.target.classList.add("in"); io.unobserve(e.target); }
+        });
+      }, { threshold: 0.15 });
+      revealed.forEach(el => io.observe(el));
+    }
+
+    // L'ouverture : la fin du trait sous « sommet » libère la page.
+    // L'écoute vit sur document (l'événement bulle) : apply() réécrit le
+    // h1, un écouteur posé sur l'ancien span mourrait avec lui.
+    const racine = document.documentElement;
+    if (racine.classList.contains("intro")) {
+      let libere = false;
+      const liberer = () => {
+        if (libere) return;
+        libere = true;
+        racine.classList.add("intro-out");
+        void racine.offsetWidth;
+        racine.classList.remove("intro");
+        setTimeout(() => racine.classList.remove("intro-out"), 1600);
+      };
+      document.addEventListener("animationend", e => {
+        if (e.animationName === "intro-lift") liberer();
+      });
+      setTimeout(liberer, 2600);
+    }
+  })();
+</script>
+</body>
+</html>
