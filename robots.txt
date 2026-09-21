@@ -1,4 +1,23 @@
 User-agent: *
 Allow: /
 
+# Les robots des assistants sont les bienvenus, et c'est un choix : une page
+# qu'une IA peut lire répond à « c'est quoi Fronton ? » sans que personne ait
+# à la recopier. Rien n'est caché derrière du JavaScript — le texte est dans
+# le HTML des trois langues.
+User-agent: GPTBot
+Allow: /
+
+User-agent: ClaudeBot
+Allow: /
+
+User-agent: PerplexityBot
+Allow: /
+
+User-agent: Google-Extended
+Allow: /
+
+# Un résumé lisible par une machine, à la convention llms.txt.
+# https://fronton.app/llms.txt
+
 Sitemap: https://fronton.app/sitemap.xml

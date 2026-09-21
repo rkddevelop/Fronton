@@ -1,0 +1,69 @@
+# Fronton
+
+> Fronton turns the MacBook notch into an interactive island: music with synced
+> lyrics, a timer drawn around the notch, clipboard history, a file shelf,
+> drag-to-translate, and a local AI assistant. It works with or without a
+> physical notch. macOS 26, Apple Silicon. Made in Switzerland by an
+> independent developer; sold through Polar as merchant of record.
+
+The site is written in French (fronton.app), with English and German versions
+at fronton.app/en/ and fronton.app/de/. All three are static HTML: the text is
+in the page, no JavaScript needed to read it.
+
+## What it does
+
+- **Music and synced lyrics.** A band slides down under the notch and follows
+  the song line by line, without opening anything, while you work. Apple Music
+  and Spotify. Hovering it folds it away, so whatever it covered is clickable
+  again. Lyrics also follow a video: the track is recognised by its sound
+  (ShazamKit), then its lines land on the second.
+- **Local AI assistant.** Runs on the Mac through Ollama, no account and no API
+  key. The model loads on demand and gives the memory back after use. Web
+  search is off by default; when switched on, only the question is sent to
+  DuckDuckGo.
+- **Drag to translate.** Drop any text on the notch and it comes back
+  translated, on device. Ten languages, downloadable for offline use.
+- **Per-app volume.** Which app is playing, at what level, on which output —
+  mute one app, lower another, with an equaliser behind an opt-in switch.
+- **Type and translate.** ⌃⌥T, then type anywhere: a second and a half without
+  touching the keyboard and your sentence becomes its translation, in place.
+- **Quick writing.** Drop a text on the right wing: fix, summarise, shorten or
+  change the tone, by the local model.
+- **Panel backgrounds.** Your own photo behind the open panel, cropped and
+  zoomed, or one of five backgrounds drawn for the island.
+- **Timer, clipboard history, file shelf, brightness on connected displays,
+  face unlock and hand gestures (both experimental, off by default).**
+
+## The rule it follows
+
+Fronton triggers, summarises, remembers or hands back. It never becomes the
+place where a long task happens: if something takes more than about thirty
+seconds, it ends in the app that owns it.
+
+## Price
+
+- 29 € once, for life. Launch price until 31 December 2026, then 39 €.
+- Or 4 € per month, cancellable at any time. Same app, same features.
+- 14-day trial, no account to create. One license covers two Macs.
+- Payment by Polar (merchant of record); the license key arrives by email.
+
+## Privacy
+
+- No account, no Fronton server, no usage statistics in the app.
+- The AI runs on the Mac. Clipboard history stays on the Mac.
+- The site measures audience with Pirsch (cookieless, hosted in Germany).
+- What leaves the Mac, call by call, is listed on the legal page.
+
+## Requirements
+
+macOS 26 or later, Apple Silicon (M1 or newer). Not available for Intel Macs.
+Notarised by Apple. Updates in-app through Sparkle, and they can be turned off.
+
+## Links
+
+- [Home, in French](https://fronton.app/)
+- [Home, in English](https://fronton.app/en/)
+- [Home, in German](https://fronton.app/de/)
+- [Legal, privacy and what leaves the Mac](https://fronton.app/juridique.html)
+- [Download](https://github.com/rkddevelop/Fronton/releases/download/updates/Fronton-1.0.zip)
+- Contact: contact@fronton.app
