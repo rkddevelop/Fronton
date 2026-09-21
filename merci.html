@@ -491,6 +491,21 @@
       });
     }
 
+    // L'ACHAT ABOUTI EST UN ÉVÉNEMENT, pas seulement une page vue
+    // (21 sept. 2026). Cette page est l'adresse de retour du paiement Polar :
+    // sans cette ligne, la vente n'existait dans Pirsch que comme une visite
+    // de /merci.html — lisible, mais impossible à croiser avec les clics
+    // « Achat » de la page d'accueil, qui portent, eux, l'offre choisie. Le
+    // script Pirsch est `defer` : s'il n'est pas encore là, on repasse au
+    // `load`. Rien de l'acheteur n'est envoyé — ni identifiant de commande,
+    // ni montant : le nom de l'événement suffit à compter.
+    function acheteAbouti() {
+      if (typeof window.pirsch !== "function") return false;
+      try { window.pirsch("Achat abouti"); } catch (e) {}
+      return true;
+    }
+    if (!acheteAbouti()) addEventListener("load", acheteAbouti);
+
     // La navigation se givre dès qu'on quitte le sommet.
     var navwrap = document.getElementById("navwrap");
     var givre = function () { navwrap.classList.toggle("scrolled", scrollY > 8); };
