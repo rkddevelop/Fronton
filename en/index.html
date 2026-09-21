@@ -645,8 +645,19 @@
        ne faisait plus que 119 pt de haut, une réglette où l'on ne distingue
        rien. À plein bord il gagne les 48 pt de gouttière — c'est peu, et
        c'est tout ce que l'image permet sans la recadrer. */
-    .cadre-zone > .w { max-width: none; padding-left: 0; padding-right: 0; }
-    .cadre { border-radius: 18px 18px 0 0; }
+    /* `.cadre-zone` PORTE ELLE-MÊME la classe `.w`, dont la largeur vient
+       de la variable `--w` : c'est ELLE qu'il faut desserrer, un
+       `max-width: none` ne touchait à rien (mesuré — le cadre restait à
+       327 pt pour 375 d'écran). */
+    .cadre-zone { width: 100%; padding-left: 0; padding-right: 0; }
+    .cadre { border-radius: 18px 18px 0 0; height: 240px; overflow: hidden; }
+    /* LE FILM EST RECADRÉ PLUTÔT QUE RÉDUIT : 1300 × 470 rendus dans 375 de
+       large ne laissaient que 136 pt de haut — le panneau, qui occupe le
+       centre de l'image, y devenait illisible. Coupé aux épaules et cadré
+       sur ce centre, il gagne le double de hauteur ; ce qu'on perd sur les
+       côtés est du fond d'écran. */
+    .film-ouverture { height: 100%; width: 100%; object-fit: cover;
+      object-position: center 42%; }
     /* Les visuels respirent moins haut : 380 pt de hauteur minimale sur un
        écran de 812 mangeaient la moitié de l'écran pour un clip de 275. */
     .visu { min-height: 300px; padding: 18px; }
