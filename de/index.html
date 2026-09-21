@@ -2407,13 +2407,28 @@
       });
     });
     mm.add("(max-width: 860px)", () => {
-      ScrollTrigger.create({
-        trigger: ".cadre-zone",
-        start: "top bottom",
-        end: "bottom top",
-        scrub: true,
-        onUpdate: self => avancerFilm(self.progress),
-      });
+      // ET SUR TÉLÉPHONE, LE FILM SE JOUE — il ne se déroule pas (constat de
+      // Yassin, capture du 21 sept. : le cadre restait VIDE sur son iPhone).
+      // iOS ne décode pas l'image d'une vidéo dont on pousse `currentTime`
+      // sans geste de l'utilisateur : la balise est là, chargée, et ne peint
+      // rien. La lecture muette en ligne, elle, est autorisée sans geste.
+      // Si le mode économie d'énergie la refuse quand même, c'est l'affiche
+      // qui reste — et elle montre le panneau OUVERT, pas un écran noir.
+      if (!film) return;
+      film.loop = true;
+      const io = new IntersectionObserver(entrees => {
+        entrees.forEach(e => {
+          if (e.isIntersecting) {
+            const p = film.play();
+            if (p) p.catch(() => {});
+          } else {
+            film.pause();
+          }
+        });
+      }, { threshold: 0.2 });
+      io.observe(film);
+      gsap.set(".indice", { opacity: 1 });
+      return () => { io.disconnect(); film.pause(); film.loop = false; };
     });
 
     const brancherFilm = () => {
