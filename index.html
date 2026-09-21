@@ -639,6 +639,20 @@
   .duo.inv .visu { order: 1; }
   @media (max-width: 860px) {
     .duo { grid-template-columns: 1fr; gap: 30px; }
+    /* LE CADRE PREND TOUTE LA LARGEUR DU TÉLÉPHONE (21 sept. 2026) : le film
+       du héros est large de 1300 pour 470 de haut ; dans la colonne de 327 il
+       ne faisait plus que 119 pt de haut, une réglette où l'on ne distingue
+       rien. À plein bord il gagne les 48 pt de gouttière — c'est peu, et
+       c'est tout ce que l'image permet sans la recadrer. */
+    /* `.cadre-zone` PORTE ELLE-MÊME la classe `.w`, dont la largeur vient
+       de la variable `--w` : c'est ELLE qu'il faut desserrer, un
+       `max-width: none` ne touchait à rien (mesuré — le cadre restait à
+       327 pt pour 375 d'écran). */
+    .cadre-zone { width: 100%; padding-left: 0; padding-right: 0; }
+    .cadre { border-radius: 18px 18px 0 0; }
+    /* Les visuels respirent moins haut : 380 pt de hauteur minimale sur un
+       écran de 812 mangeaient la moitié de l'écran pour un clip de 275. */
+    .visu { min-height: 300px; padding: 18px; }
     /* `.duo.cine` (deux classes) l'emportait sur `.duo` seul : les pages à
        clip restaient en deux colonnes sous 860 px (constat du panel, 6 sept.). */
     .duo.cine, .duo.inv.cine { grid-template-columns: 1fr; }
@@ -2407,21 +2421,39 @@
       demande = 0;
       if (Math.abs(film.currentTime - cible) > 0.02) film.currentTime = cible;
     };
-    ScrollTrigger.create({
-      trigger: ".cadre-zone",
-      start: "top 10%",
-      end: "+=1300",
-      pin: true,
-      onUpdate: self => {
-        const p = self.progress;
-        gsap.set(".indice", { opacity: p < .04 ? 1 : 0 });
-        if (filmBranche) {
-          cible = p * Math.max(film.duration - 0.05, 0);
-          if (!demande) demande = requestAnimationFrame(poser);
-        } else {
-          schema.progress(p);
-        }
-      },
+    // L'ÉPINGLE EST UNE AFFAIRE DE GRAND ÉCRAN (21 sept. 2026, constat de
+    // Yassin : « le site est énormément cassé sur téléphone »). Figer la page
+    // pour dérouler le film au pouce donnait, à 375 px, un cadre de 119 pt de
+    // haut et treize cents pixels de noir : on voyait l'arrêt, pas le film.
+    // Sous 861 px le film se déroule au PASSAGE du cadre — même geste, même
+    // progression, mais la page continue d'avancer sous le doigt.
+    const avancerFilm = p => {
+      gsap.set(".indice", { opacity: p < .04 ? 1 : 0 });
+      if (filmBranche) {
+        cible = p * Math.max(film.duration - 0.05, 0);
+        if (!demande) demande = requestAnimationFrame(poser);
+      } else {
+        schema.progress(p);
+      }
+    };
+    const mm = gsap.matchMedia();
+    mm.add("(min-width: 861px)", () => {
+      ScrollTrigger.create({
+        trigger: ".cadre-zone",
+        start: "top 10%",
+        end: "+=1300",
+        pin: true,
+        onUpdate: self => avancerFilm(self.progress),
+      });
+    });
+    mm.add("(max-width: 860px)", () => {
+      ScrollTrigger.create({
+        trigger: ".cadre-zone",
+        start: "top bottom",
+        end: "bottom top",
+        scrub: true,
+        onUpdate: self => avancerFilm(self.progress),
+      });
     });
 
     const brancherFilm = () => {
@@ -2450,26 +2482,36 @@
   // une fonction arrive plein écran, la page se FIGE — la molette ne fait
   // plus qu'allumer la description mot à mot — et le défilement ne
   // reprend vers la fonction suivante qu'une fois le texte entier.
+  //
+  // ET ELLE NE VAUT QUE SUR GRAND ÉCRAN, pour la même raison que le film :
+  // à 375 px chaque fonction retenait le pouce pendant deux mille pixels
+  // (45 par mot) et n'offrait, pendant ce temps, qu'un clip de 275 pt et un
+  // paragraphe qui s'allume mot à mot sous le pli. Neuf sections ainsi
+  // épinglées faisaient une page de trente mille pixels dont l'essentiel
+  // était noir. Sous 861 px : pas d'épingle, pas de découpage en mots — le
+  // texte est là, entier, et la section défile comme tout le reste.
   if (!reduit && window.gsap && window.ScrollTrigger) {
-    document.querySelectorAll(".txt > p:not(.lede)").forEach(p => {
-      const section = p.closest("section");
-      const mots = p.textContent.trim().split(/\s+/);
-      p.innerHTML = mots.map(m => `<span class="mot">${m}</span>`).join(" ");
-      gsap.fromTo(p.querySelectorAll(".mot"),
-        { opacity: .14 },
-        {
-          opacity: 1, stagger: .06, ease: "none",
-          scrollTrigger: {
-            trigger: section,
-            start: "top top",
-            // la durée de l'arrêt suit la longueur du texte : ~45 px de
-            // molette par mot — un texte court retient moins longtemps.
-            end: "+=" + (mots.length * 45 + 200),
-            scrub: true,
-            pin: true,
-            anticipatePin: 1,
-          },
-        });
+    gsap.matchMedia().add("(min-width: 861px)", () => {
+      document.querySelectorAll(".txt > p:not(.lede)").forEach(p => {
+        const section = p.closest("section");
+        const mots = p.textContent.trim().split(/\s+/);
+        p.innerHTML = mots.map(m => `<span class="mot">${m}</span>`).join(" ");
+        gsap.fromTo(p.querySelectorAll(".mot"),
+          { opacity: .14 },
+          {
+            opacity: 1, stagger: .06, ease: "none",
+            scrollTrigger: {
+              trigger: section,
+              start: "top top",
+              // la durée de l'arrêt suit la longueur du texte : ~45 px de
+              // molette par mot — un texte court retient moins longtemps.
+              end: "+=" + (mots.length * 45 + 200),
+              scrub: true,
+              pin: true,
+              anticipatePin: 1,
+            },
+          });
+      });
     });
   }
 
