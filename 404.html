@@ -1,0 +1,306 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Page introuvable — Fronton</title>
+<!-- La page « introuvable » du site v2 (peau « Sapphire », direction
+     artistique bleue). Même peau que site-sapphire.html : jetons, police
+     locale, navigation, lampe de fond, pied — sans GSAP ni Lenis, aucune
+     ressource externe. Jamais indexée : on n'y arrive que par erreur. -->
+<meta name="robots" content="noindex">
+<meta name="theme-color" content="#000000">
+<link rel="icon" type="image/svg+xml" href='data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 22 22"><g fill="none" stroke="%234f8ef0" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12.5 L11 7.8 L19 12.5"/><path d="M2.2 15.5 L19.8 15.5" stroke-width="2"/></g></svg>'>
+<script defer src="https://api.pirsch.io/pa.js" id="pianjs" data-code="TyPbBymtLoEOMgd2b08wfU76ZCV00Djx"></script>
+<style>
+  :root {
+    --noir: #000;
+    --ink: #f8fafc;
+    --ink-2: rgba(248, 250, 252, .6);
+    --ink-3: rgba(248, 250, 252, .4);
+    --edge: rgba(255, 255, 255, .08);
+    --orange: #4f8ef0;
+    --rose: #8b5cf6;
+    --grad-chaud: linear-gradient(135deg, #4f8ef0 0%, #8b5cf6 100%);
+    --grad-titre: linear-gradient(180deg, #f8fafc 30%, #94a3b8 100%);
+    --grad-flamme: linear-gradient(120deg, #7dd3fc 0%, #4f8ef0 40%, #8b5cf6 90%);
+    --w: min(1320px, calc(100vw - 48px));
+  }
+  @font-face {
+    font-family: "Bricolage Grotesque";
+    src: url("bricolage.woff2") format("woff2");
+    font-weight: 200 800;
+    font-display: swap;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    background: var(--noir);
+    color: var(--ink);
+    font: 16px/1.6 -apple-system, "SF Pro Display", system-ui, "Segoe UI", sans-serif;
+    -webkit-font-smoothing: antialiased;
+    overflow-x: hidden;
+    /* la page tient sur un écran : le pied reste en bas, le titre au centre */
+    min-height: 100svh; display: flex; flex-direction: column;
+  }
+  .w { width: var(--w); margin: 0 auto; }
+
+  /* ---- la lampe : des points bleus n'existent qu'autour de la souris ---- */
+  .fond-lueur {
+    --mx: 50vw; --my: 40vh;
+    position: fixed; inset: 0; z-index: 0;
+    pointer-events: none;
+    background:
+      radial-gradient(rgba(79, 142, 240, .55) 1.2px, transparent 1.2px) 0 0 / 26px 26px;
+    -webkit-mask-image: radial-gradient(260px circle at var(--mx) var(--my),
+      rgba(0,0,0,.9) 0%, rgba(0,0,0,.35) 45%, transparent 72%);
+    mask-image: radial-gradient(260px circle at var(--mx) var(--my),
+      rgba(0,0,0,.9) 0%, rgba(0,0,0,.35) 45%, transparent 72%);
+    opacity: 0;
+    transition: opacity .5s;
+  }
+  .fond-lueur.la { opacity: 1; }
+  /* tout le contenu passe DEVANT la lampe */
+  body > * { position: relative; z-index: 1; }
+  .fond-lueur { z-index: 0; }
+
+  /* ---- navigation : collée, se givre dès qu'on défile ---- */
+  .navwrap {
+    position: sticky; top: 0; z-index: 50;
+    transition: background .3s, backdrop-filter .3s, border-color .3s;
+    border-bottom: 1px solid transparent;
+  }
+  .navwrap.scrolled {
+    background: rgba(0, 0, 0, .55);
+    backdrop-filter: blur(14px) saturate(1.3);
+    -webkit-backdrop-filter: blur(14px) saturate(1.3);
+    border-bottom-color: var(--edge);
+  }
+  nav { display: flex; align-items: center; gap: 26px; padding: 14px 0; }
+  .mark { display: flex; align-items: center; gap: 9px; font-weight: 700; font-size: 16.5px;
+          font-family: "Bricolage Grotesque", -apple-system, system-ui, sans-serif; }
+  .mark svg { display: block; }
+  nav a { color: var(--ink-2); text-decoration: none; font-size: 13.5px; font-weight: 600; transition: color .2s; }
+  nav a:hover { color: var(--ink); }
+  .nav-cta {
+    margin-left: auto;
+    background: var(--grad-chaud); color: #fff !important;
+    padding: 8px 18px; border-radius: 22px; font-weight: 700 !important;
+    box-shadow: 0 4px 24px rgba(79, 142, 240, .35);
+    transition: transform .18s, box-shadow .18s;
+  }
+  .nav-cta:hover { transform: translateY(-1px) scale(1.03); box-shadow: 0 6px 32px rgba(79, 142, 240, .55); }
+
+  /* le sélecteur de langue, porté de merci.html sur les jetons de la peau */
+  .lang {
+    font-family: inherit; font-size: 13px; font-weight: 600; color: var(--ink-2);
+    border: 1px solid var(--edge); border-radius: 99px;
+    padding: 6px 30px 6px 13px; cursor: pointer;
+    appearance: none; -webkit-appearance: none;
+    background: rgba(255,255,255,.03) url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="10" height="6"><path d="M1 1l4 4 4-4" fill="none" stroke="rgba(248,250,252,.4)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>') no-repeat right 12px center;
+    transition: color .2s, border-color .2s;
+  }
+  .lang:hover { color: var(--ink); border-color: rgba(255,255,255,.16); }
+  .lang:focus-visible { outline: 2px solid var(--orange); outline-offset: 3px; }
+  .lang option { background: #111; color: #f8fafc; }
+
+  /* ---- la page elle-même : courte, calme, centrée ---- */
+  main { flex: 1; display: flex; align-items: center; }
+  .perdu { text-align: center; padding: 72px 0 88px; }
+  .code {
+    font-family: "Bricolage Grotesque", -apple-system, system-ui, sans-serif;
+    font-size: 13px; font-weight: 600; letter-spacing: .14em;
+    color: var(--ink-3); margin-bottom: 22px;
+  }
+  h1 {
+    font-family: "Bricolage Grotesque", -apple-system, system-ui, sans-serif;
+    font-size: clamp(40px, 6.6vw, 76px);
+    font-weight: 800; letter-spacing: -.03em; line-height: 1.0;
+  }
+  /* le titre peint le dégradé argent de la peau ; le span le porte pour que
+     le fondu d'entrée (opacité + flou sur le parent) ne casse pas le découpage */
+  h1 .argent {
+    display: block;
+    background: var(--grad-titre);
+    -webkit-background-clip: text; background-clip: text; color: transparent;
+  }
+  .perdu p { max-width: 56ch; margin: 22px auto 0; color: var(--ink-2); font-size: 17.5px; }
+  .perdu-actions {
+    display: flex; gap: 24px; justify-content: center; align-items: center;
+    margin-top: 36px; flex-wrap: wrap;
+  }
+  .cta {
+    display: inline-flex; align-items: center; gap: 9px;
+    background: var(--grad-chaud); background-size: 150% 150%;
+    color: #fff; text-decoration: none;
+    padding: 13px 28px; border-radius: 26px; font-weight: 700; font-size: 15px;
+    box-shadow: 0 6px 32px rgba(79, 142, 240, .4);
+    transition: transform .18s, box-shadow .18s, background-position .4s;
+  }
+  .cta:hover {
+    transform: translateY(-2px) scale(1.02);
+    box-shadow: 0 10px 44px rgba(139, 92, 246, .5);
+    background-position: 100% 100%;
+  }
+  .cta:focus-visible, .discret:focus-visible, nav a:focus-visible {
+    outline: 2px solid var(--orange); outline-offset: 3px; border-radius: 6px;
+  }
+  .discret {
+    color: var(--ink-3); text-decoration: none; font-size: 14px; font-weight: 500;
+    border-bottom: 1px solid var(--edge); padding-bottom: 1px;
+    transition: color .2s, border-color .2s;
+  }
+  .discret:hover { color: var(--ink); border-color: var(--ink-3); }
+
+  /* l'entrée en cascade, la même que le héros */
+  .monte {
+    opacity: 0; transform: translateY(26px); filter: blur(6px);
+    animation: monte .9s cubic-bezier(.16, 1, .3, 1) forwards;
+  }
+  @keyframes monte {
+    to { opacity: 1; transform: none; filter: none; }
+  }
+  .d1 { animation-delay: .05s; }
+  .d2 { animation-delay: .15s; }
+  .d3 { animation-delay: .28s; }
+  .d4 { animation-delay: .4s; }
+
+  footer {
+    border-top: 1px solid var(--edge); padding: 34px 0 60px; margin-top: 40px;
+    color: var(--ink-3); font-size: 13px;
+  }
+  footer .w { display: flex; justify-content: space-between; flex-wrap: wrap; gap: 12px; }
+  footer a { color: var(--ink-3); }
+
+  /* ---- l'immobilité choisie ---- */
+  @media (prefers-reduced-motion: reduce) {
+    .monte { animation: none !important; opacity: 1; transform: none; filter: none; }
+    html { scroll-behavior: auto; }
+  }
+</style>
+</head>
+<body>
+
+<div class="fond-lueur" id="fondLueur" aria-hidden="true"></div>
+
+<div class="navwrap" id="navwrap">
+  <div class="w">
+    <nav>
+      <span class="mark">
+        <svg width="22" height="22" viewBox="0 0 22 22"><g fill="none" stroke="#4f8ef0" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12.5 L11 7.8 L19 12.5"/><path d="M2.2 15.5 L19.8 15.5" stroke-width="2"/></g></svg>
+        Fronton
+      </span>
+      <a href="index.html#fonctions" data-en="Features" data-de="Funktionen">Fonctions</a>
+      <a href="index.html#tarifs" data-en="Pricing" data-de="Preise">Tarifs</a>
+      <a class="nav-cta" href="index.html" data-en="Download" data-de="Laden">Télécharger</a>
+      <select class="lang" id="langSel" aria-label="Langue — Language — Sprache">
+        <option value="fr" lang="fr">Français</option>
+        <option value="en" lang="en">English</option>
+        <option value="de" lang="de">Deutsch</option>
+      </select>
+    </nav>
+  </div>
+</div>
+
+<main>
+  <section class="perdu w" aria-labelledby="titre">
+    <p class="code monte d1" aria-hidden="true">404</p>
+    <h1 id="titre" class="monte d2"><span class="argent" data-en="This page doesn’t exist." data-de="Diese Seite gibt es nicht.">Cette page n’existe pas.</span></h1>
+    <p class="monte d3" data-en="The island is still there." data-de="Die Insel ist trotzdem noch da.">L’îlot, lui, est toujours là.</p>
+    <div class="perdu-actions monte d4">
+      <a class="cta" href="index.html" data-en="Back to the home page" data-de="Zurück zur Startseite">Retour à l’accueil</a>
+      <a class="discret" href="mailto:contact@fronton.app" data-en="Write to contact@fronton.app" data-de="Schreib an contact@fronton.app">Écrire à contact@fronton.app</a>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <div class="w">
+    <span data-en="Fronton — the island at the top of your screen" data-de="Fronton — die Insel ganz oben auf deinem Mac">Fronton — l’îlot au sommet de votre Mac</span>
+    <span><a href="juridique.html" data-en="Legal" data-de="Rechtliches">Juridique</a> · <a href="mailto:contact@fronton.app">contact@fronton.app</a></span>
+  </div>
+</footer>
+
+<script>
+(function () {
+  "use strict";
+  const reduit = matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+  // La lampe de fond : les points bleus suivent la souris, avec une
+  // poursuite amortie. Sans souris (tactile), elle n'existe pas.
+  const lampe = document.getElementById("fondLueur");
+  if (matchMedia("(pointer: fine)").matches) {
+    let cx = innerWidth / 2, cy = innerHeight * .4, tx = cx, ty = cy;
+    let anime = false;
+    const poursuite = () => {
+      cx += (tx - cx) * .13;
+      cy += (ty - cy) * .13;
+      lampe.style.setProperty("--mx", cx + "px");
+      lampe.style.setProperty("--my", cy + "px");
+      if (Math.abs(tx - cx) > .4 || Math.abs(ty - cy) > .4) {
+        requestAnimationFrame(poursuite);
+      } else {
+        anime = false;
+      }
+    };
+    addEventListener("pointermove", e => {
+      tx = e.clientX; ty = e.clientY;
+      lampe.classList.add("la");
+      if (reduit) {
+        lampe.style.setProperty("--mx", tx + "px");
+        lampe.style.setProperty("--my", ty + "px");
+      } else if (!anime) {
+        anime = true;
+        requestAnimationFrame(poursuite);
+      }
+    }, { passive: true });
+    document.documentElement.addEventListener("mouseleave", () => {
+      lampe.classList.remove("la");
+    });
+  }
+
+  // La navigation se givre dès qu'on quitte le sommet.
+  const navwrap = document.getElementById("navwrap");
+  addEventListener("scroll", () => {
+    navwrap.classList.toggle("scrolled", scrollY > 8);
+  }, { passive: true });
+
+  // Trilingue, comme merci.html : le FR est le contenu réel, l'EN et le
+  // DE vivent dans data-en / data-de. Même clé de mémoire que le site.
+  document.querySelectorAll("[data-en]").forEach(function (el) {
+    el.dataset.fr = el.innerHTML;
+  });
+
+  var LANGS = ["fr", "en", "de"];
+  var TITres = {
+    fr: "Page introuvable — Fronton",
+    en: "Page not found — Fronton",
+    de: "Seite nicht gefunden — Fronton"
+  };
+  var lang = (function () {
+    try { if (LANGS.indexOf(localStorage.frontonLang) !== -1) return localStorage.frontonLang; } catch (e) {}
+    var nav = (navigator.language || "en").toLowerCase();
+    if (nav.indexOf("fr") === 0) return "fr";
+    if (nav.indexOf("de") === 0) return "de";
+    return "en";
+  })();
+
+  var sel = document.getElementById("langSel");
+  function apply() {
+    document.documentElement.lang = lang;
+    document.querySelectorAll("[data-en]").forEach(function (el) {
+      el.innerHTML = el.dataset[lang];
+    });
+    sel.value = lang;
+    document.title = TITres[lang];
+  }
+  sel.addEventListener("change", function () {
+    if (LANGS.indexOf(sel.value) === -1) return;
+    lang = sel.value;
+    try { localStorage.frontonLang = lang; } catch (e) {}
+    apply();
+  });
+  apply();
+})();
+</script>
+</body>
+</html>

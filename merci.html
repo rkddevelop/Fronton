@@ -1,163 +1,385 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="fr">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Merci — Fronton</title>
-<!-- Page d'arrivee du paiement Polar (Success URL du lien de checkout).
-     Jamais indexee : on n'y arrive qu'en ayant paye. -->
+<!-- Page d'arrivée du paiement Polar (Success URL du lien de checkout),
+     dans la peau v2 (maquette « Sapphire », direction artistique bleue).
+     Jamais indexée : on n'y arrive qu'en ayant payé. -->
 <meta name="robots" content="noindex">
-<meta name="theme-color" content="#0c0c0e">
+<meta name="theme-color" content="#000000">
 <link rel="icon" type="image/png" sizes="96x96" href="https://fronton.app/favicon.png">
-<link rel="icon" type="image/svg+xml" href='data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 22 22"><g fill="none" stroke="%234F8EF0" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12.5 L11 7.8 L19 12.5"/><path d="M2.2 15.5 L19.8 15.5" stroke-width="2"/></g></svg>'>
+<link rel="icon" type="image/svg+xml" href='data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 22 22"><g fill="none" stroke="%234f8ef0" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12.5 L11 7.8 L19 12.5"/><path d="M2.2 15.5 L19.8 15.5" stroke-width="2"/></g></svg>'>
 <script>document.documentElement.classList.add("js")</script>
-<!-- Mesure d'audience SANS cookies (Plausible, UE) : pays, pages,
+<!-- Mesure d'audience SANS cookies (Pirsch, Allemagne) : pays, pages,
      provenance — aucun identifiant, aucune bannière à consentir.
      Déclarée sur la page juridique. -->
-<script async src="https://plausible.io/js/pa-4gKY5dOdwWyryTxebqhT-.js"></script>
-<script>window.plausible=window.plausible||function(){(plausible.q=plausible.q||[]).push(arguments)},plausible.init=plausible.init||function(i){plausible.o=i||{}};plausible.init()</script>
+<script defer src="https://api.pirsch.io/pa.js" id="pianjs" data-code="TyPbBymtLoEOMgd2b08wfU76ZCV00Djx"></script>
 <style>
+  /* ==================================================================
+     Mêmes jetons, même police, même lampe que la page d'accueil. Page courte : défilement natif, une seule
+     bibliothèque (canvas-confetti, en copie locale), aucune ressource
+     externe.
+     ================================================================== */
   :root {
-    --ground: #0c0c0e;
-    --ink:    #f4f2ee;
-    --ink-2:  rgba(244,242,238,.72);
-    --ink-3:  rgba(244,242,238,.55);
-    --edge:   rgba(255,255,255,.09);
-    --accent: #e8833a;
+    --noir: #000;
+    --ink: #f8fafc;
+    --ink-2: rgba(248, 250, 252, .6);
+    --ink-3: rgba(248, 250, 252, .4);
+    --edge: rgba(255, 255, 255, .08);
+    --orange: #4f8ef0;
+    --rose: #8b5cf6;
+    --grad-chaud: linear-gradient(135deg, #4f8ef0 0%, #8b5cf6 100%);
+    --grad-titre: linear-gradient(180deg, #f8fafc 30%, #94a3b8 100%);
+    --grad-flamme: linear-gradient(120deg, #7dd3fc 0%, #4f8ef0 40%, #8b5cf6 90%);
+    --w: min(1320px, calc(100vw - 48px));
+  }
+  @font-face {
+    font-family: "Bricolage Grotesque";
+    src: url("bricolage.woff2") format("woff2");
+    font-weight: 200 800;
+    font-display: swap;
   }
   * { margin: 0; padding: 0; box-sizing: border-box; }
   body {
-    background: var(--ground); color: var(--ink);
-    font: 16px/1.6 system-ui, -apple-system, "Segoe UI", sans-serif;
+    background: var(--noir);
+    color: var(--ink);
+    font: 16px/1.6 -apple-system, "SF Pro Display", system-ui, "Segoe UI", sans-serif;
     -webkit-font-smoothing: antialiased;
+    overflow-x: hidden;
     min-height: 100svh; display: flex; flex-direction: column;
   }
+  .w { width: var(--w); margin: 0 auto; }
   a { color: inherit; text-decoration: none; }
-  a:focus-visible, button:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; border-radius: 6px; }
-  ::selection { background: var(--accent); color: #0c0c0e; }
+  a:focus-visible, button:focus-visible, select:focus-visible {
+    outline: 2px solid var(--orange); outline-offset: 3px; border-radius: 6px;
+  }
+  ::selection { background: rgba(79, 142, 240, .45); color: var(--ink); }
 
-  header { display: flex; justify-content: center; }
-  .bar { width: min(660px, calc(100vw - 48px)); display: flex; align-items: center; gap: 10px; padding: 22px 0; }
-  .mark { width: 24px; height: 24px; }
-  .brand { font-weight: 700; font-size: 17px; letter-spacing: -.02em; }
+  /* ---- la lampe : des points bleus n'existent qu'autour de la souris ---- */
+  .fond-lueur {
+    --mx: 50vw; --my: 40vh;
+    position: fixed; inset: 0; z-index: 0;
+    pointer-events: none;
+    background:
+      radial-gradient(rgba(79, 142, 240, .55) 1.2px, transparent 1.2px) 0 0 / 26px 26px;
+    -webkit-mask-image: radial-gradient(260px circle at var(--mx) var(--my),
+      rgba(0,0,0,.9) 0%, rgba(0,0,0,.35) 45%, transparent 72%);
+    mask-image: radial-gradient(260px circle at var(--mx) var(--my),
+      rgba(0,0,0,.9) 0%, rgba(0,0,0,.35) 45%, transparent 72%);
+    opacity: 0;
+    transition: opacity .5s;
+  }
+  .fond-lueur.la { opacity: 1; }
+  /* tout le contenu passe DEVANT la lampe */
+  body > * { position: relative; z-index: 1; }
+  .fond-lueur { z-index: 0; }
+
+  /* ---- navigation : collée, se givre dès qu'on défile ---- */
+  .navwrap {
+    position: sticky; top: 0; z-index: 50;
+    transition: background .3s, backdrop-filter .3s, border-color .3s;
+    border-bottom: 1px solid transparent;
+  }
+  .navwrap.scrolled {
+    background: rgba(0, 0, 0, .55);
+    backdrop-filter: blur(14px) saturate(1.3);
+    -webkit-backdrop-filter: blur(14px) saturate(1.3);
+    border-bottom-color: var(--edge);
+  }
+  nav { display: flex; align-items: center; gap: 26px; padding: 14px 0; }
+  .mark { display: flex; align-items: center; gap: 9px; font-weight: 700; font-size: 16.5px;
+          font-family: "Bricolage Grotesque", -apple-system, system-ui, sans-serif; }
+  .mark svg { display: block; }
+  nav a { color: var(--ink-2); text-decoration: none; font-size: 13.5px; font-weight: 600; transition: color .2s; }
+  nav a:hover { color: var(--ink); }
+  /* la marque est un lien vers le site (comme sur la page d'origine) :
+     elle garde sa taille et son encre de marque */
+  nav a.mark { color: var(--ink); font-size: 16.5px; }
+  .nav-cta {
+    margin-left: auto;
+    background: var(--grad-chaud); color: #fff !important;
+    padding: 8px 18px; border-radius: 22px; font-weight: 700 !important;
+    box-shadow: 0 4px 24px rgba(79, 142, 240, .35);
+    transition: transform .18s, box-shadow .18s;
+  }
+  .nav-cta:hover { transform: translateY(-1px) scale(1.03); box-shadow: 0 6px 32px rgba(79, 142, 240, .55); }
+  /* le sélecteur de langue prend la place « auto » ; le bouton le suit */
   .lang {
-    margin-left: auto; font-size: 13px; font-weight: 600; color: var(--ink-2);
+    margin-left: auto; font-family: inherit; font-size: 13px; font-weight: 600; line-height: 1.2; color: var(--ink-2);
     border: 1px solid var(--edge); border-radius: 99px;
-    padding: 5px 30px 5px 13px; cursor: pointer;
+    padding: 6px 30px 6px 13px; cursor: pointer;
     appearance: none; -webkit-appearance: none;
-    background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="10" height="6"><path d="M1 1l4 4 4-4" fill="none" stroke="rgba(244,242,238,.55)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>') no-repeat right 12px center;
+    background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="10" height="6"><path d="M1 1l4 4 4-4" fill="none" stroke="rgba(248,250,252,.55)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>') no-repeat right 12px center;
+    background-color: rgba(255,255,255,.03);
+    transition: color .2s, border-color .2s;
   }
-  .lang:hover { color: var(--ink); }
-  .lang option { background: #1c1c1e; color: #f4f2ee; }
+  .lang:hover { color: var(--ink); border-color: rgba(255,255,255,.22); }
+  .lang option { background: #0b0e18; color: #f8fafc; }
+  .lang + .nav-cta { margin-left: 0; white-space: nowrap; }
+  /* Écrans étroits, MESURÉ à 375 pt (merci-pro) : marque 93 + sélecteur 94 +
+     bouton « Gérer mon achat » 156 (« Meinen Kauf verwalten » ~200) dépassent
+     les 327 pt de la colonne — le bouton se cassait sur deux lignes. Les liens
+     Fonctions/Tarifs s'effacent d'abord, puis le bouton lui-même : il double
+     un lien du corps ou du pied, rien n'est perdu. Même règle sur les trois
+     pages secondaires. */
+  @media (max-width: 760px) {
+    nav { gap: 12px; }
+    nav .lien { display: none; }
+    .nav-cta { padding: 7px 14px; font-size: 12.5px; }
+    .lang { font-size: 12.5px; padding: 5px 26px 5px 11px; }
+  }
+  @media (max-width: 480px) {
+    .nav-cta { display: none; }
+  }
 
-  main { flex: 1; display: flex; justify-content: center; padding: 40px 24px 80px; }
-  .inner { width: min(660px, 100%); }
+  /* ---- la colonne : une seule, centrée ---- */
+  main { flex: 1; }
+  .merci { max-width: 720px; margin: 0 auto; padding: 84px 0 72px; }
+  .entete { text-align: center; }
 
-  h1 { font-size: clamp(34px, 6vw, 46px); font-weight: 800; letter-spacing: -.03em; line-height: 1.1; }
-  h1 .lift { position: relative; white-space: nowrap; }
-  h1 .lift::after {
-    content: ""; position: absolute; left: 2%; right: 2%; bottom: .05em;
-    height: .09em; border-radius: 99px; background: var(--accent); opacity: .9; z-index: -1;
+  /* l'entrée en cascade */
+  .monte {
+    opacity: 0; transform: translateY(26px); filter: blur(6px);
+    animation: monte .9s cubic-bezier(.16, 1, .3, 1) forwards;
   }
-  .sub { margin-top: 14px; font-size: 17px; color: var(--ink-2); max-width: 46ch; }
+  @keyframes monte {
+    to { opacity: 1; transform: none; filter: none; }
+  }
+  .d1 { animation-delay: .05s; } .d2 { animation-delay: .18s; }
+  .d3 { animation-delay: .34s; } .d4 { animation-delay: .5s; }
+  .d5 { animation-delay: .62s; } .d6 { animation-delay: .74s; }
+  .d7 { animation-delay: .9s; }
 
-  ol.steps { margin-top: 40px; list-style: none; counter-reset: e; display: flex; flex-direction: column; gap: 18px; }
-  ol.steps li {
-    counter-increment: e; position: relative; padding: 18px 20px 18px 60px;
-    border: 1px solid var(--edge); border-radius: 16px;
+  .hero-chip {
+    display: inline-flex; align-items: center; gap: 8px;
+    border: 1px solid var(--edge); border-radius: 20px;
+    padding: 6px 16px; font-size: 12.5px; font-weight: 600; color: var(--ink-2);
+    background: rgba(255,255,255,.03);
+    margin-bottom: 30px;
   }
-  ol.steps li::before {
-    content: counter(e); position: absolute; left: 20px; top: 18px;
-    width: 26px; height: 26px; border-radius: 50%;
-    display: flex; align-items: center; justify-content: center;
-    font-size: 13.5px; font-weight: 700; color: var(--accent);
-    border: 1.5px solid var(--accent);
+  .hero-chip i {
+    width: 6px; height: 6px; border-radius: 50%;
+    background: var(--grad-chaud); display: inline-block;
+    animation: pulse 2.4s ease-in-out infinite;
   }
-  ol.steps h2 { font-size: 16.5px; font-weight: 700; letter-spacing: -.01em; }
-  ol.steps p { margin-top: 4px; font-size: 14.5px; color: var(--ink-2); }
-  ol.steps kbd {
-    font: 600 12.5px/1 system-ui, sans-serif; color: var(--ink);
-    border: 1px solid var(--edge); border-bottom-width: 2px;
+  @keyframes pulse {
+    0%, 100% { box-shadow: 0 0 0 0 rgba(79, 142, 240, .5); }
+    50% { box-shadow: 0 0 0 6px rgba(79, 142, 240, 0); }
+  }
+
+  h1 {
+    font-family: "Bricolage Grotesque", -apple-system, system-ui, sans-serif;
+    font-size: clamp(40px, 7.2vw, 66px);
+    font-weight: 800; letter-spacing: -.03em; line-height: 1.04;
+    background: var(--grad-titre);
+    -webkit-background-clip: text; background-clip: text; color: transparent;
+    text-wrap: balance;
+  }
+  /* « vous » est positionné (il porte le trait) : il sort du découpage
+     de dégradé du parent — il peint donc le sien, identique. */
+  .sommet {
+    position: relative; white-space: nowrap;
+    background: var(--grad-titre);
+    -webkit-background-clip: text; background-clip: text; color: transparent;
+  }
+  .trait-sommet {
+    position: absolute; left: 1%; right: 3%; bottom: .06em; height: .075em;
+    border-radius: 6px;
+    background: linear-gradient(90deg, #4f8ef0, #8b5cf6);
+    box-shadow: 0 0 22px rgba(79, 142, 240, .55);
+    transform: scaleX(0); transform-origin: left;
+    animation: sommetTrait 1.1s cubic-bezier(.65, 0, .35, 1) .7s forwards;
+  }
+  @keyframes sommetTrait { to { transform: scaleX(1); } }
+  .sub {
+    max-width: 52ch; margin: 22px auto 0; color: var(--ink-2); font-size: 17.5px;
+  }
+
+  /* ---- les trois étapes : des cartes numérotées ---- */
+  ol.etapes { margin-top: 48px; list-style: none; counter-reset: e; display: flex; flex-direction: column; gap: 14px; }
+  ol.etapes li {
+    counter-increment: e;
+    display: grid; grid-template-columns: 30px 1fr; gap: 18px; align-items: start;
+    padding: 22px 24px 24px;
+    border: 1px solid var(--edge); border-radius: 18px;
+    background: linear-gradient(170deg, #0b0e18, #05060b);
+    transition: transform .25s cubic-bezier(.16, 1, .3, 1), box-shadow .25s, border-color .25s;
+  }
+  ol.etapes li:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 22px 60px rgba(0,0,0,.5);
+    border-color: rgba(79, 142, 240, .22);
+  }
+  ol.etapes li::before {
+    content: counter(e);
+    width: 30px; height: 30px; border-radius: 50%; margin-top: -2px;
+    display: grid; place-items: center;
+    font-family: "Bricolage Grotesque", -apple-system, system-ui, sans-serif;
+    font-size: 13.5px; font-weight: 800; color: var(--orange);
+    border: 1.5px solid rgba(79, 142, 240, .55);
+    background: rgba(79, 142, 240, .08);
+  }
+  ol.etapes h2 {
+    font-family: "Bricolage Grotesque", -apple-system, system-ui, sans-serif;
+    font-size: 19px; font-weight: 700; letter-spacing: -.015em; line-height: 1.25;
+    background: var(--grad-titre);
+    -webkit-background-clip: text; background-clip: text; color: transparent;
+  }
+  ol.etapes p { margin-top: 6px; font-size: 15px; color: var(--ink-2); line-height: 1.6; max-width: 52ch; }
+  ol.etapes p.meta { margin-top: 12px; font-size: 13px; color: var(--ink-3); }
+  kbd {
+    font: 600 12.5px/1 -apple-system, "SF Pro Display", system-ui, "Segoe UI", sans-serif;
+    color: var(--ink);
+    border: 1px solid rgba(255,255,255,.14); border-bottom-width: 2px;
     border-radius: 6px; padding: 2.5px 7px; white-space: nowrap;
+    background: rgba(255,255,255,.04);
   }
-  .dl {
-    display: none; margin-top: 12px;
-    background: var(--ink); color: var(--ground);
-    font-size: 15px; font-weight: 700; padding: 11px 22px; border-radius: 99px;
+
+  /* le bouton principal, celui du héros de la maquette */
+  .cta {
+    display: inline-flex; align-items: center; gap: 9px;
+    background: var(--grad-chaud); background-size: 150% 150%;
+    color: #fff; text-decoration: none;
+    padding: 13px 28px; border-radius: 26px; font-weight: 700; font-size: 15px;
+    box-shadow: 0 6px 32px rgba(79, 142, 240, .4);
+    transition: transform .18s, box-shadow .18s, background-position .4s;
   }
-  .js .has-dl .dl { display: inline-block; }
+  .cta:hover {
+    transform: translateY(-2px) scale(1.02);
+    box-shadow: 0 10px 44px rgba(139, 92, 246, .5);
+    background-position: 100% 100%;
+  }
+  /* VIDE tant qu'Apple n'a pas notarisé : sans lien, l'étape renvoie à
+     l'e-mail ; avec, le bouton paraît. */
+  .dl { display: none; margin-top: 14px; }
+  .js .has-dl .dl { display: inline-flex; }
   .js .has-dl .dl-fallback { display: none; }
 
-  .aside { margin-top: 36px; font-size: 14px; color: var(--ink-3); max-width: 52ch; }
-  .aside a { color: var(--ink-2); border-bottom: 1px solid var(--edge); }
-  .aside a:hover { color: var(--ink); }
+  .aside { margin: 44px auto 0; font-size: 14.5px; line-height: 1.65; color: var(--ink-3); max-width: 60ch; }
+  .aside a {
+    color: var(--ink-2); border-bottom: 1px solid rgba(255,255,255,.18);
+    transition: color .2s, border-color .2s;
+  }
+  .aside a:hover { color: var(--ink); border-color: var(--orange); }
 
-  footer { display: flex; justify-content: center; padding: 0 24px 34px; }
-  footer .inner { display: flex; gap: 18px; font-size: 13px; color: var(--ink-3); }
+  footer {
+    border-top: 1px solid var(--edge); padding: 34px 0 60px; margin-top: 40px;
+    color: var(--ink-3); font-size: 13px;
+  }
+  footer .w { display: flex; justify-content: space-between; flex-wrap: wrap; gap: 12px; }
+  footer a { color: var(--ink-3); transition: color .2s; }
   footer a:hover { color: var(--ink); }
+
+  /* ---- les confettis (15 sept. 2026) ----
+     Demande de Yassin : les confettis du composant React « Confetti » qu'il a
+     collé (21st.dev), SANS le mot « Confetti » géant de sa démo. Le composant
+     n'est qu'une toile confiée à canvas-confetti ; ce site n'a ni React ni
+     Tailwind, donc c'est la même bibliothèque, en copie locale
+     (confetti.browser.js, ISC), et les mêmes réglages — voir le script.
+     La toile couvre la fenêtre et laisse passer les clics : dans la démo elle
+     était bornée à sa boîte, ici une boîte couperait la gerbe au bord de
+     l'en-tête. */
+  .confettis {
+    position: fixed; inset: 0; width: 100%; height: 100%;
+    pointer-events: none; z-index: 90;
+  }
+
+  /* ---- l'immobilité choisie ---- */
+  @media (prefers-reduced-motion: reduce) {
+    .confettis { display: none; }
+    .trait-sommet { animation: none; transform: scaleX(1); }
+    .monte, .hero-chip i { animation: none !important; }
+    .monte { opacity: 1; transform: none; filter: none; }
+    ol.etapes li, .cta, .nav-cta, .fond-lueur { transition: none; }
+    html { scroll-behavior: auto; }
+  }
 </style>
 </head>
 <body>
 
-<header>
-  <div class="bar">
-    <a href="https://fronton.app/" aria-label="Fronton" style="display:flex;align-items:center;gap:10px">
-      <svg class="mark" viewBox="0 0 22 22" fill="none" stroke="var(--accent)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-        <path d="M3 12.5 L11 7.8 L19 12.5"/><path d="M2.2 15.5 L19.8 15.5" stroke-width="2"/>
-      </svg>
-      <span class="brand">Fronton</span>
-    </a>
-    <select class="lang" id="langSel" aria-label="Langue — Language — Sprache">
-      <option value="fr" lang="fr">Français</option>
-      <option value="en" lang="en">English</option>
-      <option value="de" lang="de">Deutsch</option>
-    </select>
+<div class="fond-lueur" id="fondLueur" aria-hidden="true"></div>
+<canvas class="confettis" id="confettis" aria-hidden="true"></canvas>
+
+<div class="navwrap" id="navwrap">
+  <div class="w">
+    <nav>
+      <a class="mark" href="index.html" aria-label="Fronton">
+        <svg width="22" height="22" viewBox="0 0 22 22" aria-hidden="true"><g fill="none" stroke="#4f8ef0" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12.5 L11 7.8 L19 12.5"/><path d="M2.2 15.5 L19.8 15.5" stroke-width="2"/></g></svg>
+        Fronton
+      </a>
+      <a class="lien" href="index.html#fonctions" data-en="Features" data-de="Funktionen">Fonctions</a>
+      <a class="lien" href="index.html#tarifs" data-en="Pricing" data-de="Preise">Tarifs</a>
+      <select class="lang" id="langSel" aria-label="Langue — Language — Sprache">
+        <option value="fr" lang="fr">Français</option>
+        <option value="en" lang="en">English</option>
+        <option value="de" lang="de">Deutsch</option>
+      </select>
+      <a class="nav-cta" id="navDl" href="index.html" data-en="Download" data-de="Laden">Télécharger</a>
+    </nav>
   </div>
-</header>
+</div>
 
 <main>
-  <div class="inner">
-    <h1 data-en='Thank you. The island is <span class="lift">yours</span>.' data-de='Danke. Die Insel gehört jetzt <span class="lift">dir</span>.'>Merci. L&rsquo;îlot est à <span class="lift">vous</span>.</h1>
-    <p class="sub" data-en="Your payment went through. Your licence key is on its way to the email address you used at checkout — it usually arrives within a minute." data-de="Deine Zahlung ist eingegangen. Dein Lizenzschlüssel ist unterwegs an die E-Mail-Adresse aus dem Kauf — er kommt meist innerhalb einer Minute an.">Votre paiement est passé. Votre clé de licence arrive à l&rsquo;adresse e-mail utilisée pour l&rsquo;achat — comptez une minute, rarement plus.</p>
+  <div class="w">
+    <div class="merci">
+      <div class="entete">
+        <span class="hero-chip monte d1"><i></i><span data-en="Payment confirmed" data-de="Zahlung bestätigt">Paiement confirmé</span></span>
+        <h1 class="monte d2" data-en='Thank you. The island is <span class="sommet">yours<i class="trait-sommet" aria-hidden="true"></i></span>.' data-de='Danke. Die Insel gehört jetzt <span class="sommet">dir<i class="trait-sommet" aria-hidden="true"></i></span>.'>Merci. L&rsquo;îlot est à <span class="sommet">vous<i class="trait-sommet" aria-hidden="true"></i></span>.</h1>
+        <p class="sub monte d3" data-en="Your payment went through. Your licence key is on its way to the email address you used at checkout — it usually arrives within a minute." data-de="Deine Zahlung ist eingegangen. Dein Lizenzschlüssel ist unterwegs an die E-Mail-Adresse aus dem Kauf — er kommt meist innerhalb einer Minute an.">Votre paiement est passé. Votre clé de licence arrive à l&rsquo;adresse e-mail utilisée pour l&rsquo;achat — comptez une minute, rarement plus.</p>
+      </div>
 
-    <ol class="steps">
-      <li id="step-dl">
-        <h2 data-en="Download Fronton" data-de="Fronton laden">Téléchargez Fronton</h2>
-        <p class="dl-fallback" data-en="The download link is in the same email as your key." data-de="Der Download-Link steht in derselben E-Mail wie dein Schlüssel.">Le lien de téléchargement est dans le même e-mail que votre clé.</p>
-        <a class="dl" href="" data-en="Download for Mac" data-de="Für Mac laden">Télécharger pour Mac</a>
-        <p data-en="macOS 26 · Apple Silicon · notch or no notch" data-de="macOS 26 · Apple Silicon · mit oder ohne Notch">macOS 26 · Apple Silicon · avec ou sans encoche</p>
-      </li>
-      <li>
-        <h2 data-en="Paste your key" data-de="Schlüssel einsetzen">Collez votre clé</h2>
-        <p data-en='Click the Fronton mark in the menu bar, open <kbd>Settings</kbd> → <kbd>License</kbd>, paste the key from the email, then click <kbd>Activate</kbd>.' data-de='Klicke das Fronton-Zeichen in der Menüleiste, öffne <kbd>Einstellungen</kbd> → <kbd>Lizenz</kbd>, setze den Schlüssel aus der E-Mail ein und klicke <kbd>Aktivieren</kbd>.'>Cliquez le fronton dans la barre des menus, ouvrez <kbd>Réglages</kbd> → <kbd>Licence</kbd>, collez la clé reçue par e-mail, puis <kbd>Activer la clé</kbd>.</p>
-      </li>
-      <li>
-        <h2 data-en="Hover the top of your screen" data-de="Fahre an den oberen Bildschirmrand">Survolez le haut de l&rsquo;écran</h2>
-        <p data-en="That&rsquo;s the only gesture to learn: the island opens, and everything is there. In and out in under thirty seconds." data-de="Das ist die einzige Geste, die du brauchst: Die Insel öffnet sich, und alles ist da. Rein und raus in weniger als dreißig Sekunden.">C&rsquo;est le seul geste à connaître : l&rsquo;îlot s&rsquo;ouvre, et tout est là. Entré, sorti — jamais plus de trente secondes.</p>
-      </li>
-    </ol>
+      <ol class="etapes">
+        <li id="step-dl" class="monte d4">
+          <div>
+            <h2 data-en="Download Fronton" data-de="Fronton laden">Téléchargez Fronton</h2>
+            <p class="dl-fallback" data-en="The download link is in the same email as your key." data-de="Der Download-Link steht in derselben E-Mail wie dein Schlüssel.">Le lien de téléchargement est dans le même e-mail que votre clé.</p>
+            <a class="dl cta" href="" data-en="Download for Mac" data-de="Für Mac laden">Télécharger pour Mac</a>
+            <p class="meta" data-en="macOS 26 · Apple Silicon · notch or no notch" data-de="macOS 26 · Apple Silicon · mit oder ohne Notch">macOS 26 · Apple Silicon · avec ou sans encoche</p>
+          </div>
+        </li>
+        <li class="monte d5">
+          <div>
+            <h2 data-en="Paste your key" data-de="Schlüssel einsetzen">Collez votre clé</h2>
+            <p data-en='Click the Fronton mark in the menu bar, open <kbd>Settings</kbd> → <kbd>Account</kbd>, paste the key from the email, then click <kbd>Activate</kbd>.' data-de='Klicke das Fronton-Zeichen in der Menüleiste, öffne <kbd>Einstellungen</kbd> → <kbd>Konto</kbd>, setze den Schlüssel aus der E-Mail ein und klicke <kbd>Aktivieren</kbd>.'>Cliquez le fronton dans la barre des menus, ouvrez <kbd>Réglages</kbd> → <kbd>Compte</kbd>, collez la clé reçue par e-mail, puis <kbd>Activer la clé</kbd>.</p>
+          </div>
+        </li>
+        <li class="monte d6">
+          <div>
+            <h2 data-en="Hover the top of your screen" data-de="Fahre an den oberen Bildschirmrand">Survolez le haut de l&rsquo;écran</h2>
+            <p data-en="That&rsquo;s the only gesture to learn: the island opens, and everything is there. In and out in under thirty seconds." data-de="Das ist die einzige Geste, die du brauchst: Die Insel öffnet sich, und alles ist da. Rein und raus in weniger als dreißig Sekunden.">C&rsquo;est le seul geste à connaître : l&rsquo;îlot s&rsquo;ouvre, et tout est là. Entré, sorti — jamais plus de trente secondes.</p>
+          </div>
+        </li>
+      </ol>
 
-    <p class="aside" data-en='No email after a few minutes? Check your spam folder — and the Promotions tab if your inbox has one. Still nothing? Retrieve your key yourself on <a href="https://polar.sh/fronton/portal">the purchase portal</a>, using the email you paid with. And if all else fails, write to <a href="mailto:contact@fronton.app">contact@fronton.app</a> — the address also honours the 14-day refund, no questions asked.' data-de='Keine E-Mail nach ein paar Minuten? Sieh im Spam-Ordner nach — und im Tab „Werbung“, falls dein Postfach einen hat. Immer noch nichts? Hol dir deinen Schlüssel selbst im <a href="https://polar.sh/fronton/portal">Kaufportal</a>, mit der E-Mail-Adresse aus dem Kauf. Und wenn gar nichts hilft, schreib an <a href="mailto:contact@fronton.app">contact@fronton.app</a> — dieselbe Adresse gilt auch für die 14-Tage-Erstattung, ohne Begründung.'>Pas d&rsquo;e-mail au bout de quelques minutes ? Regardez dans les indésirables — et dans l&rsquo;onglet Promotions si votre messagerie en a un. Toujours rien ? Retrouvez votre clé vous-même sur <a href="https://polar.sh/fronton/portal">le portail d&rsquo;achat</a>, avec l&rsquo;adresse utilisée au paiement. Et si rien n&rsquo;y fait, écrivez à <a href="mailto:contact@fronton.app">contact@fronton.app</a> — la même adresse vaut pour le remboursement sous 14 jours, sans justification.</p>
+      <p class="aside monte d7" data-en='No email after a few minutes? Check your spam folder — and the Promotions tab if your inbox has one. Still nothing? Retrieve your key yourself on <a href="https://polar.sh/fronton/portal">the purchase portal</a>, using the email you paid with. And if all else fails, write to <a href="mailto:contact@fronton.app">contact@fronton.app</a> — the address also honours the 14-day refund, no questions asked.' data-de='Keine E-Mail nach ein paar Minuten? Sieh im Spam-Ordner nach — und im Tab „Werbung“, falls dein Postfach einen hat. Immer noch nichts? Hol dir deinen Schlüssel selbst im <a href="https://polar.sh/fronton/portal">Kaufportal</a>, mit der E-Mail-Adresse aus dem Kauf. Und wenn gar nichts hilft, schreib an <a href="mailto:contact@fronton.app">contact@fronton.app</a> — dieselbe Adresse gilt auch für die 14-Tage-Erstattung, ohne Begründung.'>Pas d&rsquo;e-mail au bout de quelques minutes ? Regardez dans les indésirables — et dans l&rsquo;onglet Promotions si votre messagerie en a un. Toujours rien ? Retrouvez votre clé vous-même sur <a href="https://polar.sh/fronton/portal">le portail d&rsquo;achat</a>, avec l&rsquo;adresse utilisée au paiement. Et si rien n&rsquo;y fait, écrivez à <a href="mailto:contact@fronton.app">contact@fronton.app</a> — la même adresse vaut pour le remboursement sous 14 jours, sans justification.</p>
+    </div>
   </div>
 </main>
 
 <footer>
-  <div class="inner">
-    <a href="https://fronton.app/" data-en="fronton.app" data-de="fronton.app">fronton.app</a>
-    <a href="https://fronton.app/juridique.html" data-en="Legal" data-de="Rechtliches">Juridique</a>
-    <a href="https://polar.sh/fronton/portal" data-en="Manage my purchase" data-de="Meinen Kauf verwalten">Gérer mon achat</a>
+  <div class="w">
+    <span data-en="Fronton — the island at the top of your Mac" data-de="Fronton — die Insel ganz oben auf deinem Mac">Fronton — l&rsquo;îlot au sommet de votre Mac</span>
+    <span>
+      <a href="juridique.html" data-en="Legal" data-de="Rechtliches">Juridique</a> ·
+      <a href="https://polar.sh/fronton/portal" data-en="Manage my purchase" data-de="Meinen Kauf verwalten">Gérer mon achat</a> ·
+      <a href="mailto:contact@fronton.app">contact@fronton.app</a>
+    </span>
   </div>
 </footer>
 
+<script src="confetti.browser.js"></script>
 <script>
   (function () {
     "use strict";
-    /* Le lien de telechargement : VIDE tant qu'Apple n'a pas notarise.
-       Vide, l'etape 1 renvoie a l'e-mail ; rempli, le bouton parait.
-       Meme patron que CHECKOUT_URL dans index.html. */
+    /* Le lien de téléchargement : VIDE tant qu'Apple n'a pas notarisé.
+       Vide, l'étape 1 renvoie à l'e-mail ; rempli, le bouton paraît
+       (et le bouton de la navigation pointe dessus).
+       Même patron que CHECKOUT_URL dans index.html. */
     var DOWNLOAD_URL = "https://github.com/rkddevelop/Fronton/releases/download/updates/Fronton-1.0.zip";
 
-    // FR = contenu reel ; l'EN et le DE vivent dans data-en / data-de.
+    // FR = contenu réel ; l'EN et le DE vivent dans data-en / data-de.
     document.querySelectorAll("[data-en]").forEach(function (el) {
       el.dataset.fr = el.innerHTML;
     });
@@ -165,6 +387,7 @@
     if (DOWNLOAD_URL) {
       document.getElementById("step-dl").classList.add("has-dl");
       document.querySelector(".dl").setAttribute("href", DOWNLOAD_URL);
+      document.getElementById("navDl").setAttribute("href", DOWNLOAD_URL);
     }
 
     var LANGS = ["fr", "en", "de"];
@@ -193,6 +416,86 @@
       apply();
     });
     apply();
+
+    var reduit = matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+    // Les confettis — le composant « Confetti » du prompt, traduit sans React :
+    // une instance sur SA toile (`confetti.create`, resize), un tir aux
+    // options par défaut au montage (`manualstart` faux), et un nouveau tir
+    // chaque fois que la souris ENTRE dans la zone (son `onMouseEnter` =
+    // `mouseenter` : au tactile une gerbe au premier tap, jamais au défilement
+    // — `pointerenter` tirait à chaque contact). Transpositions : la zone est
+    // l'en-tête (la toile couvre la fenêtre et ignore la souris), la gerbe
+    // part du TITRE (dans la démo, du centre de sa boîte, où trônait le mot
+    // « Confetti » que Yassin ne veut pas), et rien en mouvement réduit.
+    // PAS DE WORKER, contre le réglage du prompt (revue du 15 sept. 2026,
+    // mesuré) : canvas-confetti ne mesure la toile qu'au premier tir et
+    // n'écoute `resize` que PENDANT une gerbe — après une rotation, un zoom ou
+    // une fenêtre redimensionnée, la gerbe suivante sortait étirée. Une toile
+    // confiée au worker ne se redimensionne plus (InvalidStateError) ; sans
+    // lui, on la recale avant chaque tir, comme la bibliothèque (largeur
+    // tronquée, sinon un pixel d'écart l'effacerait à chaque survol).
+    // Le tir du montage part à 500 ms : le titre (cascade .d2, 0,18 s de
+    // retard + 0,9 s) est alors posé à ~92 %, la gerbe part d'où il atterrit.
+    var toile = document.getElementById("confettis");
+    var entete = document.querySelector(".entete");
+    var titre = entete && entete.querySelector("h1");
+    if (!reduit && window.confetti && toile && titre) {
+      var canon = window.confetti.create(toile, { resize: true, useWorker: false });
+      var tirer = function () {
+        var b = toile.getBoundingClientRect();
+        var w = Math.floor(b.width), h = Math.floor(b.height);
+        if (toile.width !== w || toile.height !== h) { toile.width = w; toile.height = h; }
+        var r = titre.getBoundingClientRect();
+        canon({
+          origin: {
+            x: (r.left + r.width / 2) / innerWidth,
+            y: (r.top + r.height / 2) / innerHeight
+          }
+        });
+      };
+      setTimeout(tirer, 500);
+      entete.addEventListener("mouseenter", tirer);
+    }
+
+    // La lampe de fond : les points bleus suivent la souris, avec une
+    // poursuite amortie. Sans souris (tactile), elle n'existe pas.
+    var lampe = document.getElementById("fondLueur");
+    if (matchMedia("(pointer: fine)").matches) {
+      var cx = innerWidth / 2, cy = innerHeight * .4, tx = cx, ty = cy;
+      var anime = false;
+      var poursuite = function () {
+        cx += (tx - cx) * .13;
+        cy += (ty - cy) * .13;
+        lampe.style.setProperty("--mx", cx + "px");
+        lampe.style.setProperty("--my", cy + "px");
+        if (Math.abs(tx - cx) > .4 || Math.abs(ty - cy) > .4) {
+          requestAnimationFrame(poursuite);
+        } else {
+          anime = false;
+        }
+      };
+      addEventListener("pointermove", function (e) {
+        tx = e.clientX; ty = e.clientY;
+        lampe.classList.add("la");
+        if (reduit) {
+          lampe.style.setProperty("--mx", tx + "px");
+          lampe.style.setProperty("--my", ty + "px");
+        } else if (!anime) {
+          anime = true;
+          requestAnimationFrame(poursuite);
+        }
+      }, { passive: true });
+      document.documentElement.addEventListener("mouseleave", function () {
+        lampe.classList.remove("la");
+      });
+    }
+
+    // La navigation se givre dès qu'on quitte le sommet.
+    var navwrap = document.getElementById("navwrap");
+    var givre = function () { navwrap.classList.toggle("scrolled", scrollY > 8); };
+    addEventListener("scroll", givre, { passive: true });
+    givre();
   })();
 </script>
 </body>
