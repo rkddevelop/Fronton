@@ -15,7 +15,7 @@ in the page, no JavaScript needed to read it.
 - **Music and synced lyrics.** A band slides down under the notch and follows
   the song line by line, without opening anything, while you work. Apple Music
   and Spotify. Hovering it folds it away, so whatever it covered is clickable
-  again. Lyrics also follow a video: the track is recognised by its sound
+  again. Lyrics also follow a video: the track is recognized by its sound
   (ShazamKit), then its lines land on the second.
 - **Local AI assistant.** Runs on the Mac through Ollama, no account and no API
   key. The model loads on demand and gives the memory back after use. Web
