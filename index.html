@@ -666,6 +666,22 @@
     .duo.inv .txt { order: 1; } .duo.inv .visu { order: 2; }
   }
 
+  /* LE HÉROS SUR TÉLÉPHONE (21 sept. 2026, constat de Yassin : « le héros
+     ne se met pas bien »). Deux défauts, mesurés à 390 px :
+     · le grand titre cassait « The island at the / top / of your Mac. » —
+       un mot souligné tout seul sur sa ligne, parce que la première ligne
+       se remplit avant de couper. `text-wrap: balance` répartit les deux
+       lignes ; le corps de 52 px ne bouge pas (il faudrait descendre à 34
+       pour tenir en une ligne, mesuré : le titre y perdrait son poids).
+     · les quatre preuves s'enroulaient en trois rangées dont la dernière
+       portait deux éléments côte à côte, les deux premières étant centrées
+       seules : une colonne les aligne, et ne coûte rien — 113 pt contre
+       122 avant. */
+  @media (max-width: 640px) {
+    h1 .argent { text-wrap: balance; }
+    .preuves { flex-direction: column; align-items: center; gap: 10px; }
+  }
+
   /* la lueur qui suit la souris : --mx/--my posés par le script */
   .visu {
     --mx: 50%; --my: 50%;
