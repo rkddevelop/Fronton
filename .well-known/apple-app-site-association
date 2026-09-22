@@ -1,0 +1,16 @@
+{
+  "applinks": {
+    "details": [
+      {
+        "appIDs": ["P4SV698NZ7.com.yassin.inotch"],
+        "components": [
+          {
+            "/": "/activer",
+            "?": { "cle": "?*" },
+            "comment": "Activation de licence en un clic : le lien du courriel d'achat ouvre Fronton avec la cle en place."
+          }
+        ]
+      }
+    ]
+  }
+}
