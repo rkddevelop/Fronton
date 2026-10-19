@@ -582,10 +582,20 @@
      → 100 %) suffit largement à dire l'entrée. `filter` sort aussi de la
      transition : une propriété qu'on ne fait plus varier n'a rien à y
      faire. */
+  /* NI FLOU NI FONDU SUR LES CLIPS. Le fondu est parti le 19 oct. 2026
+     (constat de Yassin dans Safari : les deux premiers clips ne se lancent
+     pas ; Chrome les lance tous, mesuré). MESURÉ dans un WKWebView : au
+     moment où la page lance un clip, son enveloppe est ENCORE à opacité 0 —
+     14 clips sur 14, même à 69 % visibles. WebKit ne lance pas une vidéo
+     muette qu'il juge invisible : c'est la cause la plus probable, PAS
+     PROUVÉE dans Safari même (le WKWebView du banc refusait toute lecture
+     automatique, opacité ou non). D'où aussi le guetteur de relance, plus
+     bas, qui rattrape un refus quelle qu'en soit la cause. La montée de
+     34 px reste. */
   .clipwrap.reveal {
+    opacity: 1;
     filter: none;
-    transition: opacity .8s cubic-bezier(.16, 1, .3, 1),
-                transform .8s cubic-bezier(.16, 1, .3, 1);
+    transition: transform .8s cubic-bezier(.16, 1, .3, 1);
   }
 
   .chip {
@@ -2607,7 +2617,15 @@
     v.dataset.charge = "1";
     v.preload = "auto";
     if (auDebut) v.currentTime = 0;
-    v.play().catch(() => {});
+    // UN REFUS N'EST PLUS DÉFINITIF (19 oct. 2026). Un navigateur peut
+    // refuser de lancer une vidéo — Safari quand il la juge invisible ou en
+    // mode économie d'énergie, n'importe lequel pendant un `load()`. Avant,
+    // la promesse rejetée était avalée et le clip restait sur son affiche
+    // pour toujours : le zoom ne repasse jamais par son départ. Le refus est
+    // noté, et le guetteur de relance (plus bas) réessaie dès que le clip
+    // est franchement à l'écran.
+    v.play().then(() => { delete v.dataset.relance; },
+                  () => { v.dataset.relance = "1"; });
   };
   if (observateurs) {
     const ioCharge = new IntersectionObserver(entrees => {
@@ -2688,6 +2706,20 @@
       });
     });
     clips.forEach(v => ioVue.observe(v));
+
+    // LE GUETTEUR DE RELANCE. Un clip dont le lancement a été refusé repart
+    // quand il est au tiers visible — assez pour que tout navigateur le
+    // tienne pour vu — et seulement s'il n'est pas déjà fini : une
+    // démonstration se regarde une fois, elle ne recommence pas toute seule.
+    const ioRelance = new IntersectionObserver(entrees => {
+      entrees.forEach(e => {
+        const v = e.target;
+        if (e.intersectionRatio >= 0.33 && v.dataset.relance && v.paused && !v.ended) {
+          lire(v, false);
+        }
+      });
+    }, { threshold: [0.33, 0.6, 0.9] });
+    clips.forEach(v => ioRelance.observe(v));
   }
 
   // « VOUS POUVEZ » SANS TIMELINES CSS : le repli GSAP de la démo de jh3yy,
