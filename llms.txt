@@ -45,7 +45,7 @@ seconds, it ends in the app that owns it.
 - 29 € once, for life. Launch price until 31 December 2026, then 39 €.
 - Or 4 € per month, cancellable at any time. Same app, same features.
 - 14-day trial, no account to create. One license covers two Macs.
-- Payment by Polar (merchant of record); the license key arrives by email.
+- Payment by Polar (merchant of record). After purchase, the thank-you page shows the license key with a one-click "Activate in Fronton" button; the key is also on the purchase page linked from Polar's email ("Access purchase").
 
 ## Privacy
 

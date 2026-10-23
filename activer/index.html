@@ -3,10 +3,105 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
+<!-- AVANT toute ressource : un Referer ne porte jamais que l'ORIGINE (même
+     recette que merci.html). La clé est retirée de l'adresse dès le script
+     suivant, mais l'analyseur d'avance peut réclamer favicon et Pirsch
+     avant qu'il ait tourné. -->
+<meta name="referrer" content="strict-origin">
+<script>
+  /* LA CLÉ NE VA PAS PLUS LOIN QUE CETTE PAGE (23 oct. 2026).
+     `https://fronton.app/activer?cle=…` est le lien universel de
+     l'activation en un clic : quand Fronton est installé, macOS l'ouvre et
+     le navigateur ne montre rien. On n'arrive donc ici que si l'app n'a pas
+     pris le lien — pas installée, lien collé, `?key=` (que le fichier
+     apple-app-site-association ne déclare pas).
+     CE QUI FUYAIT, déjà en ligne (relecture du 23 oct.) : Pirsch envoyait
+     `location.href` ENTIER, ?cle=… compris, avec la vue de page, et relevait
+     le lien <a href="fronton://activer?cle=…"> comme lien SORTANT — l'adresse
+     complète partait dans l'événement au clic. Donc, comme merci.html : ce
+     script passe AVANT pa.js (qui est `defer`), lit `cle` ou `key`, garde la
+     clé dans sa fermeture et la RETIRE de l'adresse ; `data-disable-query`
+     sur pa.js en ceinture ; et l'app s'ouvre par un <button>, jamais par un
+     lien. La clé ne quitte la page que vers l'app.
+     Elle reste dans l'état de l'entrée d'historique (`history.state`) : un
+     rechargement ou un retour arrière la retrouve, et elle ne vit que là où
+     l'adresse d'origine l'avait déjà mise. */
+  (function () {
+    "use strict";
+    var racine = document.documentElement;
+    var cle = "";
+
+    try {
+      var params = new URLSearchParams(location.search);
+      if (params.has("cle") || params.has("key")) {
+        // « cle » d'abord, « key » toléré : la règle de l'app (LicenseLink).
+        cle = ((params.get("cle") || "").trim() || (params.get("key") || "").trim());
+        params.delete("cle");
+        params.delete("key");
+        var reste = params.toString();
+        history.replaceState({ frontonCle: cle }, "",
+          location.pathname + (reste ? "?" + reste : "") + location.hash);
+      } else if (history.state && typeof history.state.frontonCle === "string") {
+        cle = history.state.frontonCle;
+      }
+    } catch (e) {}
+    // Une clé de Polar est courte et imprimable ; le reste n'en est pas une.
+    if (cle.length > 256 || /[\u0000-\u001f\u007f]/.test(cle)) cle = "";
+
+    function quandPret(f) {
+      if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", f);
+      else f();
+    }
+
+    quandPret(function () {
+      var ouvrir = document.getElementById("ouvrir");
+      var bouton = document.getElementById("cleCopie");
+
+      if (cle) {
+        document.getElementById("cleTexte").textContent = cle;
+        document.getElementById("cleBloc").hidden = false;
+      } else {
+        document.getElementById("sansCle").hidden = false;
+      }
+
+      /* Sans clé, le bouton ouvre quand même Fronton sur Réglages › Compte
+         (`fronton://activer` nu). Firefox remplacerait la page par une
+         erreur, l'adresse — clé comprise — en clair dans la barre : chez
+         lui seul, un cadre caché porte la navigation. Chrome et Safari
+         restent sur la page quand l'app manque. Le détail est dans
+         merci.html (`ouvrirApp`). */
+      var cadre = null;
+      if (ouvrir) ouvrir.addEventListener("click", function () {
+        var adresse = cle ? "fronton://activer?cle=" + encodeURIComponent(cle) : "fronton://activer";
+        if ("mozInnerScreenX" in window) {
+          if (!cadre) {
+            cadre = document.createElement("iframe");
+            cadre.setAttribute("aria-hidden", "true");
+            cadre.tabIndex = -1;
+            cadre.style.display = "none";
+            document.body.appendChild(cadre);
+          }
+          cadre.src = adresse;
+        } else {
+          location.href = adresse;
+        }
+      });
+
+      if (bouton) bouton.addEventListener("click", function () {
+        if (!cle || !navigator.clipboard) return;
+        navigator.clipboard.writeText(cle).then(function () {
+          var avant = bouton.textContent;
+          bouton.textContent = { fr: "Copié !", en: "Copied!", de: "Kopiert!" }[racine.lang] || "Copié !";
+          setTimeout(function () { bouton.textContent = avant; }, 1600);
+        }).catch(function () {});
+      });
+    });
+  })();
+</script>
 <title>Activer — Fronton</title>
-<!-- Page d'arrivée du paiement Polar (Success URL du lien de checkout),
-     dans la peau v2 (maquette « Sapphire », direction artistique bleue).
-     Jamais indexée : on n'y arrive qu'en ayant payé. -->
+<!-- La page du lien d'activation (voir le script de tête), dans la peau
+     v2 (maquette « Sapphire », direction artistique bleue). Jamais
+     indexée : on n'y arrive qu'avec une clé. -->
 <meta name="robots" content="noindex">
 <meta name="theme-color" content="#000000">
 <link rel="icon" type="image/png" sizes="96x96" href="https://fronton.app/favicon.png">
@@ -14,8 +109,10 @@
 <script>document.documentElement.classList.add("js")</script>
 <!-- Mesure d'audience SANS cookies (Pirsch, Allemagne) : pays, pages,
      provenance — aucun identifiant, aucune bannière à consentir.
-     Déclarée sur la page juridique. -->
-<script defer src="https://api.pirsch.io/pa.js" id="pianjs" data-code="TyPbBymtLoEOMgd2b08wfU76ZCV00Djx"></script>
+     Déclarée sur la page juridique. `data-disable-query` : Pirsch envoie
+     sinon `location.href` ENTIER — en ceinture, au cas où la clé n'aurait
+     pas pu être retirée de l'adresse (voir le script de tête). -->
+<script defer src="https://api.pirsch.io/pa.js" id="pianjs" data-code="TyPbBymtLoEOMgd2b08wfU76ZCV00Djx" data-disable-query></script>
 <style>
   /* Le bloc de la clé : elle se lit et se copie, elle ne se retape pas. */
   /* `hidden` d'abord : un `display` de classe BAT le `display: none` que
@@ -279,11 +376,12 @@
     box-shadow: 0 10px 44px rgba(139, 92, 246, .5);
     background-position: 100% 100%;
   }
-  /* VIDE tant qu'Apple n'a pas notarisé : sans lien, l'étape renvoie à
-     l'e-mail ; avec, le bouton paraît. */
-  .dl { display: none; margin-top: 14px; }
-  .js .has-dl .dl { display: inline-flex; }
-  .js .has-dl .dl-fallback { display: none; }
+  /* Le bouton qui ouvre l'app est un <button> (Pirsch relève les liens
+     sortants, adresse comprise) : il prend la peau du lien. */
+  button.cta { border: 0; cursor: pointer; font-family: inherit; line-height: inherit; }
+  /* Le lien de téléchargement est ÉCRIT dans la page (l'app est notarisée
+     depuis le 1er sept. 2026) : il marche sans JavaScript. */
+  .dl { margin-top: 14px; }
 
   .aside { margin: 44px auto 0; font-size: 14.5px; line-height: 1.65; color: var(--ink-3); max-width: 60ch; }
   .aside a {
@@ -349,25 +447,24 @@
         <button type="button" id="cleCopie" data-en="Copy" data-de="Kopieren">Copier</button>
       </div>
 
-      <p class="sub monte d4" id="sansCle" hidden data-en="This link came without a key. Yours is in the purchase email." data-de="Dieser Link kam ohne Schlüssel. Deiner steht in der Kauf-E-Mail.">Ce lien est arrivé sans clé. La vôtre est dans l’e-mail d’achat.</p>
+      <p class="sub monte d4" id="sansCle" hidden data-en="This link came without a key. Yours is waiting behind <kbd>Access purchase</kbd>, in the email from Polar." data-de="Dieser Link kam ohne Schlüssel. Deiner wartet hinter <kbd>Access purchase</kbd>, in der E-Mail von Polar.">Ce lien est arrivé sans clé. La vôtre vous attend derrière <kbd>Access purchase</kbd>, dans l’e-mail de Polar.</p>
 
       <p class="monte d5" style="text-align:center;margin:0 0 30px">
-        <a class="cta" id="ouvrir" href="#" data-en="Open in Fronton" data-de="In Fronton öffnen">Ouvrir dans Fronton</a>
+        <button type="button" class="cta" id="ouvrir" data-en="Open in Fronton" data-de="In Fronton öffnen">Ouvrir dans Fronton</button>
       </p>
 
       <ol class="etapes">
         <li id="step-dl" class="monte d6">
           <div>
             <h2 data-en="Don’t have Fronton yet?" data-de="Fronton noch nicht installiert?">Pas encore Fronton&nbsp;?</h2>
-            <p class="dl-fallback" data-en="The download link is in the same email as your key." data-de="Der Download-Link steht in derselben E-Mail wie dein Schlüssel.">Le lien de téléchargement est dans le même e-mail que votre clé.</p>
-            <a class="dl cta" href="" data-en="Download for Mac" data-de="Für Mac laden">Télécharger pour Mac</a>
+            <a class="dl cta" href="https://github.com/rkddevelop/Fronton/releases/download/updates/Fronton-1.0.zip" data-en="Download for Mac" data-de="Für Mac laden">Télécharger pour Mac</a>
             <p class="meta" data-en="macOS 26 · Apple Silicon · notch or no notch" data-de="macOS 26 · Apple Silicon · mit oder ohne Notch">macOS 26 · Apple Silicon · avec ou sans encoche</p>
           </div>
         </li>
         <li class="monte d7">
           <div>
             <h2 data-en="Or paste it by hand" data-de="Oder von Hand einsetzen">Ou collez-la à la main</h2>
-            <p data-en='Click the Fronton mark in the menu bar, open <kbd>Settings</kbd> → <kbd>Account</kbd>, paste the key, then click <kbd>Activate</kbd>.' data-de='Klicke das Fronton-Zeichen in der Menüleiste, öffne <kbd>Einstellungen</kbd> → <kbd>Konto</kbd>, setze den Schlüssel ein und klicke <kbd>Aktivieren</kbd>.'>Cliquez le fronton dans la barre des menus, ouvrez <kbd>Réglages</kbd> → <kbd>Compte</kbd>, collez la clé, puis <kbd>Activer la clé</kbd>.</p>
+            <p data-en='Click the Fronton mark in the menu bar, open <kbd>Settings</kbd> → <kbd>Account</kbd>, paste the key, then click <kbd>Activate</kbd>.' data-de='Klicke auf das Fronton-Zeichen in der Menüleiste, öffne <kbd>Einstellungen</kbd> → <kbd>Konto</kbd>, setze den Schlüssel ein und klicke auf <kbd>Schlüssel aktivieren</kbd>.'>Cliquez le fronton dans la barre des menus, ouvrez <kbd>Réglages</kbd> → <kbd>Compte</kbd>, collez la clé, puis <kbd>Activer la clé</kbd>.</p>
           </div>
         </li>
       </ol>
@@ -398,8 +495,6 @@
     });
 
     if (DOWNLOAD_URL) {
-      document.getElementById("step-dl").classList.add("has-dl");
-      document.querySelector(".dl").setAttribute("href", DOWNLOAD_URL);
       document.getElementById("navDl").setAttribute("href", DOWNLOAD_URL);
     }
 
@@ -429,35 +524,11 @@
       try { localStorage.frontonLang = lang; } catch (e) {}
       apply();
     });
+    // L'appel manquait : la page restait en français, le sélecteur sur
+    // « Français », quelle que soit la langue du navigateur.
+    apply();
 
-    /* LA CLÉ NE QUITTE JAMAIS CETTE PAGE : elle est lue dans l'adresse,
-       posée dans le bloc et dans le lien « fronton:// », et rien d'autre.
-       Aucune requête, aucune mesure — Pirsch ne reçoit que la page.
-       On n'arrive ici QUE si l'app n'a pas pris le lien : quand elle est
-       installée, macOS l'ouvre et le navigateur ne montre rien. */
-    var params = new URLSearchParams(location.search);
-    var cle = (params.get("cle") || params.get("key") || "").trim();
-    var ouvrir = document.getElementById("ouvrir");
-
-    if (cle) {
-      document.getElementById("cleTexte").textContent = cle;
-      document.getElementById("cleBloc").hidden = false;
-      ouvrir.setAttribute("href", "fronton://activer?cle=" + encodeURIComponent(cle));
-    } else {
-      document.getElementById("sansCle").hidden = false;
-      ouvrir.setAttribute("href", "fronton://activer");
-    }
-
-    var bouton = document.getElementById("cleCopie");
-    if (bouton) {
-      bouton.addEventListener("click", function () {
-        navigator.clipboard.writeText(cle).then(function () {
-          var avant = bouton.textContent;
-          bouton.textContent = { fr: "Copié !", en: "Copied!", de: "Kopiert!" }[lang] || "Copié !";
-          setTimeout(function () { bouton.textContent = avant; }, 1600);
-        }).catch(function () {});
-      });
-    }
+    // La clé, le bouton « Ouvrir » et « Copier » : script de tête.
 
     // La navigation se givre dès qu'on quitte le sommet.
     var navwrap = document.getElementById("navwrap");

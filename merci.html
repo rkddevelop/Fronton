@@ -3,6 +3,336 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
+<!-- AVANT toute ressource : un Referer ne porte jamais que l'ORIGINE. Le
+     jeton de Polar (plus bas) est retiré de l'adresse dès la ligne suivante,
+     mais l'analyseur d'avance de Chrome peut réclamer favicon et Pirsch avant
+     que le script ait tourné. `strict-origin` et non `no-referrer` : Pirsch
+     envoie ses événements par sendBeacon en texte brut, requête sans CORS
+     dont l'Origin tomberait à « null » sous `no-referrer`. -->
+<meta name="referrer" content="strict-origin">
+<script>
+  /* LA CLÉ SUR LA PAGE (23 oct. 2026) — et d'abord, LE JETON DE POLAR.
+     Le courriel de Polar ne contient PAS la clé : un bouton « Access
+     purchase » mène au portail, où elle est. Pour un client NEUF, Polar
+     ajoute à cette adresse `customer_session_token=polar_cst_…` — une
+     session de SON portail client, valable une heure, qui peut tout y faire
+     (annuler l'abonnement, faire tourner la clé). Ce script la lit, la RETIRE
+     de l'adresse avant que quoi que ce soit d'autre ne lise `location.href`
+     (Pirsch est `defer`, il passe après ; et `data-disable-query` en
+     ceinture), et ne l'envoie qu'à api.polar.sh, sans Referer, sans cookie,
+     pour y lire la clé et la montrer avec « Activer dans Fronton »
+     (`fronton://activer?cle=…` — pas le lien https : cliqué depuis
+     fronton.app, il ne réveille pas l'app).
+     Lu dans le code de Polar (commit b25a943) : la clé naît en tâche de fond
+     APRÈS la redirection, d'où l'attente ; un client qui a déjà acheté avec
+     ce courriel n'a PAS de jeton ; et ce paramètre n'est documenté nulle
+     part chez Polar. Donc tout ici est un raccourci, jamais un passage
+     obligé : sans jeton, sur erreur, sur délai dépassé ou sans JavaScript,
+     la page garde la consigne manuelle, sans un mot d'erreur.
+     La clé n'est écrite nulle part (ni localStorage, ni adresse, ni lien
+     survolable : un <a href="fronton://…"> serait relevé par le suivi des
+     liens sortants de Pirsch). Le JETON, lui, est gardé en sessionStorage
+     jusqu'à son échéance, et RELU SEULEMENT pour un rechargement ou un
+     retour arrière (relecture du 23 oct.) : relu à toute arrivée, deux
+     achats dans le même onglet en moins d'une heure montraient au second la
+     clé du PREMIER — le second client, déjà connu de Polar, n'a pas de
+     jeton. Toute autre arrivée sans jeton efface la mémoire. */
+  (function () {
+    "use strict";
+    var NOM = "customer_session_token";
+    var MEMOIRE = "frontonPolarSession";
+    var FORME_JETON = /^[A-Za-z0-9._~-]{16,512}$/;
+    var FORME_CLE = /^[A-Za-z0-9][A-Za-z0-9_-]{7,127}$/;
+    var ADRESSE = "https://api.polar.sh/v1/customer-portal/license-keys/";
+    var DUREE_MAX = 45000;
+    // Le FILET : quoi qu'il arrive (navigateur sans AbortController, corps
+    // de réponse qui ne finit jamais), l'attente cesse à DUREE_MAX + 10 s.
+    var FILET = DUREE_MAX + 10000;
+    // Une carte d'attente vue plus longtemps que ça ne s'évanouit plus en
+    // cas d'échec : elle dit où trouver la clé (voir `renoncer`).
+    var VUE = 3000;
+    var racine = document.documentElement;
+    var jeton = null;
+
+    // Téléphone ou tablette : « Activer dans Fronton » n'y ouvrirait rien.
+    // `maxTouchPoints` et non le User-Agent : un Mac rend 0, et l'iPad se
+    // dit « Macintosh » mais compte 5 points. Posé AVANT tout retour
+    // anticipé, sur <html>, donc dès le premier rendu.
+    try { if (navigator.maxTouchPoints > 0) racine.classList.add("tactile"); } catch (e) {}
+
+    try {
+      var params = new URLSearchParams(location.search);
+      if (params.has(NOM)) {
+        jeton = params.get(NOM);
+        params.delete(NOM);
+        var reste = params.toString();
+        history.replaceState(history.state, "",
+          location.pathname + (reste ? "?" + reste : "") + location.hash);
+      }
+    } catch (e) {}
+    if (jeton !== null && !FORME_JETON.test(jeton)) jeton = null;
+
+    // Comment on est arrivé ici. Inconnu = une arrivée neuve : dans le
+    // doute, on oublie plutôt que de montrer la clé d'un autre achat.
+    function arrivee() {
+      try {
+        var n = performance.getEntriesByType("navigation")[0];
+        if (n && n.type) return n.type;
+      } catch (e) {}
+      try {
+        var t = performance.navigation.type;
+        if (t === 1) return "reload";
+        if (t === 2) return "back_forward";
+      } catch (e) {}
+      return "navigate";
+    }
+
+    try {
+      if (jeton) {
+        sessionStorage.setItem(MEMOIRE, JSON.stringify({ j: jeton, f: Date.now() + 55 * 60 * 1000 }));
+      } else {
+        var type = arrivee();
+        var memo = (type === "reload" || type === "back_forward")
+          ? JSON.parse(sessionStorage.getItem(MEMOIRE) || "null") : null;
+        if (memo && typeof memo.j === "string" && FORME_JETON.test(memo.j) && memo.f > Date.now()) {
+          jeton = memo.j;
+        } else {
+          sessionStorage.removeItem(MEMOIRE);
+        }
+      }
+    } catch (e) {}
+
+    if (!jeton || typeof fetch !== "function") return;
+
+    // La carte de la clé paraît tout de suite, en attente : la classe est
+    // sur <html>, donc dès le premier rendu, sans saut.
+    racine.classList.add("polar");
+
+    var cle = null, fini = false, debut = Date.now(), essais = 0, ratees = 0;
+    var filet = setTimeout(function () { renoncer(false); }, FILET);
+
+    function quandPret(f) {
+      if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", f);
+      else f();
+    }
+
+    // La région « live » est dans la carte, hors des blocs masqués : un
+    // lecteur d'écran n'annonce rien de ce qui naît sous `display: none`.
+    // Vidée puis remplie après un court délai : la région existe avant
+    // qu'on y écrive, et une même phrase (deux copies) est redite.
+    function annoncer(texte) {
+      quandPret(function () {
+        var r = document.getElementById("cleAnnonce");
+        if (!r) return;
+        r.textContent = "";
+        setTimeout(function () { r.textContent = texte; }, 150);
+      });
+    }
+    function texteDe(id) {
+      var el = document.getElementById(id);
+      return el ? el.textContent.replace(/\s+/g, " ").trim() : "";
+    }
+
+    // Échec, quel qu'il soit, et aucun message d'erreur : la consigne
+    // manuelle (étape 2) reste dans la page. Si la carte d'attente a été vue
+    // plus de VUE ms, elle ne disparaît pas sous les yeux — on se demanderait
+    // ce qu'on a manqué : elle garde une ligne neutre qui dit où est la clé.
+    function renoncer(oublier) {
+      if (fini) return;
+      fini = true;
+      clearTimeout(filet);
+      if (oublier) { try { sessionStorage.removeItem(MEMOIRE); } catch (e) {} }
+      if (Date.now() - debut >= VUE) {
+        racine.classList.add("cle-repli");
+        quandPret(function () { annoncer(texteDe("cleRepli")); });
+      } else {
+        racine.classList.remove("polar");
+      }
+    }
+
+    function montrer(k) {
+      if (fini) return;
+      fini = true;
+      clearTimeout(filet);
+      cle = k;
+      quandPret(function () {
+        var valeur = document.getElementById("cleValeur");
+        if (!valeur) { racine.classList.remove("polar"); return; }
+        valeur.textContent = k;
+        racine.classList.add("cle-ok");
+        annoncer({ fr: "Votre clé est prête.", en: "Your key is ready.", de: "Dein Schlüssel ist bereit." }[racine.lang] || "Votre clé est prête.");
+      });
+    }
+
+    // La plus récente des clés ACCORDÉES. Polar rend aussi les révoquées et
+    // les désactivées, triées par date croissante : on filtre, puis on
+    // relit la date plutôt que de se fier à l'ordre (à égalité, la
+    // dernière de la liste).
+    function choisir(items) {
+      var meilleure = null, date = -Infinity;
+      for (var i = 0; i < items.length; i++) {
+        var it = items[i];
+        if (!it || it.status !== "granted" || typeof it.key !== "string") continue;
+        var k = it.key.trim();
+        if (!FORME_CLE.test(k)) continue;
+        var d = Date.parse(it.created_at);
+        if (isNaN(d)) d = -Infinity;
+        if (d >= date) { date = d; meilleure = k; }
+      }
+      return meilleure;
+    }
+
+    function plusTard() {
+      var pause = Math.min(1500 + 250 * essais, 4000);
+      if (Date.now() - debut + pause > DUREE_MAX) return renoncer(false);
+      setTimeout(essayer, pause);
+    }
+
+    // Réseau coupé, CORS refusé, délai dépassé, 429, 5xx : trois de suite
+    // et on renonce.
+    function ratee() {
+      if (++ratees >= 3) renoncer(false);
+      else plusTard();
+    }
+
+    function essayer() {
+      if (fini) return;
+      essais++;
+      var ctrl = typeof AbortController === "function" ? new AbortController() : null;
+      // L'abandon couvre la requête ENTIÈRE, lecture du corps comprise : il
+      // n'est levé qu'une fois le JSON lu. Levé aux en-têtes, un corps qui
+      // n'arrivait jamais tenait la carte en attente pour toujours.
+      var minuterie = ctrl ? setTimeout(function () { ctrl.abort(); }, 8000) : 0;
+      var lever = function () { clearTimeout(minuterie); };
+      var options = {
+        method: "GET", mode: "cors", credentials: "omit", referrerPolicy: "no-referrer",
+        headers: { "Authorization": "Bearer " + jeton }
+      };
+      if (ctrl) options.signal = ctrl.signal;
+      fetch(ADRESSE, options).then(function (r) {
+        if (fini) return lever();
+        if (r.status === 401 || r.status === 403) { lever(); return renoncer(true); }
+        if (r.status === 404 || r.status === 422) { lever(); return renoncer(false); }
+        if (r.status !== 200) { lever(); return ratee(); }
+        return r.json().then(function (corps) {
+          lever();
+          if (fini) return;
+          if (!corps || !Array.isArray(corps.items)) return renoncer(false);
+          var k = choisir(corps.items);
+          if (k) return montrer(k);
+          ratees = 0;
+          plusTard();       // la clé n'existe pas ENCORE : Polar l'accorde en tâche de fond
+        }, function (e) {
+          lever();
+          // Corps coupé en route (abandon, réseau) : un raté comme un autre.
+          // Corps illisible : Polar a changé de forme, on renonce.
+          if (e && (e.name === "AbortError" || e.name === "TypeError")) ratee();
+          else renoncer(false);
+        });
+      }).catch(function () {
+        lever();
+        ratee();
+      });
+    }
+
+    quandPret(function () {
+      var copier = document.getElementById("cleCopier");
+      var activer = document.getElementById("cleActiver");
+      var valeur = document.getElementById("cleValeur");
+
+      /* OUVRIR L'APP SANS JAMAIS METTRE LA CLÉ DANS UNE BARRE D'ADRESSE.
+         Le schéma propre de l'app est ouvert par le script et non par un
+         lien (la clé ne s'affiche pas au survol, Pirsch ne relève rien).
+         Reste à choisir QUI navigue quand l'app n'est pas installée :
+         · Chrome se tait et Safari montre une alerte — l'un comme l'autre
+           RESTENT sur la page, l'adresse ne bouge pas. C'est aussi la voie
+           que suivent leurs demandes « Ouvrir Fronton ? » : la page elle-même
+           navigue, on n'invente rien ;
+         · Firefox, lui, REMPLACE la page par « Adresse non comprise », la
+           clé en clair dans la barre d'adresse et dans l'historique de
+           l'onglet. Chez lui seul, un cadre caché porte la navigation :
+           l'erreur reste enfermée dedans, invisible.
+         Pas de cadre partout : WebKit décide à part si un SOUS-cadre a le
+         droit d'ouvrir une app, et un Safari qui refuserait en silence
+         casserait le bouton pour le navigateur le plus courant sur Mac.
+         `mozInnerScreenX` n'existe que dans Gecko (moteur, pas User-Agent). */
+      var cadre = null;
+      function ouvrirApp(adresse) {
+        if ("mozInnerScreenX" in window) {
+          if (!cadre) {
+            cadre = document.createElement("iframe");
+            cadre.setAttribute("aria-hidden", "true");
+            cadre.tabIndex = -1;
+            cadre.style.display = "none";
+            document.body.appendChild(cadre);
+          }
+          cadre.src = adresse;
+        } else {
+          location.href = adresse;
+        }
+      }
+
+      /* L'APP N'EST PAS LÀ ? Aucun navigateur ne le dit à la page : on
+         écoute ce que fait une app qui s'ouvre — la fenêtre perd le focus
+         (`blur`), l'onglet passe en arrière-plan, la page s'en va. Rien de
+         tout ça en 2,5 s : on dit quoi faire, sous le bouton. La demande
+         « Ouvrir Fronton ? » de Chrome prend elle aussi le focus, donc une
+         app présente mais pas encore autorisée ne déclenche pas la phrase. */
+      var attente = 0;
+      function ouverte() { clearTimeout(attente); attente = 0; }
+      addEventListener("blur", ouverte);
+      addEventListener("pagehide", ouverte);
+      document.addEventListener("visibilitychange", function () {
+        if (document.visibilityState === "hidden") ouverte();
+      });
+
+      if (activer) activer.addEventListener("click", function () {
+        if (!cle) return;
+        racine.classList.remove("app-absente");
+        ouverte();
+        attente = setTimeout(function () {
+          attente = 0;
+          racine.classList.add("app-absente");
+          annoncer(texteDe("cleAbsente"));
+        }, 2500);
+        ouvrirApp("fronton://activer?cle=" + encodeURIComponent(cle));
+      });
+
+      if (!copier || !valeur) return;
+      var minuterieCopie = 0;
+      var copiee = function () {
+        copier.classList.add("fait");
+        annoncer({ fr: "Clé copiée", en: "Key copied", de: "Schlüssel kopiert" }[racine.lang] || "Clé copiée");
+        clearTimeout(minuterieCopie);
+        minuterieCopie = setTimeout(function () {
+          copier.classList.remove("fait");
+        }, 1800);
+      };
+      // Sans presse-papier asynchrone : la clé est SÉLECTIONNÉE, puis copiée
+      // à l'ancienne ; si même ça échoue, elle reste sélectionnée pour ⌘C.
+      var secours = function () {
+        try {
+          var plage = document.createRange();
+          plage.selectNodeContents(valeur);
+          var s = getSelection();
+          s.removeAllRanges();
+          s.addRange(plage);
+          if (document.execCommand("copy")) copiee();
+        } catch (e) {}
+      };
+      copier.addEventListener("click", function () {
+        if (!cle) return;
+        if (navigator.clipboard && navigator.clipboard.writeText) {
+          navigator.clipboard.writeText(cle).then(copiee, secours);
+        } else {
+          secours();
+        }
+      });
+    });
+
+    essayer();
+  })();
+</script>
 <title>Merci — Fronton</title>
 <!-- Page d'arrivée du paiement Polar (Success URL du lien de checkout),
      dans la peau v2 (maquette « Sapphire », direction artistique bleue).
@@ -14,8 +344,10 @@
 <script>document.documentElement.classList.add("js")</script>
 <!-- Mesure d'audience SANS cookies (Pirsch, Allemagne) : pays, pages,
      provenance — aucun identifiant, aucune bannière à consentir.
-     Déclarée sur la page juridique. -->
-<script defer src="https://api.pirsch.io/pa.js" id="pianjs" data-code="TyPbBymtLoEOMgd2b08wfU76ZCV00Djx"></script>
+     Déclarée sur la page juridique. `data-disable-query` : Pirsch envoie
+     sinon `location.href` ENTIER — en ceinture, au cas où le jeton de Polar
+     n'aurait pas pu être retiré de l'adresse (voir le script plus haut). -->
+<script defer src="https://api.pirsch.io/pa.js" id="pianjs" data-code="TyPbBymtLoEOMgd2b08wfU76ZCV00Djx" data-disable-query></script>
 <style>
   /* ==================================================================
      Mêmes jetons, même police, même lampe que la page d'accueil. Page courte : défilement natif, une seule
@@ -251,11 +583,117 @@
     box-shadow: 0 10px 44px rgba(139, 92, 246, .5);
     background-position: 100% 100%;
   }
-  /* VIDE tant qu'Apple n'a pas notarisé : sans lien, l'étape renvoie à
-     l'e-mail ; avec, le bouton paraît. */
-  .dl { display: none; margin-top: 14px; }
-  .js .has-dl .dl { display: inline-flex; }
-  .js .has-dl .dl-fallback { display: none; }
+  /* Le lien est ÉCRIT dans la page (l'app est notarisée depuis le 1er sept.
+     2026) : il marche sans JavaScript. Scripts/mettre-a-jour-site.sh
+     réécrit le nom de l'archive partout dans ce fichier. */
+  .dl { margin-top: 14px; }
+  ol.etapes p.apres-dl { margin-top: 14px; }
+  ol.etapes p a {
+    color: var(--ink); border-bottom: 1px solid rgba(255,255,255,.22);
+    transition: border-color .2s;
+  }
+  ol.etapes p a:hover { border-color: var(--orange); }
+  ol.etapes p strong { color: var(--ink); font-weight: 650; }
+
+  /* ---- l'étape 2 a deux textes : à la main (par défaut, sans JS aussi)
+     et « la clé est plus haut » quand la carte la montre ---- */
+  .mode-cle { display: none; }
+  html.cle-ok ol.etapes .mode-cle { display: block; }
+  html.cle-ok ol.etapes .mode-manuel { display: none; }
+
+  /* ---- LA CARTE DE LA CLÉ : l'élément principal quand elle existe.
+     Elle n'existe que si Polar a passé son jeton (classe `polar` posée
+     par le script de tête) ; `cle-ok` quand la clé est là. ---- */
+  .cle {
+    display: none;
+    max-width: 660px; margin: 44px auto 0; padding: 24px 28px 26px;
+    text-align: center;
+    border: 1px solid rgba(79, 142, 240, .34); border-radius: 22px;
+    background:
+      radial-gradient(120% 130% at 50% 0%, rgba(79, 142, 240, .15), transparent 62%),
+      linear-gradient(170deg, #0b0e18, #05060b);
+    box-shadow: 0 30px 90px rgba(79, 142, 240, .13), inset 0 1px 0 rgba(255, 255, 255, .05);
+  }
+  html.polar .cle { display: block; }
+  .cle-titre {
+    font-size: 12px; font-weight: 700; letter-spacing: .12em; text-transform: uppercase;
+    color: var(--ink-3);
+  }
+  .cle-attente, .cle-prete { margin-top: 16px; }
+  .cle-prete { display: none; }
+  html.cle-ok .cle-prete { display: block; animation: cleArrive .6s cubic-bezier(.16, 1, .3, 1); }
+  html.cle-ok .cle-attente { display: none; }
+  @keyframes cleArrive { from { opacity: 0; transform: translateY(6px); } }
+  .cle-squelette {
+    display: block; height: 54px; max-width: 604px; margin: 0 auto; border-radius: 14px;
+    border: 1px solid var(--edge);
+    background: linear-gradient(90deg, rgba(255,255,255,.03) 0%, rgba(255,255,255,.09) 50%, rgba(255,255,255,.03) 100%) 0 0 / 200% 100%;
+    animation: miroite 1.5s linear infinite;
+  }
+  @keyframes miroite { to { background-position: -200% 0; } }
+  .cle-attente p { margin-top: 12px; font-size: 14px; color: var(--ink-2); }
+  .cle-ligne {
+    display: flex; align-items: center; gap: 12px;
+    max-width: 604px; margin: 0 auto;
+    padding: 8px 8px 8px 18px;
+    border: 1px solid var(--edge); border-radius: 14px;
+    background: rgba(255, 255, 255, .04);
+    text-align: left;
+  }
+  .cle-valeur {
+    flex: 1 1 auto; min-width: 0;
+    font: 600 16.5px/1.45 ui-monospace, SFMono-Regular, Menlo, monospace;
+    letter-spacing: .01em; color: var(--ink);
+    overflow-wrap: anywhere;
+    -webkit-user-select: all; user-select: all;
+  }
+  .cle-copier {
+    flex: 0 0 auto;
+    font: 600 13px/1 -apple-system, "SF Pro Display", system-ui, sans-serif; color: var(--ink);
+    padding: 11px 16px; border-radius: 999px;
+    border: 1px solid var(--edge); background: rgba(255, 255, 255, .06);
+    cursor: pointer; transition: background .2s, color .2s, border-color .2s;
+  }
+  .cle-copier:hover { background: rgba(255, 255, 255, .11); }
+  .cle-copier .lib-apres { display: none; }
+  .cle-copier.fait { color: #7dd3fc; border-color: rgba(79, 142, 240, .5); }
+  .cle-copier.fait .lib-avant { display: none; }
+  .cle-copier.fait .lib-apres { display: inline; }
+  .cle-activer { margin-top: 18px; border: 0; cursor: pointer; font-family: inherit; }
+  /* --ink-2 et non --ink-3 : à .4 sur le fond de la carte, la note passait
+     sous le contraste AA (relecture du 23 oct. 2026). */
+  .cle-note, .cle-absente, .cle-tactile, .cle-repli-ligne { margin: 14px auto 0; max-width: 52ch; font-size: 13.5px; color: var(--ink-2); }
+  .cle-note a, .cle-absente a {
+    color: var(--ink); border-bottom: 1px solid rgba(255,255,255,.28);
+    transition: color .2s, border-color .2s;
+  }
+  .cle-note a:hover, .cle-absente a:hover { border-color: var(--orange); }
+  /* L'app n'a pas répondu au bouton (2,5 s sans perte de focus) : la phrase
+     qui dit quoi faire prend la place de la note, qui disait la même chose
+     en moins précis. */
+  .cle-absente { display: none; }
+  html.app-absente .cle-absente { display: block; }
+  html.app-absente .cle-note { display: none; }
+  /* Téléphone, tablette : pas de bouton qui n'ouvrirait rien, la phrase qui
+     dit comment faire passer la clé au Mac à la place. */
+  .cle-tactile { display: none; font-size: 14.5px; margin-top: 18px; }
+  html.tactile .cle-tactile { display: block; }
+  html.tactile .cle-activer, html.tactile .cle-note, html.tactile .cle-absente, html.tactile .hors-tactile { display: none; }
+  /* L'attente a été vue puis Polar n'a pas rendu la clé : la carte reste,
+     sur une ligne neutre qui dit où la trouver. */
+  .cle-repli-ligne { display: none; font-size: 15px; margin-top: 16px; }
+  html.cle-repli .cle-attente { display: none; }
+  html.cle-repli .cle-repli-ligne { display: block; }
+  .vh {
+    position: absolute !important; width: 1px; height: 1px; overflow: hidden;
+    clip: rect(0 0 0 0); clip-path: inset(50%); white-space: nowrap;
+  }
+  @media (max-width: 560px) {
+    .cle { padding: 20px 16px 20px; }
+    .cle-ligne { flex-direction: column; align-items: stretch; padding: 14px; text-align: center; }
+    .cle-valeur { font-size: 15px; }
+    .cle-activer { width: 100%; justify-content: center; }
+  }
 
   .aside { margin: 44px auto 0; font-size: 14.5px; line-height: 1.65; color: var(--ink-3); max-width: 60ch; }
   .aside a {
@@ -290,9 +728,9 @@
   @media (prefers-reduced-motion: reduce) {
     .confettis { display: none; }
     .trait-sommet { animation: none; transform: scaleX(1); }
-    .monte, .hero-chip i { animation: none !important; }
+    .monte, .hero-chip i, .cle-squelette, html.cle-ok .cle-prete { animation: none !important; }
     .monte { opacity: 1; transform: none; filter: none; }
-    ol.etapes li, .cta, .nav-cta, .fond-lueur { transition: none; }
+    ol.etapes li, .cta, .nav-cta, .fond-lueur, .cle-copier { transition: none; }
     html { scroll-behavior: auto; }
   }
 </style>
@@ -327,22 +765,49 @@
       <div class="entete">
         <span class="hero-chip monte d1"><i></i><span data-en="Payment confirmed" data-de="Zahlung bestätigt">Paiement confirmé</span></span>
         <h1 class="monte d2" data-en='Thank you. The island is <span class="sommet">yours<i class="trait-sommet" aria-hidden="true"></i></span>.' data-de='Danke. Die Insel gehört jetzt <span class="sommet">dir<i class="trait-sommet" aria-hidden="true"></i></span>.'>Merci. L&rsquo;îlot est à <span class="sommet">vous<i class="trait-sommet" aria-hidden="true"></i></span>.</h1>
-        <p class="sub monte d3" data-en="Your payment went through. Your licence key is on its way to the email address you used at checkout — it usually arrives within a minute." data-de="Deine Zahlung ist eingegangen. Dein Lizenzschlüssel ist unterwegs an die E-Mail-Adresse aus dem Kauf — er kommt meist innerhalb einer Minute an.">Votre paiement est passé. Votre clé de licence arrive à l&rsquo;adresse e-mail utilisée pour l&rsquo;achat — comptez une minute, rarement plus.</p>
+        <p class="sub monte d3" data-en="Your payment went through. Three steps to go: download Fronton, activate your key, hover the top of your screen." data-de="Deine Zahlung ist eingegangen. Noch drei Schritte: Fronton laden, Schlüssel aktivieren, an den oberen Bildschirmrand fahren.">Votre paiement est passé. Plus que trois gestes&nbsp;: télécharger Fronton, activer votre clé, survoler le haut de l&rsquo;écran.</p>
       </div>
+
+      <!-- La carte de la clé : invisible sans le jeton de Polar (voir le
+           script de tête). Rien dedans n'est indispensable : l'étape 2 dit
+           toujours comment faire à la main. -->
+      <section class="cle monte d4" id="cle" aria-labelledby="cleTitre">
+        <h2 class="cle-titre" id="cleTitre" data-en="Your licence key" data-de="Dein Lizenzschlüssel">Votre clé de licence</h2>
+        <!-- La région « live » vit HORS des blocs masqués : née sous
+             `display: none`, elle n'annonçait rien. -->
+        <span class="vh" id="cleAnnonce" role="status" aria-live="polite" aria-atomic="true"></span>
+        <div class="cle-attente">
+          <span class="cle-squelette" aria-hidden="true"></span>
+          <p data-en="Polar is preparing it — a few seconds." data-de="Polar bereitet ihn gerade vor — ein paar Sekunden.">Polar la prépare — quelques secondes.</p>
+        </div>
+        <p class="cle-repli-ligne" id="cleRepli" data-en="Your key is waiting behind <kbd>Access purchase</kbd>, in the email from Polar." data-de="Dein Schlüssel wartet hinter <kbd>Access purchase</kbd>, in der E-Mail von Polar.">Votre clé vous attend derrière <kbd>Access purchase</kbd>, dans l&rsquo;e-mail de Polar.</p>
+        <div class="cle-prete">
+          <div class="cle-ligne">
+            <code class="cle-valeur" id="cleValeur" translate="no"></code>
+            <button type="button" class="cle-copier" id="cleCopier"><span class="lib-avant" data-en="Copy" data-de="Kopieren">Copier</span><span class="lib-apres" data-en="Copied" data-de="Kopiert">Copié</span></button>
+          </div>
+          <button type="button" class="cta cle-activer" id="cleActiver" data-en="Activate in Fronton" data-de="In Fronton aktivieren">Activer dans Fronton</button>
+          <p class="cle-absente" id="cleAbsente" data-en='Nothing opened? Fronton isn&rsquo;t installed yet: <a href="https://github.com/rkddevelop/Fronton/releases/download/updates/Fronton-1.0.zip">download it</a>, open it once, then come back here.' data-de='Hat sich nichts geöffnet? Fronton ist noch nicht installiert: <a href="https://github.com/rkddevelop/Fronton/releases/download/updates/Fronton-1.0.zip">Lade die App herunter</a>, öffne sie einmal und komm dann hierher zurück.'>Rien ne s&rsquo;est ouvert&nbsp;? Fronton n&rsquo;est pas encore installé&nbsp;: <a href="https://github.com/rkddevelop/Fronton/releases/download/updates/Fronton-1.0.zip">téléchargez-le</a>, ouvrez-le une fois, puis revenez ici.</p>
+          <p class="cle-note" data-en='Don&rsquo;t have the app yet? <a href="https://github.com/rkddevelop/Fronton/releases/download/updates/Fronton-1.0.zip">Download it first</a>, then come back here.' data-de='Hast du die App noch nicht? <a href="https://github.com/rkddevelop/Fronton/releases/download/updates/Fronton-1.0.zip">Lade sie zuerst herunter</a> und komm dann hierher zurück.'>Pas encore l&rsquo;app&nbsp;? <a href="https://github.com/rkddevelop/Fronton/releases/download/updates/Fronton-1.0.zip">Téléchargez-la d&rsquo;abord</a>, puis revenez ici.</p>
+          <p class="cle-tactile" data-en="On your Mac: copy the key here — Universal Clipboard carries it across — or open the email from Polar on the Mac." data-de="Auf deinem Mac: Kopiere den Schlüssel hier — die universelle Zwischenablage bringt ihn hinüber — oder öffne die E-Mail von Polar auf dem Mac.">Sur votre Mac&nbsp;: copiez la clé ici — le presse-papier universel la fait passer — ou ouvrez l&rsquo;e-mail de Polar depuis le Mac.</p>
+        </div>
+      </section>
 
       <ol class="etapes">
         <li id="step-dl" class="monte d4">
           <div>
             <h2 data-en="Download Fronton" data-de="Fronton laden">Téléchargez Fronton</h2>
-            <p class="dl-fallback" data-en="The download link is in the same email as your key." data-de="Der Download-Link steht in derselben E-Mail wie dein Schlüssel.">Le lien de téléchargement est dans le même e-mail que votre clé.</p>
-            <a class="dl cta" href="" data-en="Download for Mac" data-de="Für Mac laden">Télécharger pour Mac</a>
+            <a class="dl cta" href="https://github.com/rkddevelop/Fronton/releases/download/updates/Fronton-1.0.zip" data-en="Download for Mac" data-de="Für Mac laden">Télécharger pour Mac</a>
+            <p class="apres-dl" data-en="Open the archive, drag Fronton to Applications, then open it." data-de="Öffne das Archiv, zieh Fronton in den Ordner „Programme“ und öffne die App.">Ouvrez l&rsquo;archive, glissez Fronton dans Applications, puis ouvrez-le.</p>
             <p class="meta" data-en="macOS 26 · Apple Silicon · notch or no notch" data-de="macOS 26 · Apple Silicon · mit oder ohne Notch">macOS 26 · Apple Silicon · avec ou sans encoche</p>
           </div>
         </li>
         <li class="monte d5">
           <div>
-            <h2 data-en="Paste your key" data-de="Schlüssel einsetzen">Collez votre clé</h2>
-            <p data-en='Click the Fronton mark in the menu bar, open <kbd>Settings</kbd> → <kbd>Account</kbd>, paste the key from the email, then click <kbd>Activate</kbd>.' data-de='Klicke das Fronton-Zeichen in der Menüleiste, öffne <kbd>Einstellungen</kbd> → <kbd>Konto</kbd>, setze den Schlüssel aus der E-Mail ein und klicke <kbd>Aktivieren</kbd>.'>Cliquez le fronton dans la barre des menus, ouvrez <kbd>Réglages</kbd> → <kbd>Compte</kbd>, collez la clé reçue par e-mail, puis <kbd>Activer la clé</kbd>.</p>
+            <h2 data-en="Activate your key" data-de="Schlüssel aktivieren">Activez votre clé</h2>
+            <p class="mode-manuel" data-en='In the email from Polar, click <kbd>Access purchase</kbd>: the page that opens shows your key. Then click the Fronton mark in the menu bar, open <kbd>Settings</kbd> → <kbd>Account</kbd>, paste the key and click <kbd>Activate</kbd>.' data-de='Klicke in der E-Mail von Polar auf <kbd>Access purchase</kbd>: Die Seite, die sich öffnet, zeigt deinen Schlüssel. Klicke dann auf das Fronton-Zeichen in der Menüleiste, öffne <kbd>Einstellungen</kbd> → <kbd>Konto</kbd>, setze den Schlüssel ein und klicke auf <kbd>Schlüssel aktivieren</kbd>.'>Dans l&rsquo;e-mail de Polar, cliquez <kbd>Access purchase</kbd>&nbsp;: la page qui s&rsquo;ouvre affiche votre clé. Puis cliquez le fronton dans la barre des menus, ouvrez <kbd>Réglages</kbd> → <kbd>Compte</kbd>, collez la clé et cliquez <kbd>Activer la clé</kbd>.</p>
+            <p class="meta mode-manuel" data-en='No email to hand? <a href="https://polar.sh/fronton/portal">The purchase portal</a> leads to the same place, with the email address you paid with.' data-de='Keine E-Mail zur Hand? Das <a href="https://polar.sh/fronton/portal">Kaufportal</a> führt an denselben Ort, mit der E-Mail-Adresse aus dem Kauf.'>Pas d&rsquo;e-mail sous la main&nbsp;? <a href="https://polar.sh/fronton/portal">Le portail d&rsquo;achat</a> mène au même endroit, avec l&rsquo;adresse utilisée au paiement.</p>
+            <p class="mode-cle" data-en='<span class="hors-tactile">The <strong>Activate in Fronton</strong> button above puts it in place for you, if your Fronton is up to date (build 14 or later). </span>By hand: click the Fronton mark in the menu bar, open <kbd>Settings</kbd> → <kbd>Account</kbd>, paste the key, then click <kbd>Activate</kbd>.' data-de='<span class="hors-tactile">Die Schaltfläche <strong>In Fronton aktivieren</strong> oben setzt ihn für dich ein, wenn dein Fronton aktuell ist (Build 14 oder neuer). </span>Von Hand: Klicke auf das Fronton-Zeichen in der Menüleiste, öffne <kbd>Einstellungen</kbd> → <kbd>Konto</kbd>, setze den Schlüssel ein und klicke auf <kbd>Schlüssel aktivieren</kbd>.'><span class="hors-tactile">Le bouton <strong>Activer dans Fronton</strong>, plus haut, la pose pour vous, si votre Fronton est à jour (build 14 ou plus). </span>À la main&nbsp;: cliquez le fronton dans la barre des menus, ouvrez <kbd>Réglages</kbd> → <kbd>Compte</kbd>, collez la clé, puis <kbd>Activer la clé</kbd>.</p>
           </div>
         </li>
         <li class="monte d6">
@@ -373,10 +838,9 @@
 <script>
   (function () {
     "use strict";
-    /* Le lien de téléchargement : VIDE tant qu'Apple n'a pas notarisé.
-       Vide, l'étape 1 renvoie à l'e-mail ; rempli, le bouton paraît
-       (et le bouton de la navigation pointe dessus).
-       Même patron que CHECKOUT_URL dans index.html. */
+    /* Le lien de téléchargement. Le bouton de l'étape 1 et celui de la
+       carte de la clé l'ont EN DUR (lisibles sans JavaScript) ; ici, il ne
+       sert plus qu'au bouton de la navigation. */
     var DOWNLOAD_URL = "https://github.com/rkddevelop/Fronton/releases/download/updates/Fronton-1.0.zip";
 
     // FR = contenu réel ; l'EN et le DE vivent dans data-en / data-de.
@@ -385,8 +849,6 @@
     });
 
     if (DOWNLOAD_URL) {
-      document.getElementById("step-dl").classList.add("has-dl");
-      document.querySelector(".dl").setAttribute("href", DOWNLOAD_URL);
       document.getElementById("navDl").setAttribute("href", DOWNLOAD_URL);
     }
 
@@ -501,7 +963,10 @@
     // ni montant : le nom de l'événement suffit à compter.
     function acheteAbouti() {
       if (typeof window.pirsch !== "function") return false;
-      try { window.pirsch("Achat abouti"); } catch (e) {}
+      // `{}` OBLIGATOIRE (mesuré le 23 oct. 2026, vrai pa.js au banc) : sans
+      // options, pa.js lit `options.non_interactive` sur `undefined`, sa
+      // promesse rejette et l'événement ne part JAMAIS — le try ne le voit pas.
+      try { window.pirsch("Achat abouti", {}); } catch (e) {}
       return true;
     }
     if (!acheteAbouti()) addEventListener("load", acheteAbouti);
